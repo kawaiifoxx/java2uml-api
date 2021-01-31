@@ -1,8 +1,8 @@
 package org.java2uml.java2umlapi.util;
 
 
-import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.Map;
@@ -60,7 +60,7 @@ public class DirExplorer {
         explore(0, "", root, state);
     }
 
-    private void explore(int level, String path, File file, Map<String, ClassOrInterfaceDeclaration> state) {
+    private void explore(int level, String path, @NotNull File file, Map<String, ClassOrInterfaceDeclaration> state) {
         if (file.isDirectory()) {
             for (File child : file.listFiles()) {
                 explore(level + 1, path + "/" + child.getName(), child, state);
