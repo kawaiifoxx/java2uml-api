@@ -34,7 +34,7 @@ class JavaParserFacadeTest {
 
     @Test
     void testParseClassesWithSingleFile() {
-        var resultMap = jpf.parseClasses("src/main/resources/JavaParserFacadeTests/testParserClass/SingleFileTest/TestClass.java");
+        var resultMap = jpf.parseClasses("src/test/testSources/JavaParserFacadeTests/testParserClass/SingleFileTest/TestClass.java");
 
 
         resultMap.forEach((k, v) -> resultSet.add(k));
@@ -45,7 +45,7 @@ class JavaParserFacadeTest {
     @Test
     void testParseClassesWithMultipleFiles() {
         addMultipleClassOrInterfaceDeclarationToExpectedSet();
-        var resultMap = jpf.parseClasses("src/main/resources/JavaParserFacadeTests/testParserClass/MultipleFileTest/multipleFilesTest");
+        var resultMap = jpf.parseClasses("src/test/testSources/JavaParserFacadeTests/testParserClass/MultipleFileTest");
 
         resultMap.forEach((k, v) -> resultSet.add(k));
 
