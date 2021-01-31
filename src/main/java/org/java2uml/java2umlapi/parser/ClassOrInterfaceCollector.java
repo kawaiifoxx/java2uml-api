@@ -29,8 +29,9 @@ public final class ClassOrInterfaceCollector extends VoidVisitorAdapter<Map<Stri
     @Override
     public void visit(ClassOrInterfaceDeclaration n, Map<String, ClassOrInterfaceDeclaration> arg) {
         super.visit(n, arg);
-        if (!arg.containsKey(n.getNameAsString())) {
-            arg.put(getFullyQualifiedName(n), n);
+        String fullyQualifiedName = getFullyQualifiedName(n);
+        if (!arg.containsKey(fullyQualifiedName)) {
+            arg.put(fullyQualifiedName, n);
         }
     }
 

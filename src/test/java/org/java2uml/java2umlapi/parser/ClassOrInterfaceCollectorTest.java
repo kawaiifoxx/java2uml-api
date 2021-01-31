@@ -50,7 +50,7 @@ class ClassOrInterfaceCollectorTest {
     }
 
     @Test
-    @DisplayName("tests ClassOrInterfaceDeclaration returns fully qualified classOrInterface names,")
+    @DisplayName("tests visit returns fully qualified classOrInterface names,")
     void testVisit() {
         VoidVisitor<Map<String, ClassOrInterfaceDeclaration>> visitor = new ClassOrInterfaceCollector();
 
