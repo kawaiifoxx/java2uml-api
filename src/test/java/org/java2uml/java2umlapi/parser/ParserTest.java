@@ -14,10 +14,10 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-class JavaParserFacadeTest {
+class ParserTest {
 
     @Autowired
-    private JavaParserFacade jpf;
+    private Parser jpf;
     private Set<String> expectedSet;
     private static final String SINGLE_FILE_PATH = "src/test/testSources/JavaParserFacadeTests/testParserClass/SingleFileTest/TestClass.java";
     private static final String MULTIPLE_FILES_PATH = "src/test/testSources/JavaParserFacadeTests/testParserClass/MultipleFileTest/multipleFilesTest";

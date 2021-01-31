@@ -7,12 +7,10 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
- * Collects all the ClassOrInterfaceDeclarations, in a map, with mapping
- * a:String -> b:ClassOrInterfaceDeclaration
+ * Collects all the ClassOrInterfaceDeclarations, in a list.
  * </p>
  *
  * @author kawaiifoxx

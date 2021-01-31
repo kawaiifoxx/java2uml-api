@@ -1,10 +1,6 @@
 package org.java2uml.java2umlapi.parser;
 
-import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedReferenceTypeDeclaration;
-import com.github.javaparser.resolution.types.ResolvedReferenceType;
-import com.github.javaparser.resolution.types.ResolvedType;
 import com.github.javaparser.symbolsolver.model.resolution.TypeSolver;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.JavaParserTypeSolver;
 import org.java2uml.java2umlapi.util.DirExplorer;
@@ -13,9 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -25,12 +19,12 @@ import java.util.Map;
  * @author kawaiifox.
  */
 @Component
-public class JavaParserFacade {
+public class Parser {
 
     private final DirExplorer dirExplorer;
 
     @Autowired
-    public JavaParserFacade(DirExplorer dirExplorer) {
+    public Parser(DirExplorer dirExplorer) {
         this.dirExplorer = dirExplorer;
     }
 
