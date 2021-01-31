@@ -5,6 +5,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,7 +25,7 @@ public class DirExplorer {
          * @param file  file being handled.
          * @param state mapping from node name to node object.
          */
-        void handle(int level, String path, File file, Map<String, ClassOrInterfaceDeclaration> state);
+        void handle(int level, String path, File file, List<String> state);
     }
 
     /**
@@ -56,11 +57,11 @@ public class DirExplorer {
      * @param root  Source Directory.
      * @param state Mapping between nodeName:String -> node:Node
      */
-    public void explore(File root, Map<String, ClassOrInterfaceDeclaration> state) {
+    public void explore(File root, List<String> state) {
         explore(0, "", root, state);
     }
 
-    private void explore(int level, String path, @NotNull File file, Map<String, ClassOrInterfaceDeclaration> state) {
+    private void explore(int level, String path, @NotNull File file, List<String> state) {
         if (file.isDirectory()) {
             for (File child : file.listFiles()) {
                 explore(level + 1, path + "/" + child.getName(), child, state);

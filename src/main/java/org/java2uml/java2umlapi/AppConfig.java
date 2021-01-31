@@ -12,13 +12,14 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.FileNotFoundException;
+import java.util.List;
 import java.util.Map;
 
 @Configuration
 public class AppConfig {
 
     @Bean
-    public DirExplorer dirExplorer(@Autowired VoidVisitor<Map<String, ClassOrInterfaceDeclaration>> visitor) {
+    public DirExplorer dirExplorer(@Autowired VoidVisitor<List<String>> visitor) {
         return new DirExplorer((level, path, file) -> file.getName().endsWith(".java"), (level, path, file, state) -> {
             try {
                 CompilationUnit cu = StaticJavaParser.parse(file);

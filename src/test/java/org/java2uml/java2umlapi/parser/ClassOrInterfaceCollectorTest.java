@@ -8,10 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -51,14 +48,13 @@ class ClassOrInterfaceCollectorTest {
     @Test
     @DisplayName("tests visit returns fully qualified classOrInterface names,")
     void testVisit() {
-        VoidVisitor<Map<String, ClassOrInterfaceDeclaration>> visitor = new ClassOrInterfaceCollector();
+        VoidVisitor<List<String>> visitor = new ClassOrInterfaceCollector();
 
-        Map<String, ClassOrInterfaceDeclaration> state = new HashMap<>();
+        List<String> state = new ArrayList<>();
 
         visitor.visit(cu, state);
 
-        Set<String> resultSet = new HashSet<>();
-        state.forEach((k, v) -> resultSet.add(k));
+        Set<String> resultSet = new HashSet<>(state);
 
         assertEquals(expectedSet, resultSet, "ClassOrInterfaceDeclaration does not return correct classOrInterface names.");
 

@@ -6,6 +6,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,7 +19,7 @@ import java.util.Map;
  * @see com.github.javaparser.ast.visitor.VoidVisitor
  */
 @Component
-public final class ClassOrInterfaceCollector extends VoidVisitorAdapter<Map<String, ClassOrInterfaceDeclaration>> {
+public final class ClassOrInterfaceCollector extends VoidVisitorAdapter<List<String>> {
     /**
      * <p>
      * visits the whole ast in search of ClassOrInterfaceDeclarations.
@@ -28,12 +29,9 @@ public final class ClassOrInterfaceCollector extends VoidVisitorAdapter<Map<Stri
      * @param arg - state to be stored, in this case a Map<String, ClassOrInterfaceDeclaration>
      */
     @Override
-    public void visit(ClassOrInterfaceDeclaration n, Map<String, ClassOrInterfaceDeclaration> arg) {
+    public void visit(ClassOrInterfaceDeclaration n, List<String> arg) {
         super.visit(n, arg);
-        String fullyQualifiedName = getFullyQualifiedName(n);
-        if (!arg.containsKey(fullyQualifiedName)) {
-            arg.put(fullyQualifiedName, n);
-        }
+        arg.add(getFullyQualifiedName(n));
     }
 
 
