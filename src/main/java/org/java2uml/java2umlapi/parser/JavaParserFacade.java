@@ -1,7 +1,14 @@
 package org.java2uml.java2umlapi.parser;
 
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import org.java2uml.java2umlapi.util.DirExplorer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -11,7 +18,15 @@ import java.util.Map;
  *
  * @author kawaiifox.
  */
+@Component
 public class JavaParserFacade {
+
+    private final DirExplorer dirExplorer;
+
+    @Autowired
+    public JavaParserFacade(DirExplorer dirExplorer) {
+        this.dirExplorer = dirExplorer;
+    }
 
     /**
      * <p>
@@ -20,10 +35,13 @@ public class JavaParserFacade {
      * </p>
      *
      * @param PATH - path of the source directory to be parsed.
-     * @return Map<String, Node> - Mapping between className -> Node.
+     * @return Map<String, ClassOrInterfaceDeclaration> - Mapping between className -> Node.
      */
-    public Map<String, Node> parse(String PATH) {
+    public Map<String, ClassOrInterfaceDeclaration> parseClasses(String PATH) {
+        Map<String, ClassOrInterfaceDeclaration> classNameToclassOrInterfaceDeclMap = new HashMap<>();
 
-        return null;
+        dirExplorer.explore(new File(PATH), classNameToclassOrInterfaceDeclMap);
+
+        return classNameToclassOrInterfaceDeclMap;
     }
 }
