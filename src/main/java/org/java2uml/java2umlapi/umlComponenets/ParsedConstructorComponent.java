@@ -5,13 +5,17 @@ import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import java.util.List;
 import java.util.Optional;
 
-public class ParsedConstructorComponent implements ParsedComponent{
+import static org.java2uml.java2umlapi.util.StaticParsedComponentsUtil.getVisibilityModifierSymbol;
+
+public class ParsedConstructorComponent implements ParsedComponent {
     private final ResolvedDeclaration resolvedDeclaration;
     private final ParsedComponent parent;
+    private final String printableName;
 
     public ParsedConstructorComponent(ResolvedDeclaration resolvedDeclaration, ParsedComponent parent) {
         this.resolvedDeclaration = resolvedDeclaration;
         this.parent = parent;
+        this.printableName = resolvedDeclaration.asMethod().getSignature();
     }
 
     @Override
@@ -33,4 +37,11 @@ public class ParsedConstructorComponent implements ParsedComponent{
     public Optional<List<ParsedComponent>> getChildren() {
         return Optional.empty();
     }
+
+    @Override
+    public String toString() {
+        return getVisibilityModifierSymbol(resolvedDeclaration) + " " + printableName;
+    }
+
+
 }

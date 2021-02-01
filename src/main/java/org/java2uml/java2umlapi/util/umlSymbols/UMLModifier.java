@@ -6,7 +6,7 @@ package org.java2uml.java2umlapi.util.umlSymbols;
  *
  * @author kawaiifox
  */
-public enum UMLModifiers {
+public enum UMLModifier {
     FIELD("{field}"),
     METHOD("{method}"),
     ABSTRACT("{abstract}"),
@@ -15,7 +15,7 @@ public enum UMLModifiers {
     private final String printable;
 
 
-    UMLModifiers(String printable) {
+    UMLModifier(String printable) {
         this.printable = printable;
     }
 

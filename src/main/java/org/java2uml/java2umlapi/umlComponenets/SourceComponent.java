@@ -9,6 +9,7 @@ public class SourceComponent implements ParsedComponent {
 
     private List<ParsedComponent> children;
     private final List<ResolvedDeclaration> allParsedTypes;
+    private List<TypeRelation> allRelations;
 
     public SourceComponent(List<ResolvedDeclaration> allParsedTypes) {
         this.allParsedTypes = allParsedTypes;

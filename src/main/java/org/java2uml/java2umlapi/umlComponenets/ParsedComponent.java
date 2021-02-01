@@ -1,7 +1,6 @@
 package org.java2uml.java2umlapi.umlComponenets;
 
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
-import com.github.javaparser.resolution.declarations.ResolvedReferenceTypeDeclaration;
 
 import java.util.List;
 import java.util.Optional;

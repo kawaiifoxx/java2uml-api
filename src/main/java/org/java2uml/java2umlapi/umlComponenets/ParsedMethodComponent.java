@@ -5,14 +5,18 @@ import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import java.util.List;
 import java.util.Optional;
 
+import static org.java2uml.java2umlapi.util.StaticParsedComponentsUtil.getVisibilityModifierSymbol;
+
 public class ParsedMethodComponent  implements ParsedComponent{
 
     private final ParsedComponent parent;
     private final ResolvedDeclaration resolvedDeclaration;
+    private final String printableName;
 
     public ParsedMethodComponent(ParsedComponent parent, ResolvedDeclaration resolvedDeclaration) {
         this.parent = parent;
         this.resolvedDeclaration = resolvedDeclaration;
+        this.printableName = resolvedDeclaration.asMethod().getSignature();
     }
 
     @Override
@@ -35,5 +39,9 @@ public class ParsedMethodComponent  implements ParsedComponent{
         return Optional.empty();
     }
 
+    @Override
+    public String toString() {
+        return  getVisibilityModifierSymbol(resolvedDeclaration) + " " + printableName;
+    }
 
 }
