@@ -1,6 +1,5 @@
 package org.java2uml.java2umlapi.parser;
 
-import com.github.javaparser.resolution.declarations.ResolvedTypeDeclaration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,7 +51,7 @@ class ParserTest {
     @DisplayName("when solving reference types, expect all reference types to be resolved and added to the list.")
     void testGetAllResolvedReferenceTypes() {
         addMultipleClassOrInterfaceDeclarationToExpectedSet();
-        var resultList = jpf.getAllResolvedReferenceTypes(MULTIPLE_FILES_PATH);
+        var resultList = jpf.getAllResolvedDeclarations(MULTIPLE_FILES_PATH);
 
         assertEquals(expectedSet, resultList.stream()
                 .map(resolvedDeclaration -> {

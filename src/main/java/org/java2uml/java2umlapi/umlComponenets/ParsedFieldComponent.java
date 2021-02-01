@@ -5,12 +5,11 @@ import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import java.util.List;
 import java.util.Optional;
 
-public class ParsedMethodComponent  implements ParsedComponent{
-
+public class ParsedFieldComponent implements ParsedComponent {
     private final ParsedComponent parent;
     private final ResolvedDeclaration resolvedDeclaration;
 
-    public ParsedMethodComponent(ParsedComponent parent, ResolvedDeclaration resolvedDeclaration) {
+    public ParsedFieldComponent(ParsedComponent parent, ResolvedDeclaration resolvedDeclaration) {
         this.parent = parent;
         this.resolvedDeclaration = resolvedDeclaration;
     }
@@ -34,6 +33,4 @@ public class ParsedMethodComponent  implements ParsedComponent{
     public Optional<List<ParsedComponent>> getChildren() {
         return Optional.empty();
     }
-
-
 }

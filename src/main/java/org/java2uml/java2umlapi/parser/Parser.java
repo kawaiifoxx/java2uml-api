@@ -1,7 +1,6 @@
 package org.java2uml.java2umlapi.parser;
 
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
-import com.github.javaparser.resolution.declarations.ResolvedReferenceTypeDeclaration;
 import com.github.javaparser.symbolsolver.model.resolution.TypeSolver;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.JavaParserTypeSolver;
 import org.java2uml.java2umlapi.util.DirExplorer;
@@ -48,13 +47,13 @@ public class Parser {
 
     /**
      * <p>
-     * resolves all reference types in given java source directory and adds to a map.
+     * resolves all reference types in given java source directory and adds to a list.
      * </p>
      *
      * @param PATH path to the source directory to be parsed.
-     * @return returns mapping between a:String -> b:ResolvedReferenceTypeDeclaration
+     * @return returns list of all reference types.
      */
-    public List<ResolvedDeclaration> getAllResolvedReferenceTypes(String PATH) {
+    public List<ResolvedDeclaration> getAllResolvedDeclarations(String PATH) {
 
         var classList = parseClasses(PATH);
         TypeSolver typeSolver = new JavaParserTypeSolver(PATH);

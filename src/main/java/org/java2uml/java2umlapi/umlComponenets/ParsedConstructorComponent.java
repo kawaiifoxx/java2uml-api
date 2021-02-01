@@ -5,24 +5,23 @@ import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import java.util.List;
 import java.util.Optional;
 
-public class ParsedMethodComponent  implements ParsedComponent{
-
-    private final ParsedComponent parent;
+public class ParsedConstructorComponent implements ParsedComponent{
     private final ResolvedDeclaration resolvedDeclaration;
+    private final ParsedComponent parent;
 
-    public ParsedMethodComponent(ParsedComponent parent, ResolvedDeclaration resolvedDeclaration) {
-        this.parent = parent;
+    public ParsedConstructorComponent(ResolvedDeclaration resolvedDeclaration, ParsedComponent parent) {
         this.resolvedDeclaration = resolvedDeclaration;
-    }
-
-    @Override
-    public boolean isLeaf() {
-        return true;
+        this.parent = parent;
     }
 
     @Override
     public Optional<ResolvedDeclaration> getResolvedDeclaration() {
         return Optional.of(resolvedDeclaration);
+    }
+
+    @Override
+    public boolean isLeaf() {
+        return true;
     }
 
     @Override
@@ -34,6 +33,4 @@ public class ParsedMethodComponent  implements ParsedComponent{
     public Optional<List<ParsedComponent>> getChildren() {
         return Optional.empty();
     }
-
-
 }

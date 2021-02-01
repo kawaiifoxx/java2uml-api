@@ -1,7 +1,6 @@
 package org.java2uml.java2umlapi.umlComponenets;
 
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
-import com.github.javaparser.resolution.declarations.ResolvedReferenceTypeDeclaration;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +17,11 @@ public class SourceComponent implements ParsedComponent {
     @Override
     public boolean isSourceComponent() {
         return true;
+    }
+
+    @Override
+    public boolean isLeaf() {
+        return false;
     }
 
     @Override

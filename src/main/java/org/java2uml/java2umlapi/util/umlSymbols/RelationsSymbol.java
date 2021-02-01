@@ -1,4 +1,4 @@
-package org.java2uml.java2umlapi.util.uml;
+package org.java2uml.java2umlapi.util.umlSymbols;
 
 /**
  * <p>
@@ -14,8 +14,26 @@ public enum RelationsSymbol {
     AGGREGATION("o--"),
     ASSOCIATION("--"),
     DEPENDENCY(".."),
-    ASSOCIATION_RT("-->"),
-    DEPENDENCY_RT("..>");
+    ASSOCIATION_AR("->"),
+    DEPENDENCY_AR(".>");
+
+    public enum Direction {
+        UP("-up"),
+        DW("-down"),
+        RT("-right"),
+        LT("-left");
+
+        private final String printable;
+
+        Direction(String printable) {
+            this.printable = printable;
+        }
+
+        @Override
+        public String toString() {
+            return printable;
+        }
+    }
 
     private final String printable;
 

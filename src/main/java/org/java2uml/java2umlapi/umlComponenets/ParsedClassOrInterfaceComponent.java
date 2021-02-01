@@ -1,15 +1,18 @@
 package org.java2uml.java2umlapi.umlComponenets;
 
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
-import com.github.javaparser.resolution.declarations.ResolvedReferenceTypeDeclaration;
 
 import java.util.List;
 import java.util.Optional;
 
 /**
+ * <p>
+ *  A composite Component, containing other classes or interfaces, or methods or fields as children.
+ * </p>
  *
+ * @author kawaiifox
  */
-public class ParsedClassComponent implements ParsedComponent {
+public class ParsedClassOrInterfaceComponent implements ParsedComponent {
 
     private final ResolvedDeclaration resolvedReferenceTypeDeclaration;
 
@@ -18,9 +21,14 @@ public class ParsedClassComponent implements ParsedComponent {
     private List<ParsedComponent> children;
 
 
-    public ParsedClassComponent(ResolvedDeclaration resolvedReferenceTypeDeclaration, ParsedComponent parent) {
+    public ParsedClassOrInterfaceComponent(ResolvedDeclaration resolvedReferenceTypeDeclaration, ParsedComponent parent) {
         this.resolvedReferenceTypeDeclaration = resolvedReferenceTypeDeclaration;
         this.parent = parent;
+    }
+
+    @Override
+    public boolean isLeaf() {
+        return false;
     }
 
     @Override

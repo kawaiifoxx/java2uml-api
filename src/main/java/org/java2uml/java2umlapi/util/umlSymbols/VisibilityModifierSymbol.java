@@ -1,4 +1,4 @@
-package org.java2uml.java2umlapi.util.uml;
+package org.java2uml.java2umlapi.util.umlSymbols;
 
 /**
  * <p>
@@ -11,7 +11,8 @@ package org.java2uml.java2umlapi.util.uml;
 public enum VisibilityModifierSymbol {
     PRIVATE("-"),
     PROTECTED("#"),
-    PUBLIC("+");
+    PUBLIC("+"),
+    PKG_PRIVATE("~");
 
     private final String printable;
 

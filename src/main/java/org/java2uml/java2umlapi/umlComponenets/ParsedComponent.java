@@ -8,8 +8,8 @@ import java.util.Optional;
 
 /**
  * <p>
- * This Component interface declares common methods for ParsedSourceComponent (which is a composite component),
- * ParsedClassComponent (which is a composite component), ParsedMethodComponent (which is a simple component),
+ * This ParsedComponent interface declares common methods for SourceComponent (which is a composite component),
+ * ParsedClassOrInterfaceComponent (which is a composite component), ParsedMethodComponent (which is a simple component),
  * ParsedConstructorComponent (which is a simple component), and ParsedFieldComponent (which is a simple component).
  * </p>
  * <p>
@@ -33,6 +33,11 @@ public interface ParsedComponent {
     default boolean isSourceComponent() {
         return false;
     }
+
+    /**
+     * @return returns true if the component is a leaf component.
+     */
+    boolean isLeaf();
 
     /**
      * @return returns Optional<SourceComponent>.
