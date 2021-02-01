@@ -1,5 +1,12 @@
 package org.java2uml.java2umlapi.util.umlSymbols;
-
+/**
+ * <p>
+ * Provides necessary separators for generating plant uml code using these separators as building blocks
+ * we can generate plant uml code.
+ * </p>
+ *
+ * @author kawaiifox
+ */
 public enum Separators {
 
     DOTTED(".."),

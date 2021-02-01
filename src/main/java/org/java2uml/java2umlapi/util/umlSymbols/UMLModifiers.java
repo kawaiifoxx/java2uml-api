@@ -1,5 +1,11 @@
 package org.java2uml.java2umlapi.util.umlSymbols;
-
+/**
+ * <p>
+ * Provides UMLModifiers, so that different fields and methods can be classified.
+ * </p>
+ *
+ * @author kawaiifox
+ */
 public enum UMLModifiers {
     FIELD("{field}"),
     METHOD("{method}"),
@@ -11,5 +17,10 @@ public enum UMLModifiers {
 
     UMLModifiers(String printable) {
         this.printable = printable;
+    }
+
+    @Override
+    public String toString() {
+        return printable;
     }
 }
