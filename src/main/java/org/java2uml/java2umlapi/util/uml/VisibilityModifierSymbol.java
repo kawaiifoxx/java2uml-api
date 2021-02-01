@@ -1,8 +1,10 @@
 package org.java2uml.java2umlapi.util.uml;
 
 /**
+ * <p>
  * Provides necessary visibility modifiers for generating plant uml code, using these visibility modifiers as building blocks
  * we can generate plant uml code.
+ * </p>
  *
  * @author kawaiifox
  */

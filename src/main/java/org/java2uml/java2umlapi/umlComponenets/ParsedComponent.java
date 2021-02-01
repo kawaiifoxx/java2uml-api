@@ -2,11 +2,14 @@ package org.java2uml.java2umlapi.umlComponenets;
 
 import com.github.javaparser.resolution.declarations.ResolvedReferenceTypeDeclaration;
 
+import java.util.List;
+import java.util.Optional;
+
 /**
  * <p>
  * This Component interface declares common methods for ParsedSourceComponent (which is a composite component),
- * ParsedClassComponent (which is a composite component), ParsedMethodComponent (which is a simple component)
- * and ParsedFieldComponent (which is a simple component).
+ * ParsedClassComponent (which is a composite component), ParsedMethodComponent (which is a simple component),
+ * ParsedConstructorComponent (which is a simple component), and ParsedFieldComponent (which is a simple component).
  * </p>
  * <p>
  * For more information on composite design pattern, go to below link:<br>
@@ -17,10 +20,35 @@ import com.github.javaparser.resolution.declarations.ResolvedReferenceTypeDeclar
  */
 public interface ParsedComponent {
     /**
-     * returns the wrapped resolved reference type declaration.
-     *
-     * @return returns wrapped ResolvedReferenceTypeDeclaration.
+     * @return returns wrapped Optional<ResolvedReferenceTypeDeclaration>.
      */
-    ResolvedReferenceTypeDeclaration getResolvedReferenceTypeDeclaration();
+    default Optional<ResolvedReferenceTypeDeclaration> getResolvedReferenceTypeDeclaration() {
+        return Optional.empty();
+    }
+
+    /**
+     * @return returns true if the component is a SourceComponent.
+     */
+    default boolean isSourceComponent() {
+        return false;
+    }
+
+    /**
+     * @return returns Optional<SourceComponent>.
+     */
+    default Optional<SourceComponent> asSourceComponent() {
+        return Optional.empty();
+    }
+
+    /**
+     * @return returns parent of current component.
+     */
+    Optional<ParsedComponent> getParentComponent();
+
+    /**
+     * @return returns children of current component.
+     * Empty Optional is returned if current component is a leaf.
+     */
+    Optional<List<ParsedComponent>> getChildren();
 
 }

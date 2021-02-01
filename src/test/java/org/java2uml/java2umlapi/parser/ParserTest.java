@@ -54,9 +54,9 @@ class ParserTest {
         addMultipleClassOrInterfaceDeclarationToExpectedSet();
         var resultList = jpf.getAllResolvedReferenceTypes(MULTIPLE_FILES_PATH);
 
-        assertEquals(expectedSet, new HashSet<>(resultList.stream()
+        assertEquals(expectedSet, resultList.stream()
                 .map(ResolvedTypeDeclaration::getQualifiedName)
-                .collect(Collectors.toList())), "unable to solve all references correctly");
+                .collect(Collectors.toSet()), "unable to solve all references correctly");
     }
 
     private void addMultipleClassOrInterfaceDeclarationToExpectedSet() {

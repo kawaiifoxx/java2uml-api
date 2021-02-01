@@ -1,8 +1,10 @@
 package org.java2uml.java2umlapi.util.uml;
 
 /**
+ * <p>
  * Provides necessary relations for generating plant uml cod,e using these relations as building blocks
  * we can generate plant uml code.
+ * </p>
  *
  * @author kawaiifox
  */
