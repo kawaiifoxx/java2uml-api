@@ -46,7 +46,7 @@ class ClassOrInterfaceCollectorTest {
     }
 
     @Test
-    @DisplayName("tests visit returns fully qualified classOrInterface names,")
+    @DisplayName("when visit,should return fully qualified classOrInterface names,")
     void testVisit() {
         VoidVisitor<List<String>> visitor = new ClassOrInterfaceCollector();
 
