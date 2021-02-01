@@ -1,5 +1,6 @@
 package org.java2uml.java2umlapi.parser;
 
+import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedReferenceTypeDeclaration;
 import com.github.javaparser.symbolsolver.model.resolution.TypeSolver;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.JavaParserTypeSolver;
@@ -30,7 +31,7 @@ public class Parser {
 
     /**
      * <p>
-     * parses, the source files at given path and returns a mapping between a:String -> b:ClassOrInterfaceDeclaration.
+     * parses, the source files at given path and returns a list of fully qualified names of all the classes or interfaces.
      * where, a is  fully-qualified class name and b is the corresponding class.
      * </p>
      *
@@ -53,14 +54,14 @@ public class Parser {
      * @param PATH path to the source directory to be parsed.
      * @return returns mapping between a:String -> b:ResolvedReferenceTypeDeclaration
      */
-    public List<ResolvedReferenceTypeDeclaration> getAllResolvedReferenceTypes(String PATH) {
+    public List<ResolvedDeclaration> getAllResolvedReferenceTypes(String PATH) {
 
         var classList = parseClasses(PATH);
         TypeSolver typeSolver = new JavaParserTypeSolver(PATH);
-        List<ResolvedReferenceTypeDeclaration> resolvedReferenceTypeDeclarationList = new ArrayList<>();
+        List<ResolvedDeclaration> resolvedDeclarationList = new ArrayList<>();
 
-        classList.forEach(k -> resolvedReferenceTypeDeclarationList.add(typeSolver.solveType(k)));
+        classList.forEach(k -> resolvedDeclarationList.add(typeSolver.solveType(k)));
 
-        return resolvedReferenceTypeDeclarationList;
+        return resolvedDeclarationList;
     }
 }

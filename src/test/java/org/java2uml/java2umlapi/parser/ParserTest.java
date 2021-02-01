@@ -55,7 +55,12 @@ class ParserTest {
         var resultList = jpf.getAllResolvedReferenceTypes(MULTIPLE_FILES_PATH);
 
         assertEquals(expectedSet, resultList.stream()
-                .map(ResolvedTypeDeclaration::getQualifiedName)
+                .map(resolvedDeclaration -> {
+                    if (resolvedDeclaration.isType())
+                        return resolvedDeclaration.asType().getQualifiedName();
+                    else
+                        return null;
+                })
                 .collect(Collectors.toSet()), "unable to solve all references correctly");
     }
 

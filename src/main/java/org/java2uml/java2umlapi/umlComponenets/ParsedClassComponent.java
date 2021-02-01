@@ -1,5 +1,6 @@
 package org.java2uml.java2umlapi.umlComponenets;
 
+import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedReferenceTypeDeclaration;
 
 import java.util.List;
@@ -10,25 +11,25 @@ import java.util.Optional;
  */
 public class ParsedClassComponent implements ParsedComponent {
 
-    private final ResolvedReferenceTypeDeclaration resolvedReferenceTypeDeclaration;
+    private final ResolvedDeclaration resolvedReferenceTypeDeclaration;
 
     private  final ParsedComponent parent;
 
     private List<ParsedComponent> children;
 
 
-    public ParsedClassComponent(ResolvedReferenceTypeDeclaration resolvedReferenceTypeDeclaration, ParsedComponent parent) {
+    public ParsedClassComponent(ResolvedDeclaration resolvedReferenceTypeDeclaration, ParsedComponent parent) {
         this.resolvedReferenceTypeDeclaration = resolvedReferenceTypeDeclaration;
         this.parent = parent;
     }
 
     @Override
-    public Optional<ResolvedReferenceTypeDeclaration> getResolvedReferenceTypeDeclaration() {
+    public Optional<ResolvedDeclaration> getResolvedDeclaration() {
         return Optional.of(resolvedReferenceTypeDeclaration);
     }
 
     @Override
-    public Optional<ParsedComponent> getParentComponent() {
+    public Optional<ParsedComponent> getParent() {
         return Optional.of(parent);
     }
 

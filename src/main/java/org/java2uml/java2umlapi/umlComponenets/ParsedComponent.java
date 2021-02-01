@@ -1,5 +1,6 @@
 package org.java2uml.java2umlapi.umlComponenets;
 
+import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedReferenceTypeDeclaration;
 
 import java.util.List;
@@ -20,9 +21,9 @@ import java.util.Optional;
  */
 public interface ParsedComponent {
     /**
-     * @return returns wrapped Optional<ResolvedReferenceTypeDeclaration>.
+     * @return returns wrapped Optional<ResolvedDeclaration>.
      */
-    default Optional<ResolvedReferenceTypeDeclaration> getResolvedReferenceTypeDeclaration() {
+    default Optional<ResolvedDeclaration> getResolvedDeclaration() {
         return Optional.empty();
     }
 
@@ -43,7 +44,7 @@ public interface ParsedComponent {
     /**
      * @return returns parent of current component.
      */
-    Optional<ParsedComponent> getParentComponent();
+    Optional<ParsedComponent> getParent();
 
     /**
      * @return returns children of current component.
