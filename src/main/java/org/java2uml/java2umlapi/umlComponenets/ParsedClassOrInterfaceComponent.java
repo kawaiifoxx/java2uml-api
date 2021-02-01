@@ -14,15 +14,15 @@ import java.util.Optional;
  */
 public class ParsedClassOrInterfaceComponent implements ParsedComponent {
 
-    private final ResolvedDeclaration resolvedReferenceTypeDeclaration;
+    private final ResolvedDeclaration resolvedDeclaration;
 
     private  final ParsedComponent parent;
 
     private List<ParsedComponent> children;
 
 
-    public ParsedClassOrInterfaceComponent(ResolvedDeclaration resolvedReferenceTypeDeclaration, ParsedComponent parent) {
-        this.resolvedReferenceTypeDeclaration = resolvedReferenceTypeDeclaration;
+    public ParsedClassOrInterfaceComponent(ResolvedDeclaration resolvedDeclaration, ParsedComponent parent) {
+        this.resolvedDeclaration = resolvedDeclaration;
         this.parent = parent;
     }
 
@@ -33,7 +33,7 @@ public class ParsedClassOrInterfaceComponent implements ParsedComponent {
 
     @Override
     public Optional<ResolvedDeclaration> getResolvedDeclaration() {
-        return Optional.of(resolvedReferenceTypeDeclaration);
+        return Optional.of(resolvedDeclaration);
     }
 
     @Override
