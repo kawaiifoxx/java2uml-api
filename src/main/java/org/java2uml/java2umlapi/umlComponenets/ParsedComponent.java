@@ -23,5 +23,4 @@ public interface ParsedComponent {
      */
     ResolvedReferenceTypeDeclaration getResolvedReferenceTypeDeclaration();
 
-
 }
