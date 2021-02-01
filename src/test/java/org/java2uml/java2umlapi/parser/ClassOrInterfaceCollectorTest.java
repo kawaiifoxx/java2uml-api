@@ -2,13 +2,15 @@ package org.java2uml.java2umlapi.parser;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -46,7 +48,7 @@ class ClassOrInterfaceCollectorTest {
     }
 
     @Test
-    @DisplayName("when visit,should return fully qualified classOrInterface names,")
+    @DisplayName("when testing visit, it should return fully qualified classOrInterface names,")
     void testVisit() {
         VoidVisitor<List<String>> visitor = new ClassOrInterfaceCollector();
 
