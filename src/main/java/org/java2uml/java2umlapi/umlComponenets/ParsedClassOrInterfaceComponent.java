@@ -25,7 +25,7 @@ public class ParsedClassOrInterfaceComponent implements ParsedComponent {
     public ParsedClassOrInterfaceComponent(ResolvedDeclaration resolvedDeclaration, ParsedComponent parent) {
         this.resolvedDeclaration = resolvedDeclaration;
         this.parent = parent;
-        this.name = resolvedDeclaration.getName();
+        this.name = resolvedDeclaration.asType().asReferenceType().getQualifiedName();
     }
 
     @Override
