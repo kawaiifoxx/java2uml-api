@@ -5,6 +5,14 @@ import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * <p>
+ * A composite component representing whole java src code, this pattern is meant to be the
+ * root of the whole tree.
+ * </p>
+ *
+ * @author kawaiifox
+ */
 public class SourceComponent implements ParsedComponent {
 
     private List<ParsedComponent> children;

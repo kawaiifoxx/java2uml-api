@@ -7,7 +7,14 @@ import java.util.Optional;
 
 import static org.java2uml.java2umlapi.util.StaticParsedComponentsUtil.getVisibilityModifierSymbol;
 
-public class ParsedMethodComponent  implements ParsedComponent{
+/**
+ * <p>
+ * Leaf Component, representing method declaration, in a parsed java src code.
+ * </p>
+ *
+ * @author kawaiifox
+ */
+public class ParsedMethodComponent implements ParsedComponent {
 
     private final ParsedComponent parent;
     private final ResolvedDeclaration resolvedDeclaration;
@@ -41,7 +48,7 @@ public class ParsedMethodComponent  implements ParsedComponent{
 
     @Override
     public String toString() {
-        return  getVisibilityModifierSymbol(resolvedDeclaration) + " " + printableName;
+        return getVisibilityModifierSymbol(resolvedDeclaration) + " " + printableName;
     }
 
 }

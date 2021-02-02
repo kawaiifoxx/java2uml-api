@@ -12,6 +12,9 @@ import java.util.Optional;
  * ParsedConstructorComponent (which is a simple component), and ParsedFieldComponent (which is a simple component).
  * </p>
  * <p>
+ * Optional has been used to avoid the dreaded NullPointerException.
+ * </p>
+ * <p>
  * For more information on composite design pattern, go to below link:<br>
  * https://refactoring.guru/design-patterns/composite
  * </p>

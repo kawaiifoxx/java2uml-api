@@ -8,6 +8,13 @@ import java.util.Optional;
 
 import static org.java2uml.java2umlapi.util.StaticParsedComponentsUtil.getClassOfField;
 
+/**
+ * <p>
+ * Leaf component representing FieldDeclarations in java source code.
+ * </p>
+ *
+ * @author kawaiifox
+ */
 public class ParsedFieldComponent implements ParsedComponent {
     private final ParsedComponent parent;
     private final ResolvedDeclaration resolvedDeclaration;

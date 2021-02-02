@@ -40,7 +40,7 @@ public class ParsedConstructorComponent implements ParsedComponent {
 
     @Override
     public String toString() {
-        return getVisibilityModifierSymbol(resolvedDeclaration) + " " + printableName;
+        return getVisibilityModifierSymbol(resolvedDeclaration) + " [Constructor] " + printableName;
     }
 
 
