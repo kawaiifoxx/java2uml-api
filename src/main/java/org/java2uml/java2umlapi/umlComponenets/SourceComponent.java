@@ -2,6 +2,7 @@ package org.java2uml.java2umlapi.umlComponenets;
 
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +22,8 @@ public class SourceComponent implements ParsedComponent {
 
     public SourceComponent(List<ResolvedDeclaration> allParsedTypes) {
         this.allParsedTypes = allParsedTypes;
+        this.children = new ArrayList<>();
+        this.allRelations = new ArrayList<>();
     }
 
     @Override
@@ -38,6 +41,10 @@ public class SourceComponent implements ParsedComponent {
         return Optional.of(this);
     }
 
+    public List<ResolvedDeclaration> getAllParsedTypes() {
+        return allParsedTypes;
+    }
+
     @Override
     public Optional<ParsedComponent> getParent() {
         return Optional.empty();
@@ -48,6 +55,18 @@ public class SourceComponent implements ParsedComponent {
         if (children == null)
             return Optional.empty();
         return Optional.of(children);
+    }
+
+    private void generateTreeFromAllParsedTypes(ResolvedDeclaration resolvedDeclaration, ParsedComponent parsedComponent) {
+
+        if (resolvedDeclaration.isType()) {
+            var typeDeclaration = resolvedDeclaration.asType().asReferenceType();
+            var classOrInterfaceComponent = parsedComponent;
+        } else if(resolvedDeclaration.isField()) {
+
+        } else if(resolvedDeclaration.isMethod()) {
+
+        }
     }
 
     @Override

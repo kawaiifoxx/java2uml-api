@@ -32,6 +32,16 @@ public class ParsedClassOrInterfaceComponent implements ParsedComponent {
     }
 
     @Override
+    public boolean isParsedClassOrInterfaceComponent() {
+        return true;
+    }
+
+    @Override
+    public Optional<ParsedClassOrInterfaceComponent> asParsedClassOrInterfaceComponent() {
+        return Optional.of(this);
+    }
+
+    @Override
     public Optional<ResolvedDeclaration> getResolvedDeclaration() {
         return Optional.of(resolvedDeclaration);
     }

@@ -29,6 +29,16 @@ public class ParsedConstructorComponent implements ParsedComponent {
     }
 
     @Override
+    public boolean isParsedConstructorComponent() {
+        return true;
+    }
+
+    @Override
+    public Optional<ParsedConstructorComponent> asParsedConstructorComponent() {
+        return Optional.of(this);
+    }
+
+    @Override
     public Optional<ParsedComponent> getParent() {
         return Optional.of(parent);
     }

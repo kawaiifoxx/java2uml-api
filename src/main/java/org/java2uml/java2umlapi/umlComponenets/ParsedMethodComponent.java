@@ -32,6 +32,16 @@ public class ParsedMethodComponent implements ParsedComponent {
     }
 
     @Override
+    public boolean isParsedMethodComponent() {
+        return true;
+    }
+
+    @Override
+    public Optional<ParsedMethodComponent> asParsedMethodComponent() {
+        return Optional.of(this);
+    }
+
+    @Override
     public Optional<ResolvedDeclaration> getResolvedDeclaration() {
         return Optional.of(resolvedDeclaration);
     }

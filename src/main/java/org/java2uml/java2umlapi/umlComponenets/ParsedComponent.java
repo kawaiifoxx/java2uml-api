@@ -37,6 +37,34 @@ public interface ParsedComponent {
     }
 
     /**
+     * @return returns true if the component is a ParsedClassOrInterfaceComponent.
+     */
+    default boolean isParsedClassOrInterfaceComponent() {
+        return false;
+    }
+
+    /**
+     * @return returns true if the component is a ParsedMethodComponent.
+     */
+    default boolean isParsedMethodComponent() {
+        return false;
+    }
+
+    /**
+     * @return returns true if the component is a ParsedConstructorComponent.
+     */
+    default boolean isParsedConstructorComponent() {
+        return false;
+    }
+
+    /**
+     * @return returns true if the component is a ParsedFieldComponent.
+     */
+    default boolean isParseFieldComponent() {
+        return false;
+    }
+
+    /**
      * @return returns true if the component is a leaf component.
      */
     boolean isLeaf();
@@ -45,6 +73,34 @@ public interface ParsedComponent {
      * @return returns Optional<SourceComponent>.
      */
     default Optional<SourceComponent> asSourceComponent() {
+        return Optional.empty();
+    }
+
+    /**
+     * @return returns Optional<ParsedClassOrInterfaceComponent>.
+     */
+    default Optional<ParsedClassOrInterfaceComponent> asParsedClassOrInterfaceComponent() {
+        return Optional.empty();
+    }
+
+    /**
+     * @return returns Optional<ParsedMethodComponent>.
+     */
+    default Optional<ParsedMethodComponent> asParsedMethodComponent() {
+        return Optional.empty();
+    }
+
+    /**
+     * @return returns Optional<ParsedConstructorComponent>.
+     */
+    default Optional<ParsedConstructorComponent> asParsedConstructorComponent() {
+        return Optional.empty();
+    }
+
+    /**
+     * @return returns Optional<ParsedFieldComponent>.
+     */
+    default Optional<ParsedFieldComponent> asParsedFieldComponent() {
         return Optional.empty();
     }
 
