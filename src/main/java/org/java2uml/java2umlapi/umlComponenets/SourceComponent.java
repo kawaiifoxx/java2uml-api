@@ -2,9 +2,7 @@ package org.java2uml.java2umlapi.umlComponenets;
 
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * <p>
@@ -16,14 +14,19 @@ import java.util.Optional;
  */
 public class SourceComponent implements ParsedComponent {
 
-    private List<ParsedComponent> children;
+    private Map<String,ParsedComponent> children;
     private final List<ResolvedDeclaration> allParsedTypes;
-    private List<TypeRelation> allRelations;
+    private Set<TypeRelation> allRelations;
 
     public SourceComponent(List<ResolvedDeclaration> allParsedTypes) {
         this.allParsedTypes = allParsedTypes;
-        this.children = new ArrayList<>();
-        this.allRelations = new ArrayList<>();
+        this.children = new HashMap<>();
+        this.allRelations = new HashSet<>();
+
+        //TODO: FINISH THIS!
+        for (var resolvedDeclaration : allParsedTypes) {
+
+        }
     }
 
     @Override
@@ -51,20 +54,45 @@ public class SourceComponent implements ParsedComponent {
     }
 
     @Override
-    public Optional<List<ParsedComponent>> getChildren() {
+    public Optional<Map<String, ParsedComponent>> getChildren() {
         if (children == null)
             return Optional.empty();
         return Optional.of(children);
     }
 
-    private void generateTreeFromAllParsedTypes(ResolvedDeclaration resolvedDeclaration, ParsedComponent parsedComponent) {
+    @Override
+    public String getName() {
+        return "SourceComponent";
+    }
 
-        if (resolvedDeclaration.isType()) {
+    /**
+     * Generates ParsedClassOrInterfaceComponent from ResolvedDeclaration and adds it children.
+     *
+     * @param resolvedDeclaration ResolvedDeclaration to be converted to ParsedClassOrInterfaceComponent
+     * @param parsedComponent     new ParsedClassOrInterfaceComponent to be generated.
+     */
+    private void generateParsedClassOrInterfaceComponentFromResolvedDecl(ResolvedDeclaration resolvedDeclaration,
+                                                                         ParsedComponent parsedComponent) {
+
+        if (resolvedDeclaration.isType() && parsedComponent.isParsedClassOrInterfaceComponent()) {
             var typeDeclaration = resolvedDeclaration.asType().asReferenceType();
-            var classOrInterfaceComponent = parsedComponent;
-        } else if(resolvedDeclaration.isField()) {
+            var classOrInterfaceComponent = parsedComponent.asParsedClassOrInterfaceComponent().get();
+            var fieldList = typeDeclaration.getDeclaredFields();
 
-        } else if(resolvedDeclaration.isMethod()) {
+            fieldList.forEach(e ->
+                    classOrInterfaceComponent
+                            .addChild(new ParsedFieldComponent(classOrInterfaceComponent, e)));
+
+            var methodList = typeDeclaration.getDeclaredMethods();
+
+            methodList.forEach(e -> {
+                if (e.getReturnType().isNull())
+                    classOrInterfaceComponent
+                            .addChild(new ParsedConstructorComponent(classOrInterfaceComponent, e));
+                else
+                    classOrInterfaceComponent
+                            .addChild(new ParsedMethodComponent(classOrInterfaceComponent, e));
+            });
 
         }
     }

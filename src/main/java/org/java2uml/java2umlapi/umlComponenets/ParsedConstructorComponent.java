@@ -11,11 +11,13 @@ public class ParsedConstructorComponent implements ParsedComponent {
     private final ResolvedDeclaration resolvedDeclaration;
     private final ParsedComponent parent;
     private final String printableName;
+    private final String name;
 
-    public ParsedConstructorComponent(ResolvedDeclaration resolvedDeclaration, ParsedComponent parent) {
+    public ParsedConstructorComponent(ParsedComponent parent,ResolvedDeclaration resolvedDeclaration) {
         this.resolvedDeclaration = resolvedDeclaration;
         this.parent = parent;
         this.printableName = resolvedDeclaration.asMethod().getSignature();
+        this.name = resolvedDeclaration.getName();
     }
 
     @Override
@@ -44,8 +46,8 @@ public class ParsedConstructorComponent implements ParsedComponent {
     }
 
     @Override
-    public Optional<List<ParsedComponent>> getChildren() {
-        return Optional.empty();
+    public String getName() {
+        return name;
     }
 
     @Override

@@ -3,6 +3,7 @@ package org.java2uml.java2umlapi.umlComponenets;
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -113,6 +114,13 @@ public interface ParsedComponent {
      * @return returns children of current component.
      * Empty Optional is returned if current component is a leaf.
      */
-    Optional<List<ParsedComponent>> getChildren();
+    default Optional<Map<String,ParsedComponent>> getChildren() {
+        return Optional.empty();
+    }
+
+    /**
+     * @return Returns name of the component, on which it is called.
+     */
+    String getName();
 
 }

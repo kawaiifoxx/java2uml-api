@@ -2,8 +2,7 @@ package org.java2uml.java2umlapi.umlComponenets;
 
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * <p>
@@ -18,12 +17,15 @@ public class ParsedClassOrInterfaceComponent implements ParsedComponent {
 
     private  final ParsedComponent parent;
 
-    private List<ParsedComponent> children;
+    private final String name;
+
+    private Map<String,ParsedComponent> children;
 
 
     public ParsedClassOrInterfaceComponent(ResolvedDeclaration resolvedDeclaration, ParsedComponent parent) {
         this.resolvedDeclaration = resolvedDeclaration;
         this.parent = parent;
+        this.name = resolvedDeclaration.getName();
     }
 
     @Override
@@ -52,10 +54,23 @@ public class ParsedClassOrInterfaceComponent implements ParsedComponent {
     }
 
     @Override
-    public Optional<List<ParsedComponent>> getChildren() {
+    public Optional<Map<String,ParsedComponent>> getChildren() {
         if (children == null)
             return Optional.empty();
         return Optional.of(children);
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    public  void addChild(ParsedComponent parsedComponent) {
+        if (children == null) {
+            children = new HashMap<>();
+        }
+
+        children.put(parsedComponent.getName(), parsedComponent);
     }
 
     @Override

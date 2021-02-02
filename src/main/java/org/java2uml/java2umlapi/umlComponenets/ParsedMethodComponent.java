@@ -19,11 +19,13 @@ public class ParsedMethodComponent implements ParsedComponent {
     private final ParsedComponent parent;
     private final ResolvedDeclaration resolvedDeclaration;
     private final String printableName;
+    private final String name;
 
     public ParsedMethodComponent(ParsedComponent parent, ResolvedDeclaration resolvedDeclaration) {
         this.parent = parent;
         this.resolvedDeclaration = resolvedDeclaration;
         this.printableName = resolvedDeclaration.asMethod().getSignature();
+        this.name = resolvedDeclaration.getName();
     }
 
     @Override
@@ -52,8 +54,8 @@ public class ParsedMethodComponent implements ParsedComponent {
     }
 
     @Override
-    public Optional<List<ParsedComponent>> getChildren() {
-        return Optional.empty();
+    public String getName() {
+        return name;
     }
 
     @Override
