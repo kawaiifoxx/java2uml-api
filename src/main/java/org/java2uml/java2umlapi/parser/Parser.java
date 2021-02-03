@@ -1,8 +1,11 @@
 package org.java2uml.java2umlapi.parser;
 
+import com.github.javaparser.JavaParser;
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
-import com.github.javaparser.symbolsolver.model.resolution.TypeSolver;
+import com.github.javaparser.symbolsolver.JavaSymbolSolver;
+import com.github.javaparser.symbolsolver.resolution.typesolvers.CombinedTypeSolver;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.JavaParserTypeSolver;
+import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeSolver;
 import org.java2uml.java2umlapi.util.DirExplorer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,7 +16,7 @@ import java.util.List;
 
 /**
  * <p>
- * Facade for java parser library, used for parsing java source files.
+ * Facade for java parser library and java symbol solver, used for parsing java source files.
  * </p>
  *
  * @author kawaiifox.
@@ -22,10 +25,11 @@ import java.util.List;
 public class Parser {
 
     private final DirExplorer dirExplorer;
+    private JavaParser javaParser;
 
-    @Autowired
-    public Parser(DirExplorer dirExplorer) {
+    public Parser(@Autowired DirExplorer dirExplorer, @Autowired JavaParser javaParser) {
         this.dirExplorer = dirExplorer;
+        this.javaParser = javaParser;
     }
 
     /**
@@ -54,9 +58,15 @@ public class Parser {
      * @return returns list of all reference types.
      */
     public List<ResolvedDeclaration> getAllResolvedDeclarations(String PATH) {
+        CombinedTypeSolver typeSolver = new CombinedTypeSolver();
+        typeSolver.add(new JavaParserTypeSolver(PATH));
+        typeSolver.add(new ReflectionTypeSolver());
+
+        javaParser.getParserConfiguration()
+        .setSymbolResolver(new JavaSymbolSolver(typeSolver));
 
         var classList = parseClasses(PATH);
-        TypeSolver typeSolver = new JavaParserTypeSolver(PATH);
+
         List<ResolvedDeclaration> resolvedDeclarationList = new ArrayList<>();
 
         classList.forEach(k -> resolvedDeclarationList.add(typeSolver.solveType(k)));

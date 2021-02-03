@@ -8,7 +8,7 @@ package org.java2uml.java2umlapi.util.umlSymbols;
  *
  * @author kawaiifox
  */
-public enum TypeDeclarationSymbols {
+public enum TypeDeclarationSymbol {
 
     CLASS("class"),
     ABSTRACT("abstract"),
@@ -16,9 +16,9 @@ public enum TypeDeclarationSymbols {
     ENUM("enum"),
     ANNOTATION("annotation");
 
-    private String printable;
+    private final String printable;
 
-    TypeDeclarationSymbols(String printable) {
+    TypeDeclarationSymbol(String printable) {
         this.printable = printable;
     }
 
@@ -31,8 +31,8 @@ public enum TypeDeclarationSymbols {
      *
      * @param printable name of the parameter for generic.
      */
-    public void parametrizeOn(String printable) {
-        this.printable = this.printable + " <" + printable + ">";
+    public String parametrizeOn(String printable) {
+        return  this.printable + " <" + printable + ">";
     }
 
     @Override

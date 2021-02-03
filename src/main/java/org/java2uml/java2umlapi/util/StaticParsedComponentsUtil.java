@@ -16,23 +16,34 @@ import org.jetbrains.annotations.NotNull;
 public class StaticParsedComponentsUtil {
     @NotNull
     public static VisibilityModifierSymbol getVisibilityModifierSymbol(ResolvedDeclaration resolvedDeclaration) {
-        AccessSpecifier accessSpecifier = resolvedDeclaration.asMethod().accessSpecifier();
-        VisibilityModifierSymbol visibilityModifier;
+        AccessSpecifier accessSpecifier = null;
 
-        switch (accessSpecifier.toString()) {
-            case "public":
-                visibilityModifier = VisibilityModifierSymbol.PUBLIC;
-                break;
-            case "private":
-                visibilityModifier = VisibilityModifierSymbol.PRIVATE;
-                break;
-            case "protected":
-                visibilityModifier = VisibilityModifierSymbol.PROTECTED;
-                break;
-            default:
-                visibilityModifier = VisibilityModifierSymbol.PKG_PRIVATE;
+        if (resolvedDeclaration.isField()) {
+            accessSpecifier = resolvedDeclaration.asField().accessSpecifier();
+        } else if (resolvedDeclaration.isMethod()) {
+            accessSpecifier = resolvedDeclaration.asMethod().accessSpecifier();
         }
-        return visibilityModifier;
+
+        if (accessSpecifier != null) {
+            VisibilityModifierSymbol visibilityModifier;
+
+            switch (accessSpecifier.toString()) {
+                case "public":
+                    visibilityModifier = VisibilityModifierSymbol.PUBLIC;
+                    break;
+                case "private":
+                    visibilityModifier = VisibilityModifierSymbol.PRIVATE;
+                    break;
+                case "protected":
+                    visibilityModifier = VisibilityModifierSymbol.PROTECTED;
+                    break;
+                default:
+                    visibilityModifier = VisibilityModifierSymbol.PKG_PRIVATE;
+            }
+            return visibilityModifier;
+        }
+
+        return VisibilityModifierSymbol.PKG_PRIVATE;
     }
 
     public static String getClassOfField(ResolvedDeclaration resolvedDeclaration) {

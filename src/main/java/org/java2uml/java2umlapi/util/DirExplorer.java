@@ -1,12 +1,10 @@
 package org.java2uml.java2umlapi.util;
 
 
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Explores directory recursively, looks for interested files to
@@ -43,8 +41,8 @@ public class DirExplorer {
         boolean interested(int level, String path, File file);
     }
 
-    private FileHandler fileHandler;
-    private Filter filter;
+    private final FileHandler fileHandler;
+    private final Filter filter;
 
     public DirExplorer(Filter filter, FileHandler fileHandler) {
         this.filter = filter;

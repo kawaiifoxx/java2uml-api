@@ -1,6 +1,7 @@
 package org.java2uml.java2umlapi.umlComponenets;
 
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
+import org.java2uml.java2umlapi.util.umlSymbols.StartEnd;
 
 import java.util.*;
 
@@ -19,6 +20,8 @@ public class SourceComponent implements ParsedComponent {
     private final Map<String, ParsedComponent> children;
     private final List<ResolvedDeclaration> allParsedTypes;
     private final Set<TypeRelation> allRelations;
+    private String genratedUMLClasses;
+    private String genratedUMLTypeRelations;
 
     public SourceComponent(List<ResolvedDeclaration> allParsedTypes) {
         this.allParsedTypes = allParsedTypes;
@@ -31,7 +34,7 @@ public class SourceComponent implements ParsedComponent {
             generateParsedClassOrInterfaceComponentFromResolvedDecl(resolvedDeclaration, parsedClassOrInterfaceComponent);
         }
 
-        children.forEach((k,v) -> generateTypeRelations(v));
+        children.forEach((k, v) -> generateTypeRelations(v));
 
     }
 
@@ -91,12 +94,13 @@ public class SourceComponent implements ParsedComponent {
                             .addChild(new ParsedFieldComponent(classOrInterfaceComponent, e)));
 
             var methodList = typeDeclaration.getDeclaredMethods();
+            var constructorList = typeDeclaration.getConstructors();
+
+            constructorList.forEach(e ->
+                    classOrInterfaceComponent
+                            .addChild(new ParsedConstructorComponent(classOrInterfaceComponent, e)));
 
             methodList.forEach(e -> {
-                if (e.getReturnType().isNull())
-                    classOrInterfaceComponent
-                            .addChild(new ParsedConstructorComponent(classOrInterfaceComponent, e));
-                else
                     classOrInterfaceComponent
                             .addChild(new ParsedMethodComponent(classOrInterfaceComponent, e));
             });
@@ -114,7 +118,8 @@ public class SourceComponent implements ParsedComponent {
 
     private void generateDependencyRelations(ParsedComponent from) {
 
-        @SuppressWarnings("OptionalGetWithoutIsPresent") var resolvedTypeDeclaration = from.getResolvedDeclaration().get().asType();
+        //noinspection OptionalGetWithoutIsPresent
+        var resolvedTypeDeclaration = from.getResolvedDeclaration().get().asType();
 
         var dependencies = resolvedTypeDeclaration.asReferenceType().getDeclaredMethods();
 
@@ -173,6 +178,35 @@ public class SourceComponent implements ParsedComponent {
 
     @Override
     public String toString() {
-        return "to be implemented";
+
+        if (genratedUMLClasses == null)
+            generateUMLClasses();
+
+        if (genratedUMLTypeRelations == null) {
+            generateUMLTypeRelations();
+        }
+
+        return StartEnd.START.toString()
+                + "\n" + genratedUMLClasses
+                + "\n" + genratedUMLTypeRelations
+                + "\n" + StartEnd.END;
+    }
+
+    private void generateUMLTypeRelations() {
+        StringBuilder generatedUMLTypesRelationsBuilder = new StringBuilder();
+
+        allRelations.forEach(e ->
+                generatedUMLTypesRelationsBuilder.append(e).append("\n"));
+
+        genratedUMLTypeRelations = generatedUMLTypesRelationsBuilder.toString();
+    }
+
+    private void generateUMLClasses() {
+        StringBuilder generatedUMLClassesBuilder = new StringBuilder();
+
+        children.forEach((k, v) ->
+                generatedUMLClassesBuilder.append(v).append("\n"));
+
+        genratedUMLClasses = generatedUMLClassesBuilder.toString();
     }
 }

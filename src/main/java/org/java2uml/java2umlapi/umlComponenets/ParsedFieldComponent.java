@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.java2uml.java2umlapi.util.StaticParsedComponentsUtil.getClassOfField;
+import static org.java2uml.java2umlapi.util.StaticParsedComponentsUtil.getVisibilityModifierSymbol;
 
 /**
  * <p>
@@ -61,7 +62,7 @@ public class ParsedFieldComponent implements ParsedComponent {
     @Override
     public String toString() {
 
-        return getClassOfField(resolvedDeclaration) + " "
+        return getVisibilityModifierSymbol(resolvedDeclaration) + " " + getClassOfField(resolvedDeclaration) + " "
                 + (resolvedDeclaration.asField().isStatic() ? UMLModifier.STATIC : "")
                 + " " + printableName;
     }
