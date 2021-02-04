@@ -31,7 +31,7 @@ class SourceComponentTest {
 
     @SuppressWarnings("deprecation")
     @Test
-    @DisplayName("When running toUML, should generate a valid plant uml syntax.")
+    @DisplayName("When executing toUML, should generate a valid plant uml syntax.")
     public void testToUML() throws IOException {
         String source = sourceComponent.toUML();
         final ByteArrayOutputStream os;
