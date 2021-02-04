@@ -1,14 +1,16 @@
 package org.java2uml.java2umlapi.parser;
 
+import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.nio.file.Path;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -16,60 +18,37 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ParserTest {
 
     @Autowired
-    private Parser jpf;
-    private Set<String> expectedSet;
-    private static final String SINGLE_FILE_PATH = "src/test/testSources/JavaParserFacadeTests/testParserClass/SingleFileTest/TestClass.java";
-    private static final String MULTIPLE_FILES_PATH = "src/test/testSources/JavaParserFacadeTests/testParserClass/MultipleFileTest/multipleFilesTest";
+    private Parser parser;
+    private List<ResolvedDeclaration> resolvedDeclarations;
+    private Set<String> expectedClassNames;
+    private static final String PROJECT_TEST = "src/test/testSources/JavaParserFacadeTests/testParserClass/ProjectTest/thymeleaf-demo-thymeleaf-demo";
+
 
     @BeforeEach
     void setUp() {
-        expectedSet = new HashSet<>();
-        expectedSet.add("com.shreyansh.ex1.TestClass");
-        expectedSet.add("com.shreyansh.ex1.TestClass.innerClass");
-        expectedSet.add("com.shreyansh.ex1.TestClass.innerClass.innerInnerInterface");
-        expectedSet.add("com.shreyansh.ex1.TestClass.innerClass2");
-        expectedSet.add("com.shreyansh.ex1.TestClass.innerClass2.innerInnerAbstractClass");
+        var sourceComponent = parser.parse(Path.of(PROJECT_TEST));
 
+        expectedClassNames = new HashSet<>();
+        expectedClassNames.add("com.shreyansh.springboot.thymeleafdemo.controller.EmployeeController");
+        expectedClassNames.add("com.shreyansh.springboot.thymeleafdemo.dao.EmployeeRepository");
+        expectedClassNames.add("com.shreyansh.springboot.thymeleafdemo.entity.Employee");
+        expectedClassNames.add("com.shreyansh.springboot.thymeleafdemo.ThymeleafDemoApplication");
+        expectedClassNames.add("com.shreyansh.springboot.thymeleafdemo.service.EmployeeService");
+        expectedClassNames.add("com.shreyansh.springboot.thymeleafdemo.service.EmployeeServiceImpl");
+        expectedClassNames.add("MavenWrapperDownloader");
+        expectedClassNames.add("com.shreyansh.springboot.thymeleafdemo.ThymeleafDemoApplicationTests");
+
+
+        resolvedDeclarations = sourceComponent.getAllParsedTypes();
     }
 
     @Test
-    void testParseClassesWithSingleFile() {
-        var resultList = jpf.parseClasses(SINGLE_FILE_PATH);
+    @DisplayName("When parser parses code, should give fullyQualified classNames.")
+    void testParser() {
+        Set<String> actualClassNames = new HashSet<>();
 
-        assertEquals(expectedSet, new HashSet<>(resultList), "In single file, JavaParserFacade was not able to collect all the classes properly.");
-    }
+        resolvedDeclarations.forEach(resolvedDeclaration -> actualClassNames.add(resolvedDeclaration.asType().getQualifiedName()));
 
-    @Test
-    void testParseClassesWithMultipleFiles() {
-        addMultipleClassOrInterfaceDeclarationToExpectedSet();
-        var resultList = jpf.parseClasses(MULTIPLE_FILES_PATH);
-
-        assertEquals(expectedSet, new HashSet<>(resultList), "In Multiple files, JavaParserFacade was not able to collect all the classes properly.");
-    }
-
-    @Test
-    @DisplayName("when solving reference types, expect all reference types to be resolved and added to the list.")
-    void testGetAllResolvedReferenceTypes() {
-        addMultipleClassOrInterfaceDeclarationToExpectedSet();
-        var resultList = jpf.getAllResolvedDeclarations(MULTIPLE_FILES_PATH);
-
-        assertEquals(expectedSet, resultList.stream()
-                .map(resolvedDeclaration -> {
-                    if (resolvedDeclaration.isType())
-                        return resolvedDeclaration.asType().getQualifiedName();
-                    else
-                        return null;
-                })
-                .collect(Collectors.toSet()), "unable to solve all references correctly");
-    }
-
-    private void addMultipleClassOrInterfaceDeclarationToExpectedSet() {
-        expectedSet.add("com.shreyansh.ex1.GetComments");
-        expectedSet.add("com.shreyansh.ex1.GetComments.CommentReportEntry");
-        expectedSet.add("com.shreyansh.ex1.MethodNameCollector");
-        expectedSet.add("com.shreyansh.ex1.MethodNamePrinter");
-        expectedSet.add("com.shreyansh.ex1.ModifyingVisitorComplete");
-        expectedSet.add("com.shreyansh.ex1.ModifyingVisitorComplete.IntegerLiteralModifier");
-        expectedSet.add("com.shreyansh.ex1.SimpleVisitor");
+        assertEquals(expectedClassNames, actualClassNames, "expected classes names did not match actual class names.");
     }
 }

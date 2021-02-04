@@ -45,6 +45,13 @@ public interface ParsedComponent {
     }
 
     /**
+     * @return returns true if the component is a ParsedExternalAncestor.
+     */
+    default boolean isParsedExternalAncestor() {
+        return false;
+    }
+
+    /**
      * @return returns true if the component is a ParsedMethodComponent.
      */
     default boolean isParsedMethodComponent() {
@@ -114,7 +121,7 @@ public interface ParsedComponent {
      * @return returns children of current component.
      * Empty Optional is returned if current component is a leaf.
      */
-    default Optional<Map<String,ParsedComponent>> getChildren() {
+    default Optional<Map<String, ParsedComponent>> getChildren() {
         return Optional.empty();
     }
 
@@ -122,5 +129,10 @@ public interface ParsedComponent {
      * @return Returns name of the component, on which it is called.
      */
     String getName();
+
+    /**
+     * @return Returns generated UML code.
+     */
+    String toUML();
 
 }

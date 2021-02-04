@@ -17,7 +17,7 @@ import java.util.List;
  * @see com.github.javaparser.ast.visitor.VoidVisitor
  */
 @Component
-public final class ClassOrInterfaceCollector extends VoidVisitorAdapter<List<String>> {
+public final class ClassOrInterfaceCollector extends VoidVisitorAdapter<List<ClassOrInterfaceDeclaration>> {
     /**
      * <p>
      * visits the whole ast in search of ClassOrInterfaceDeclarations.
@@ -27,31 +27,8 @@ public final class ClassOrInterfaceCollector extends VoidVisitorAdapter<List<Str
      * @param arg - state to be stored, in this case a Map<String, ClassOrInterfaceDeclaration>
      */
     @Override
-    public void visit(ClassOrInterfaceDeclaration n, List<String> arg) {
+    public void visit(ClassOrInterfaceDeclaration n, List<ClassOrInterfaceDeclaration> arg) {
         super.visit(n, arg);
-        arg.add(getFullyQualifiedName(n));
-    }
-
-
-    /**
-     * <p>
-     * Traverses up the ast for retrieving fully qualified name of provided class.
-     * </p>
-     *
-     * @param n - Node being traversed currently.
-     * @return - returns fully qualified name of a class or interface.
-     */
-    private String getFullyQualifiedName(Node n) {
-        if (n instanceof CompilationUnit) {
-            return ((CompilationUnit) n).getPackageDeclaration().get().getNameAsString();
-        }
-
-        if (n.getParentNode().isEmpty())
-            return "";
-
-        if (n instanceof ClassOrInterfaceDeclaration)
-            return getFullyQualifiedName(n.getParentNode().get()) + "." + ((ClassOrInterfaceDeclaration) n).getNameAsString();
-
-        return getFullyQualifiedName(n.getParentNode().get());
+        arg.add(n);
     }
 }

@@ -25,4 +25,17 @@ public enum VisibilityModifierSymbol {
     public String toString() {
         return printable;
     }
+
+    public static VisibilityModifierSymbol of(String accessModifier) {
+        switch (accessModifier) {
+            case "public" :
+                return PUBLIC;
+            case "private":
+                return PRIVATE;
+            case "protected":
+                return PROTECTED;
+            default:
+                return PKG_PRIVATE;
+        }
+    }
 }
