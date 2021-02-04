@@ -1,6 +1,8 @@
 package org.java2uml.java2umlapi.umlComponenets;
 
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
+import com.github.javaparser.resolution.declarations.ResolvedMethodDeclaration;
+import com.github.javaparser.resolution.declarations.ResolvedParameterDeclaration;
 import org.java2uml.java2umlapi.util.umlSymbols.StartEnd;
 
 import java.util.*;
@@ -18,15 +20,17 @@ import static org.java2uml.java2umlapi.util.umlSymbols.RelationsSymbol.*;
 public class SourceComponent implements ParsedComponent {
 
     private final Map<String, ParsedComponent> children;
+    private final Map<String, ParsedComponent> externalComponents;
     private final List<ResolvedDeclaration> allParsedTypes;
     private final Set<TypeRelation> allRelations;
-    private String genratedUMLClasses;
-    private String genratedUMLTypeRelations;
+    private String generatedUMLClasses;
+    private String generatedUMLTypeRelations;
 
     public SourceComponent(List<ResolvedDeclaration> allParsedTypes) {
         this.allParsedTypes = allParsedTypes;
         this.children = new HashMap<>();
         this.allRelations = new HashSet<>();
+        this.externalComponents = new HashMap<>();
 
         for (var resolvedDeclaration : allParsedTypes) {
             ParsedComponent parsedClassOrInterfaceComponent = new ParsedClassOrInterfaceComponent(resolvedDeclaration, this);
@@ -83,27 +87,24 @@ public class SourceComponent implements ParsedComponent {
     private void generateParsedClassOrInterfaceComponentFromResolvedDecl(ResolvedDeclaration resolvedDeclaration,
                                                                          ParsedComponent parsedComponent) {
 
-        if (resolvedDeclaration.isType() && parsedComponent.isParsedClassOrInterfaceComponent()) {
+        if ((resolvedDeclaration.asType().isInterface() || resolvedDeclaration.asType().isClass())
+                && parsedComponent.isParsedClassOrInterfaceComponent()) {
             var typeDeclaration = resolvedDeclaration.asType().asReferenceType();
             //noinspection OptionalGetWithoutIsPresent
             var classOrInterfaceComponent = parsedComponent.asParsedClassOrInterfaceComponent().get();
             var fieldList = typeDeclaration.getDeclaredFields();
 
-            fieldList.forEach(e ->
-                    classOrInterfaceComponent
-                            .addChild(new ParsedFieldComponent(classOrInterfaceComponent, e)));
+            fieldList.forEach(e -> classOrInterfaceComponent
+                    .addChild(new ParsedFieldComponent(classOrInterfaceComponent, e)));
 
-            var methodList = typeDeclaration.getDeclaredMethods();
+            Set<ResolvedMethodDeclaration> methodList = typeDeclaration.getDeclaredMethods();
             var constructorList = typeDeclaration.getConstructors();
 
-            constructorList.forEach(e ->
-                    classOrInterfaceComponent
-                            .addChild(new ParsedConstructorComponent(classOrInterfaceComponent, e)));
+            constructorList.forEach(e -> classOrInterfaceComponent
+                    .addChild(new ParsedConstructorComponent(classOrInterfaceComponent, e)));
 
-            methodList.forEach(e -> {
-                    classOrInterfaceComponent
-                            .addChild(new ParsedMethodComponent(classOrInterfaceComponent, e));
-            });
+            methodList.forEach(e -> classOrInterfaceComponent
+                    .addChild(new ParsedMethodComponent(classOrInterfaceComponent, e)));
 
         }
     }
@@ -124,10 +125,14 @@ public class SourceComponent implements ParsedComponent {
         var dependencies = resolvedTypeDeclaration.asReferenceType().getDeclaredMethods();
 
         dependencies.forEach(dependency -> {
-            var parameterList = dependency.getTypeParameters();
+            List<ResolvedParameterDeclaration> parameterList = new ArrayList<>();
+
+            for (int i = 0; i < dependency.getNumberOfParams(); i++) {
+                parameterList.add(dependency.getParam(i));
+            }
 
             parameterList.forEach(parameter -> {
-                var typeOfParameter = parameter.asParameter().getType();
+                var typeOfParameter = parameter.getType();
 
                 if (typeOfParameter.isReferenceType()) {
                     var to = children
@@ -150,12 +155,22 @@ public class SourceComponent implements ParsedComponent {
         var aggregations = resolvedTypeDeclaration.asReferenceType().getDeclaredFields();
 
         aggregations.forEach(aggregation -> {
-            var declaringType = aggregation.declaringType().asReferenceType();
-            if (declaringType.isInterface() || declaringType.isClass() || declaringType.isGeneric()) {
+            var declaringType = aggregation.getType();
+            if (declaringType.isReferenceType()) {
+                var declaringReferenceType = declaringType.asReferenceType();
                 var to = children
-                        .get(declaringType
+                        .get(declaringReferenceType
                                 .getQualifiedName());
-                allRelations.add(new TypeRelation(from, to, AGGREGATION));
+
+                if (to == null && !declaringReferenceType.getQualifiedName().startsWith("java.lang")) {
+                    if (declaringReferenceType.getTypeDeclaration().isPresent()) {
+                        to = new ParsedExternalComponent(declaringReferenceType.getTypeDeclaration().get());
+                        externalComponents.put(to.getName(), to);
+                    }
+                }
+
+                if (to != null)
+                    allRelations.add(new TypeRelation(from, to, AGGREGATION));
             }
         });
     }
@@ -168,27 +183,41 @@ public class SourceComponent implements ParsedComponent {
         var ancestors = resolvedTypeDeclaration.asReferenceType().getAncestors();
 
         ancestors.forEach(ancestor -> {
-            var to = children
-                    .get(ancestor
-                            .getQualifiedName());
 
-            allRelations.add(new TypeRelation(from, to, EXTENSION));
+            String ancestorName = ancestor.getQualifiedName();
+            var isInChildren = children.containsKey(ancestorName);
+            var isInChildrenOrInExternal = isInChildren
+                    || externalComponents.containsKey(ancestorName);
+
+            if (!isInChildrenOrInExternal && !ancestorName.startsWith("java.lang.Object")
+                    && ancestor.getTypeDeclaration().isPresent()) {
+                externalComponents.put(ancestorName, new ParsedExternalComponent(ancestor.getTypeDeclaration().get()));
+            }
+
+            ParsedComponent to;
+            if (isInChildren) {
+                to = children.get(ancestorName);
+            } else {
+                to = externalComponents.get(ancestorName);
+            }
+
+            if (to != null)
+                allRelations.add(new TypeRelation(from, to, EXTENSION));
         });
     }
 
     @Override
-    public String toString() {
-
-        if (genratedUMLClasses == null)
+    public String toUML() {
+        if (generatedUMLClasses == null)
             generateUMLClasses();
 
-        if (genratedUMLTypeRelations == null) {
+        if (generatedUMLTypeRelations == null) {
             generateUMLTypeRelations();
         }
 
         return StartEnd.START.toString()
-                + "\n" + genratedUMLClasses
-                + "\n" + genratedUMLTypeRelations
+                + "\n" + generatedUMLClasses
+                + "\n" + generatedUMLTypeRelations
                 + "\n" + StartEnd.END;
     }
 
@@ -196,17 +225,27 @@ public class SourceComponent implements ParsedComponent {
         StringBuilder generatedUMLTypesRelationsBuilder = new StringBuilder();
 
         allRelations.forEach(e ->
-                generatedUMLTypesRelationsBuilder.append(e).append("\n"));
+                generatedUMLTypesRelationsBuilder.append(e.toUML()).append("\n"));
 
-        genratedUMLTypeRelations = generatedUMLTypesRelationsBuilder.toString();
+        generatedUMLTypeRelations = generatedUMLTypesRelationsBuilder.toString();
     }
 
     private void generateUMLClasses() {
         StringBuilder generatedUMLClassesBuilder = new StringBuilder();
 
         children.forEach((k, v) ->
-                generatedUMLClassesBuilder.append(v).append("\n"));
+                generatedUMLClassesBuilder.append(v.toUML()).append("\n"));
+        externalComponents.forEach((k, v) ->
+                generatedUMLClassesBuilder.append(v.toUML()).append("\n"));
 
-        genratedUMLClasses = generatedUMLClassesBuilder.toString();
+        generatedUMLClasses = generatedUMLClassesBuilder.toString();
+    }
+
+    @Override
+    public String toString() {
+        return "SourceComponent{" +
+                ", genratedUMLClasses='" + generatedUMLClasses + '\'' +
+                ", genratedUMLTypeRelations='" + generatedUMLTypeRelations + '\'' +
+                '}';
     }
 }

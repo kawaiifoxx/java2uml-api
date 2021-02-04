@@ -1,5 +1,8 @@
 package org.java2uml.java2umlapi.util.umlSymbols;
 
+import com.github.javaparser.resolution.declarations.ResolvedTypeDeclaration;
+import org.jetbrains.annotations.NotNull;
+
 /**
  * <p>
  * Provides necessary TypeDeclarationSymbols for plant uml syntax generation,
@@ -8,35 +11,54 @@ package org.java2uml.java2umlapi.util.umlSymbols;
  *
  * @author kawaiifox
  */
-public enum TypeDeclarationSymbol {
-
-    CLASS("class"),
-    ABSTRACT("abstract"),
-    INTERFACE("interface"),
-    ENUM("enum"),
-    ANNOTATION("annotation");
-
-    private final String printable;
-
-    TypeDeclarationSymbol(String printable) {
-        this.printable = printable;
-    }
-
+public class TypeDeclarationSymbol {
     /**
      * Sets printable to provided parameter.
      * <p>
      * After passing this method toString should return,
      * for e.g. if toString is called on CLASS
-     * then it should return "class <{printable}>"
+     * then it should return "class <{typeParamList}>"
      *
-     * @param printable name of the parameter for generic.
+     * @param typeParamList   name of the parameter for generic.
+     * @param typeDeclaration name of type declaration like class, interface, annotation, enum.
      */
-    public String parametrizeOn(String printable) {
-        return  this.printable + " <" + printable + ">";
+    private static String parametrizeOn(String typeParamList, String typeDeclaration, String typeName) {
+        return typeDeclaration + " " + typeName + " <" + typeParamList + ">";
     }
 
-    @Override
-    public String toString() {
-        return printable;
+    public static String getTypeDeclarationSymbol(ResolvedTypeDeclaration resolvedDeclaration) {
+        var typeDeclaration = "class " + resolvedDeclaration.getQualifiedName();
+
+        if (resolvedDeclaration.isClass()) {
+            typeDeclaration = "class " + resolvedDeclaration.getQualifiedName();
+            if (resolvedDeclaration.asReferenceType().isGeneric()) {
+                typeDeclaration = "class";
+                typeDeclaration = parametrizeOn(getTypeParamsString(resolvedDeclaration).toString().trim()
+                        , typeDeclaration, resolvedDeclaration.getQualifiedName());
+            }
+        } else if (resolvedDeclaration.isInterface()) {
+            typeDeclaration = "interface " + resolvedDeclaration.getQualifiedName();
+            if (resolvedDeclaration.asReferenceType().isGeneric()) {
+                typeDeclaration = "interface";
+                typeDeclaration = parametrizeOn(getTypeParamsString(resolvedDeclaration).toString().trim()
+                        , typeDeclaration, resolvedDeclaration.getQualifiedName());
+            }
+        }
+
+        return typeDeclaration;
+    }
+
+    @NotNull
+    private static StringBuilder getTypeParamsString(ResolvedTypeDeclaration resolvedDeclaration) {
+        var typeParams = resolvedDeclaration
+                .asReferenceType()
+                .getTypeParameters();
+
+        StringBuilder typeParamsString = new StringBuilder();
+
+        typeParams.forEach(typeParam ->
+                typeParamsString.append(typeParam.getName()).append(", "));
+        typeParamsString.deleteCharAt(typeParamsString.length() - 2);
+        return typeParamsString;
     }
 }

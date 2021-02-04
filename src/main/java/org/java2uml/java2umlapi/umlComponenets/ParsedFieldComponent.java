@@ -1,13 +1,11 @@
 package org.java2uml.java2umlapi.umlComponenets;
 
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
+import com.github.javaparser.resolution.declarations.ResolvedFieldDeclaration;
 import org.java2uml.java2umlapi.util.umlSymbols.UMLModifier;
+import org.java2uml.java2umlapi.util.umlSymbols.VisibilityModifierSymbol;
 
-import java.util.List;
 import java.util.Optional;
-
-import static org.java2uml.java2umlapi.util.StaticParsedComponentsUtil.getClassOfField;
-import static org.java2uml.java2umlapi.util.StaticParsedComponentsUtil.getVisibilityModifierSymbol;
 
 /**
  * <p>
@@ -18,11 +16,11 @@ import static org.java2uml.java2umlapi.util.StaticParsedComponentsUtil.getVisibi
  */
 public class ParsedFieldComponent implements ParsedComponent {
     private final ParsedComponent parent;
-    private final ResolvedDeclaration resolvedDeclaration;
+    private final ResolvedFieldDeclaration resolvedDeclaration;
     private final String printableName;
     private final String name;
 
-    public ParsedFieldComponent(ParsedComponent parent, ResolvedDeclaration resolvedDeclaration) {
+    public ParsedFieldComponent(ParsedComponent parent, ResolvedFieldDeclaration resolvedDeclaration) {
         this.parent = parent;
         this.resolvedDeclaration = resolvedDeclaration;
         this.printableName = resolvedDeclaration.asField().getName();
@@ -59,11 +57,28 @@ public class ParsedFieldComponent implements ParsedComponent {
         return name;
     }
 
+    public String getClassOfField() {
+        if (resolvedDeclaration.getType().isReferenceType()) {
+            var list = resolvedDeclaration.getType().asReferenceType().getQualifiedName().split("\\.");
+            return list[list.length - 1];
+        }
+
+        return resolvedDeclaration.getType().asPrimitive().name()
+                + (resolvedDeclaration.getType().asPrimitive().isArray() ? "[]" : "");
+    }
+
+    @Override
+    public String toUML() {
+        return VisibilityModifierSymbol.of(resolvedDeclaration.accessSpecifier().asString()) + " " + getClassOfField() + " "
+                + (resolvedDeclaration.isStatic() ? UMLModifier.STATIC : "")
+                + " " + printableName;
+    }
+
     @Override
     public String toString() {
-
-        return getVisibilityModifierSymbol(resolvedDeclaration) + " " + getClassOfField(resolvedDeclaration) + " "
-                + (resolvedDeclaration.asField().isStatic() ? UMLModifier.STATIC : "")
-                + " " + printableName;
+        return "ParsedFieldComponent{" +
+                ", printableName='" + printableName + '\'' +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

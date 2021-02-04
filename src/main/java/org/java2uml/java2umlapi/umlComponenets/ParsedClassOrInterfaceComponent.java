@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static org.java2uml.java2umlapi.util.umlSymbols.TypeDeclarationSymbol.getTypeDeclarationSymbol;
+
 /**
  * <p>
  * A composite Component, containing other classes or interfaces, or methods or fields as children.
@@ -37,7 +39,7 @@ public class ParsedClassOrInterfaceComponent implements ParsedComponent {
     public ParsedClassOrInterfaceComponent(ResolvedDeclaration resolvedDeclaration, ParsedComponent parent) {
         this.resolvedDeclaration = resolvedDeclaration;
         this.parent = parent;
-        this.name = resolvedDeclaration.asType().asReferenceType().getQualifiedName();
+        this.name = resolvedDeclaration.asType().getQualifiedName();
     }
 
     @Override
@@ -90,7 +92,7 @@ public class ParsedClassOrInterfaceComponent implements ParsedComponent {
 
         children.forEach((k, v) -> {
             if (v.isParsedMethodComponent()) {
-                generatedSignatures.append(v).append("\n");
+                generatedSignatures.append(v.toUML()).append("\n");
             }
         });
 
@@ -102,7 +104,7 @@ public class ParsedClassOrInterfaceComponent implements ParsedComponent {
 
         children.forEach((k, v) -> {
             if (v.isParsedConstructorComponent()) {
-                generatedConstructorSignatures.append(v).append("\n");
+                generatedConstructorSignatures.append(v.toUML()).append("\n");
             }
         });
 
@@ -114,7 +116,7 @@ public class ParsedClassOrInterfaceComponent implements ParsedComponent {
 
         children.forEach((k, v) -> {
             if (v.isParseFieldComponent()) {
-                generatedFields.append(v).append("\n");
+                generatedFields.append(v.toUML()).append("\n");
             }
         });
 
@@ -122,7 +124,7 @@ public class ParsedClassOrInterfaceComponent implements ParsedComponent {
     }
 
     @Override
-    public String toString() {
+    public String toUML() {
         if (fieldsDeclarations == null) {
             generateUMLFieldDeclarations();
         }
@@ -136,30 +138,14 @@ public class ParsedClassOrInterfaceComponent implements ParsedComponent {
         }
 
         if (typeDeclaration == null) {
-            getTypeDeclarationSymbol();
+            typeDeclaration = getTypeDeclarationSymbol(resolvedDeclaration.asType());
         }
 
-        return typeDeclaration + " " + name + " {\n"
+        return typeDeclaration + " {\n"
                 + fieldsDeclarations
                 + constructorSignatures
                 + methodSignatures
-                + "\n}";
-    }
-
-    private void getTypeDeclarationSymbol() {
-        typeDeclaration = TypeDeclarationSymbol.CLASS.toString();
-
-        if (resolvedDeclaration.asType().isClass()) {
-            typeDeclaration = TypeDeclarationSymbol.CLASS.toString();
-            if (resolvedDeclaration.asType().asReferenceType().isGeneric()) {
-                typeDeclaration = TypeDeclarationSymbol.CLASS.parametrizeOn(getTypeParamsString().toString().trim());
-            }
-        } else if (resolvedDeclaration.asType().isInterface()) {
-            typeDeclaration = TypeDeclarationSymbol.INTERFACE.toString();
-            if (resolvedDeclaration.asType().asReferenceType().isGeneric()) {
-                typeDeclaration = TypeDeclarationSymbol.INTERFACE.parametrizeOn(getTypeParamsString().toString().trim());
-            }
-        }
+                + "}";
     }
 
     @NotNull
@@ -174,5 +160,16 @@ public class ParsedClassOrInterfaceComponent implements ParsedComponent {
         typeParams.forEach(typeParam ->
                 typeParamsString.append(typeParam.getName()).append(" "));
         return typeParamsString;
+    }
+
+    @Override
+    public String toString() {
+        return "ParsedClassOrInterfaceComponent{" +
+                "  name='" + name + '\'' +
+                ", methodSignatures='" + methodSignatures + '\'' +
+                ", constructorSignatures='" + constructorSignatures + '\'' +
+                ", fieldsDeclarations='" + fieldsDeclarations + '\'' +
+                ", typeDeclaration='" + typeDeclaration + '\'' +
+                '}';
     }
 }

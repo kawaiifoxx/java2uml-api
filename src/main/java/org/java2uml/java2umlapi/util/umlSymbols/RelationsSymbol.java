@@ -9,7 +9,7 @@ package org.java2uml.java2umlapi.util.umlSymbols;
  * @author kawaiifox
  */
 public enum RelationsSymbol {
-    EXTENSION("<|--"),
+    EXTENSION("--|>"),
     COMPOSITION("*--"),
     AGGREGATION("o--"),
     ASSOCIATION("--"),
