@@ -1,6 +1,5 @@
 package org.java2uml.java2umlapi.umlComponenets;
 
-import org.java2uml.java2umlapi.util.umlSymbols.RelationsSymbol;
 
 /**
  * <p>
@@ -12,9 +11,9 @@ import org.java2uml.java2umlapi.util.umlSymbols.RelationsSymbol;
 public class TypeRelation {
     private final ParsedComponent from;
     private final ParsedComponent to;
-    private final RelationsSymbol relationsType;
+    private final String relationsType;
 
-    public TypeRelation(ParsedComponent from, ParsedComponent to, RelationsSymbol relationsType) {
+    public TypeRelation(ParsedComponent from, ParsedComponent to, String relationsType) {
 
         var isFromParsedClassOrInterfaceOrExtAncestor = from.isParsedClassOrInterfaceComponent() || from.isParsedExternalAncestor();
         var isToParsedClassOrInterfaceOrExtAncestor = to.isParsedClassOrInterfaceComponent() || to.isParsedExternalAncestor();
@@ -28,17 +27,17 @@ public class TypeRelation {
         this.relationsType = relationsType;
     }
 
-    public String toUML() {
+    public java.lang.String toUML() {
         if (from.getResolvedDeclaration().isEmpty() || to.getResolvedDeclaration().isEmpty()) {
             throw new RuntimeException("Unable to get ResolvedDeclaration, because from or to returned empty Optional.");
         }
 
-        String fromClassDecl = from
+        java.lang.String fromClassDecl = from
                 .getResolvedDeclaration()
                 .get()
                 .asType()
                 .getQualifiedName();
-        String toClassDecl = to
+        java.lang.String toClassDecl = to
                 .getResolvedDeclaration()
                 .get()
                 .asType()
@@ -48,7 +47,7 @@ public class TypeRelation {
     }
 
     @Override
-    public String toString() {
+    public java.lang.String toString() {
         return "TypeRelation{" +
                 "from=" + from +
                 ", to=" + to +

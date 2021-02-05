@@ -8,6 +8,7 @@ import org.java2uml.java2umlapi.util.umlSymbols.StartEnd;
 import java.util.*;
 
 import static org.java2uml.java2umlapi.util.umlSymbols.RelationsSymbol.*;
+import static org.java2uml.java2umlapi.util.umlSymbols.RelationsSymbol.Direction.UP;
 
 /**
  * <p>
@@ -141,7 +142,7 @@ public class SourceComponent implements ParsedComponent {
                                     .getQualifiedName());
 
                     if (to != null)
-                        allRelations.add(new TypeRelation(from, to, DEPENDENCY_AR));
+                        allRelations.add(new TypeRelation(from, to, DEPENDENCY_AR.toString()));
                 }
             });
         });
@@ -170,7 +171,7 @@ public class SourceComponent implements ParsedComponent {
                 }
 
                 if (to != null)
-                    allRelations.add(new TypeRelation(from, to, AGGREGATION));
+                    allRelations.add(new TypeRelation(from, to, AGGREGATION.toString()));
             }
         });
     }
@@ -202,7 +203,7 @@ public class SourceComponent implements ParsedComponent {
             }
 
             if (to != null)
-                allRelations.add(new TypeRelation(from, to, EXTENSION));
+                allRelations.add(new TypeRelation(from, to, UP + EXTENSION.toString()));
         });
     }
 

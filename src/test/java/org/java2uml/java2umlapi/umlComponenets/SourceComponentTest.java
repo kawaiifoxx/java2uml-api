@@ -10,7 +10,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.fail;
@@ -47,6 +50,13 @@ class SourceComponentTest {
 
         final String svg = os.toString();
         BufferedWriter writer = new BufferedWriter(new FileWriter("src/test/testOutput/test.svg"));
+
+        if (svg.contains("Syntax Error?")) {
+            fail("Source component was unable to generate a valid uml syntax, test failed.");
+            writer.close();
+        }
+
+
         writer.write(svg);
         writer.close();
     }
