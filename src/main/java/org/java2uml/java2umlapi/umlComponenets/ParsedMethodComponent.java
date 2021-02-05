@@ -21,6 +21,12 @@ public class ParsedMethodComponent implements ParsedComponent {
     private final String printableName;
     private final String name;
 
+    /**
+     * Initializes ParsedMethodComponent.
+     * @param parent Parent of this component.
+     * @param resolvedDeclaration resolvedMethodDeclaration is type solved method declaration
+     *                            retrieved from resolvedReferenceTypeDeclaration.
+     */
     public ParsedMethodComponent(ParsedComponent parent, ResolvedMethodDeclaration resolvedDeclaration) {
         this.parent = parent;
         this.resolvedDeclaration = resolvedDeclaration;
@@ -58,6 +64,9 @@ public class ParsedMethodComponent implements ParsedComponent {
         return name;
     }
 
+    /**
+     * @return returns the uml form of this component.
+     */
     @Override
     public String toUML() {
         return VisibilityModifierSymbol.of(resolvedDeclaration.accessSpecifier().asString()) + " "

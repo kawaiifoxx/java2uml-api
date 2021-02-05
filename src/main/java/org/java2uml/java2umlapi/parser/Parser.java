@@ -69,6 +69,12 @@ public class Parser {
         return resolvedDeclarations;
     }
 
+    /**
+     * Uses visitor to explore each compilation unit and retrieve every ClassOrInterfaceDeclaration from it.
+     * @param sourceRoots list of sourceRoot, containing information about projects.
+     *                    each sourceRoot contains information about one project.
+     * @return Returns a list of classOrInterfaceDeclarations
+     */
     @NotNull
     private List<ClassOrInterfaceDeclaration> getClassOrInterfaceDeclarations(List<SourceRoot> sourceRoots) {
         var compilationUnits = getAllCompilationUnits(sourceRoots);
@@ -80,6 +86,8 @@ public class Parser {
 
 
     /**
+     * Takes a list of SourceRoot and try to parse parallely each .java file on success add them to list of compilationUnit.
+     * Unsuccessful parse results are ignored.
      * @param sourceRoots List of SourceRoot.
      * @return Returns all the compilation units from the source directory.
      */

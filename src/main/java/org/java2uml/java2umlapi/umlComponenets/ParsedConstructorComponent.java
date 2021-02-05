@@ -7,11 +7,24 @@ import org.java2uml.java2umlapi.util.umlSymbols.VisibilityModifierSymbol;
 
 import java.util.Optional;
 
+/**
+ * <p>
+ *     A leaf component, representing a constructor, this is used in this composite tree to generate uml for constructors.
+ * </p>
+ *
+ * @author kawaiifox
+ */
 public class ParsedConstructorComponent implements ParsedComponent {
     private final ResolvedConstructorDeclaration resolvedDeclaration;
     private final ParsedComponent parent;
     private final String printableName;
 
+    /**
+     * Initializes ParsedConstructorComponent.
+     * @param parent Parent of this component.
+     * @param resolvedDeclaration resolvedConstructorDeclaration is type solved constructor declaration
+     *                            retrieved from resolvedReferenceTypeDeclaration.
+     */
     public ParsedConstructorComponent(ParsedComponent parent, ResolvedConstructorDeclaration resolvedDeclaration) {
         this.resolvedDeclaration = resolvedDeclaration;
         this.parent = parent;
@@ -48,6 +61,9 @@ public class ParsedConstructorComponent implements ParsedComponent {
         return printableName;
     }
 
+    /**
+     * @return returns the uml form of this component.
+     */
     @Override
     public String toUML() {
         return VisibilityModifierSymbol.of(resolvedDeclaration.accessSpecifier().asString()) + " "

@@ -20,6 +20,12 @@ public class ParsedFieldComponent implements ParsedComponent {
     private final String printableName;
     private final String name;
 
+    /**
+     * Initializes ParsedFieldComponent.
+     * @param parent Parent of this component.
+     * @param resolvedDeclaration resolvedFieldDeclaration is type solved field declaration
+     *                            retrieved from resolvedReferenceTypeDeclaration.
+     */
     public ParsedFieldComponent(ParsedComponent parent, ResolvedFieldDeclaration resolvedDeclaration) {
         this.parent = parent;
         this.resolvedDeclaration = resolvedDeclaration;

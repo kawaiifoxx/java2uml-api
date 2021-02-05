@@ -13,6 +13,12 @@ public class TypeRelation {
     private final ParsedComponent to;
     private final String relationsType;
 
+    /**
+     * Initializes typerelation with ParsedComponent from, to and relationsType.
+     * @param from ParsedComponent from which relation is defined.
+     * @param to ParsedComponent to which relation is defined.
+     * @param relationsType type of relation, for e.g. ASSOCIATION, AGGREGATION, DEPENDENCY, EXTENSION.
+     */
     public TypeRelation(ParsedComponent from, ParsedComponent to, String relationsType) {
 
         var isFromParsedClassOrInterfaceOrExtAncestor = from.isParsedClassOrInterfaceComponent() || from.isParsedExternalAncestor();
@@ -27,17 +33,20 @@ public class TypeRelation {
         this.relationsType = relationsType;
     }
 
-    public java.lang.String toUML() {
+    /**
+     * @return Returns generated UML syntax.
+     */
+    public String toUML() {
         if (from.getResolvedDeclaration().isEmpty() || to.getResolvedDeclaration().isEmpty()) {
             throw new RuntimeException("Unable to get ResolvedDeclaration, because from or to returned empty Optional.");
         }
 
-        java.lang.String fromClassDecl = from
+        String fromClassDecl = from
                 .getResolvedDeclaration()
                 .get()
                 .asType()
                 .getQualifiedName();
-        java.lang.String toClassDecl = to
+        String toClassDecl = to
                 .getResolvedDeclaration()
                 .get()
                 .asType()
@@ -47,7 +56,7 @@ public class TypeRelation {
     }
 
     @Override
-    public java.lang.String toString() {
+    public String toString() {
         return "TypeRelation{" +
                 "from=" + from +
                 ", to=" + to +

@@ -1,8 +1,6 @@
 package org.java2uml.java2umlapi.umlComponenets;
 
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
-import org.java2uml.java2umlapi.util.umlSymbols.TypeDeclarationSymbol;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +33,11 @@ public class ParsedClassOrInterfaceComponent implements ParsedComponent {
 
     private Map<String, ParsedComponent> children;
 
-
+    /**
+     * Initializes ParsedClassOrInterfaceComponent with resolvedDeclaration and reference to parent.
+     * @param resolvedDeclaration ResolvedDeclaration received after typeSolving using a symbol resolver.
+     * @param parent parent of this component.
+     */
     public ParsedClassOrInterfaceComponent(ResolvedDeclaration resolvedDeclaration, ParsedComponent parent) {
         this.resolvedDeclaration = resolvedDeclaration;
         this.parent = parent;
@@ -79,6 +81,11 @@ public class ParsedClassOrInterfaceComponent implements ParsedComponent {
         return name;
     }
 
+    /**
+     * Add a child to the this component, such as field, constructor or method.
+     * @param parsedComponent component representing child could be field, constructor,
+     *                        method or any other component which can be contained in a Class or Interface.
+     */
     public void addChild(ParsedComponent parsedComponent) {
         if (children == null) {
             children = new HashMap<>();
@@ -87,6 +94,11 @@ public class ParsedClassOrInterfaceComponent implements ParsedComponent {
         children.put(parsedComponent.getName(), parsedComponent);
     }
 
+    /**
+     * Generates a single String containing all the method signatures,separated by newline character.
+     * for each child which is ParsedMethodComponent get there UML generated string and append them
+     * together with newline character in between.
+     */
     private void generateUMLMethodSignatures() {
         StringBuilder generatedSignatures = new StringBuilder();
 
@@ -99,6 +111,11 @@ public class ParsedClassOrInterfaceComponent implements ParsedComponent {
         methodSignatures = generatedSignatures.toString();
     }
 
+    /**
+     * Generates a single String containing all the constructor signatures,separated by newline character.
+     * for each child which is ParsedConstructorComponent get there UML generated string and append them
+     * together with newline character in between.
+     */
     private void generateUMLConstructorSignatures() {
         StringBuilder generatedConstructorSignatures = new StringBuilder();
 
@@ -111,6 +128,11 @@ public class ParsedClassOrInterfaceComponent implements ParsedComponent {
         constructorSignatures = generatedConstructorSignatures.toString();
     }
 
+    /**
+     * Generates a single String containing all the field declarations, separated by newline character.
+     * for each child which is ParsedFieldComponent get there UML generated string and append them
+     * together with newline character in between.
+     */
     private void generateUMLFieldDeclarations() {
         StringBuilder generatedFields = new StringBuilder();
 
@@ -123,6 +145,10 @@ public class ParsedClassOrInterfaceComponent implements ParsedComponent {
         fieldsDeclarations = generatedFields.toString();
     }
 
+    /**
+     * Generate uml for this ParsedClassOrInterFaceComponent.
+     * @return String containing generated uml for this class.
+     */
     @Override
     public String toUML() {
         if (fieldsDeclarations == null) {
@@ -146,20 +172,6 @@ public class ParsedClassOrInterfaceComponent implements ParsedComponent {
                 + constructorSignatures
                 + methodSignatures
                 + "}";
-    }
-
-    @NotNull
-    private StringBuilder getTypeParamsString() {
-        var typeParams = resolvedDeclaration
-                .asType()
-                .asReferenceType()
-                .getTypeParameters();
-
-        StringBuilder typeParamsString = new StringBuilder();
-
-        typeParams.forEach(typeParam ->
-                typeParamsString.append(typeParam.getName()).append(" "));
-        return typeParamsString;
     }
 
     @Override
