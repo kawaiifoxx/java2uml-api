@@ -26,6 +26,12 @@ public class TypeDeclarationSymbol {
         return typeDeclaration + " " + typeName + " <" + typeParamList + ">";
     }
 
+    /**
+     * Generates type declaration symbols from resolvedTypeDeclaration, declaration can be generated for generic classes as well
+     * which have type parameters.
+     * @param resolvedDeclaration Resolved type declaration of classOrInterface for which symbol needs to be generated.
+     * @return Symbol containing keywords like class, interface with typeDeclaration.
+     */
     public static String getTypeDeclarationSymbol(ResolvedTypeDeclaration resolvedDeclaration) {
         var typeDeclaration = "class " + resolvedDeclaration.getQualifiedName();
 
@@ -48,6 +54,11 @@ public class TypeDeclarationSymbol {
         return typeDeclaration;
     }
 
+    /**
+     * Generates string containing all the type parameters separated by ", ".
+     * @param resolvedDeclaration Resolved type declaration of classOrInterface for which symbol needs to be generated.
+     * @return a String containing all the type parameters separated by ", ".
+     */
     @NotNull
     private static StringBuilder getTypeParamsString(ResolvedTypeDeclaration resolvedDeclaration) {
         var typeParams = resolvedDeclaration
