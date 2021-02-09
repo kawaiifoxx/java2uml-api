@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 class SourceComponentTest {
     private SourceComponent sourceComponent;
-    private static final String MULTIPLE_FILES_PATH = "src/test/testSources/JavaParserFacadeTests/testParserClass/ProjectTest/thymeleaf-demo-thymeleaf-demo";
     private static final String PROJECT_ZIP_PATH = "src/test/testSources/JavaParserFacadeTests/testParserClass/ProjectTest/thymeleaf-demo-thymeleaf-demo.zip";
     private static final String DST = "src/test/testOutput";
     private File generatedSourceFiles;
