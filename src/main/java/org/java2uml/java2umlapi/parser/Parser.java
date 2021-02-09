@@ -79,7 +79,15 @@ public class Parser {
     private List<ClassOrInterfaceDeclaration> getClassOrInterfaceDeclarations(List<SourceRoot> sourceRoots) {
         var compilationUnits = getAllCompilationUnits(sourceRoots);
         List<ClassOrInterfaceDeclaration> classOrInterfaceDeclarations = new ArrayList<>();
-        VoidVisitorAdapter<List<ClassOrInterfaceDeclaration>> visitor = new ClassOrInterfaceCollector();
+
+        VoidVisitorAdapter<List<ClassOrInterfaceDeclaration>> visitor = new VoidVisitorAdapter<>() {
+            @Override
+            public void visit(ClassOrInterfaceDeclaration n, List<ClassOrInterfaceDeclaration> arg) {
+                super.visit(n, arg);
+                arg.add(n);
+            }
+        };
+
         compilationUnits.forEach(compilationUnit -> visitor.visit(compilationUnit, classOrInterfaceDeclarations));
         return classOrInterfaceDeclarations;
     }
