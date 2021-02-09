@@ -1,5 +1,6 @@
 package org.java2uml.java2umlapi.util.unzipper;
 
+import org.apache.commons.io.FileDeleteStrategy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -7,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -26,25 +26,6 @@ class UnzipperTest {
         }
 
         //clean up.
-        deleteDirectory(destDir.toPath());
-    }
-
-    private void deleteDirectory(Path path) {
-        if (Files.isDirectory(path)) {
-            File dir = new File(path.toAbsolutePath().toString());
-            var files = dir.listFiles();
-            Arrays.stream(files).forEach(file -> deleteDirectory(Path.of(file.getAbsolutePath())));
-
-            if (!dir.delete()) {
-                throw new RuntimeException("Failed to delete directory: "+ dir);
-            }
-
-            return;
-        }
-
-        if (!path.toFile().delete()) {
-            throw new RuntimeException("Failed to delete file: "+ path);
-        }
-
+        FileDeleteStrategy.FORCE.delete(destDir);
     }
 }

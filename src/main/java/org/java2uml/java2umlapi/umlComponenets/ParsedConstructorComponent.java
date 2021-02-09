@@ -15,7 +15,7 @@ import java.util.Optional;
  * @author kawaiifox
  */
 public class ParsedConstructorComponent implements ParsedComponent {
-    private final ResolvedConstructorDeclaration resolvedDeclaration;
+    private ResolvedConstructorDeclaration resolvedDeclaration;
     private final ParsedComponent parent;
     private final String printableName;
 
@@ -73,7 +73,6 @@ public class ParsedConstructorComponent implements ParsedComponent {
     @Override
     public String toString() {
         return "ParsedConstructorComponent{" +
-                "resolvedDeclaration=" + resolvedDeclaration +
                 ", printableName='" + printableName + '\'' +
                 '}';
     }

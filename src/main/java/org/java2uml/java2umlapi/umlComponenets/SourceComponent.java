@@ -22,7 +22,7 @@ public class SourceComponent implements ParsedComponent {
 
     private final Map<String, ParsedComponent> children;
     private final Map<String, ParsedComponent> externalComponents;
-    private final List<ResolvedDeclaration> allParsedTypes;
+    private List<ResolvedDeclaration> allParsedTypes;
     private final Set<TypeRelation> allRelations;
     private String generatedUMLClasses;
     private String generatedUMLTypeRelations;

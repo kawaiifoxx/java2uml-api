@@ -16,7 +16,7 @@ import java.util.Optional;
  */
 public class ParsedFieldComponent implements ParsedComponent {
     private final ParsedComponent parent;
-    private final ResolvedFieldDeclaration resolvedDeclaration;
+    private ResolvedFieldDeclaration resolvedDeclaration;
     private final String printableName;
     private final String name;
 

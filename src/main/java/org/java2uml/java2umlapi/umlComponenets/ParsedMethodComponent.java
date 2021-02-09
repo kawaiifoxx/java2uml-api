@@ -17,7 +17,7 @@ import java.util.Optional;
 public class ParsedMethodComponent implements ParsedComponent {
 
     private final ParsedComponent parent;
-    private final ResolvedMethodDeclaration resolvedDeclaration;
+    private ResolvedMethodDeclaration resolvedDeclaration;
     private final String printableName;
     private final String name;
 
@@ -78,7 +78,6 @@ public class ParsedMethodComponent implements ParsedComponent {
     @Override
     public String toString() {
         return "ParsedMethodComponent{" +
-                ", resolvedDeclaration=" + resolvedDeclaration +
                 ", printableName='" + printableName + '\'' +
                 ", name='" + name + '\'' +
                 '}';

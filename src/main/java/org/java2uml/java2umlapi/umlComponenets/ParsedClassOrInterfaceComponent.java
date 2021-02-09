@@ -17,7 +17,7 @@ import static org.java2uml.java2umlapi.util.umlSymbols.TypeDeclarationSymbol.get
  */
 public class ParsedClassOrInterfaceComponent implements ParsedComponent {
 
-    private final ResolvedDeclaration resolvedDeclaration;
+    private ResolvedDeclaration resolvedDeclaration;
 
     private final ParsedComponent parent;
 

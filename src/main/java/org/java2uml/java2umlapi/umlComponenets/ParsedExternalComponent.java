@@ -18,7 +18,7 @@ import static org.java2uml.java2umlapi.util.umlSymbols.TypeDeclarationSymbol.get
  */
 public class ParsedExternalComponent implements ParsedComponent {
 
-    private final ResolvedTypeDeclaration resolvedTypeDeclaration;
+    private ResolvedTypeDeclaration resolvedTypeDeclaration;
 
     private String typeDeclaration;
     private final String name;

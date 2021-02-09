@@ -9,7 +9,6 @@ import com.github.javaparser.utils.ProjectRoot;
 import com.github.javaparser.utils.SourceRoot;
 import org.java2uml.java2umlapi.umlComponenets.SourceComponent;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Component;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -22,7 +21,6 @@ import java.util.List;
  *
  * @author kawaiifox.
  */
-@Component
 public class Parser {
     /**
      * <p>
@@ -33,13 +31,13 @@ public class Parser {
      * @return returns SourceComponent instance for corresponding java source directory.
      * @throws RuntimeException if there is no .java files in given directory or its subdirectories.
      */
-    public SourceComponent parse(Path PATH) {
+    public static SourceComponent parse(Path PATH) {
         ProjectRoot projectRoot = new SymbolSolverCollectionStrategy().collect(PATH);
 
         var sourceRoots = projectRoot.getSourceRoots();
 
         if (sourceRoots.isEmpty()) {
-            throw new RuntimeException("[Parser] Source directory is empty i.e it does not contain any .java files.");
+            throw new RuntimeException("[Parser] Source directory is empty i.e it does not contain any .java or .jar files.");
         }
 
         List<ResolvedDeclaration> resolvedDeclarations = getResolvedDeclarations(sourceRoots);
@@ -53,7 +51,7 @@ public class Parser {
      * @throws RuntimeException if passed sourceRoots is empty.
      */
     @NotNull
-    private List<ResolvedDeclaration> getResolvedDeclarations(List<SourceRoot> sourceRoots) {
+    private static List<ResolvedDeclaration> getResolvedDeclarations(List<SourceRoot> sourceRoots) {
         var classOrInterfaceDeclarations = getClassOrInterfaceDeclarations(sourceRoots);
 
         if (sourceRoots.get(0).getParserConfiguration().getSymbolResolver().isEmpty()) {
@@ -76,7 +74,7 @@ public class Parser {
      * @return Returns a list of classOrInterfaceDeclarations
      */
     @NotNull
-    private List<ClassOrInterfaceDeclaration> getClassOrInterfaceDeclarations(List<SourceRoot> sourceRoots) {
+    private  static List<ClassOrInterfaceDeclaration> getClassOrInterfaceDeclarations(List<SourceRoot> sourceRoots) {
         var compilationUnits = getAllCompilationUnits(sourceRoots);
         List<ClassOrInterfaceDeclaration> classOrInterfaceDeclarations = new ArrayList<>();
 
@@ -99,7 +97,7 @@ public class Parser {
      * @param sourceRoots List of SourceRoot.
      * @return Returns all the compilation units from the source directory.
      */
-    private List<CompilationUnit> getAllCompilationUnits(List<SourceRoot> sourceRoots) {
+    private static List<CompilationUnit> getAllCompilationUnits(List<SourceRoot> sourceRoots) {
         List<CompilationUnit> compilationUnits = new ArrayList<>();
 
         sourceRoots.forEach(sourceRoot -> {

@@ -3,32 +3,30 @@ package org.java2uml.java2umlapi.umlComponenets;
 import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.SourceStringReader;
+import org.apache.commons.io.FileDeleteStrategy;
 import org.java2uml.java2umlapi.parser.Parser;
+import org.java2uml.java2umlapi.util.unzipper.Unzipper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
-import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
-@SpringBootTest
 class SourceComponentTest {
-
-    @Autowired
-    private Parser parser;
     private SourceComponent sourceComponent;
     private static final String MULTIPLE_FILES_PATH = "src/test/testSources/JavaParserFacadeTests/testParserClass/ProjectTest/thymeleaf-demo-thymeleaf-demo";
+    private static final String PROJECT_ZIP_PATH = "src/test/testSources/JavaParserFacadeTests/testParserClass/ProjectTest/thymeleaf-demo-thymeleaf-demo.zip";
+    private static final String DST = "src/test/testOutput";
+    private File generatedSourceFiles;
 
     @BeforeEach
-    void setUp() {
-        sourceComponent = parser.parse(Path.of(MULTIPLE_FILES_PATH));
+    void setUp() throws IOException {
+        generatedSourceFiles = Unzipper.unzipDir(Path.of(PROJECT_ZIP_PATH), Path.of(DST));
+        sourceComponent = Parser.parse(generatedSourceFiles.toPath());
     }
 
 
@@ -61,4 +59,8 @@ class SourceComponentTest {
         writer.close();
     }
 
+    @AfterEach
+    private void tearDown() throws IOException {
+        FileDeleteStrategy.FORCE.delete(generatedSourceFiles);
+    }
 }

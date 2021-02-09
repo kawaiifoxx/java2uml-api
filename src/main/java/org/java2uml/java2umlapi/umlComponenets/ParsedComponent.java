@@ -2,7 +2,6 @@ package org.java2uml.java2umlapi.umlComponenets;
 
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -134,5 +133,4 @@ public interface ParsedComponent {
      * @return Returns generated UML code.
      */
     String toUML();
-
 }
