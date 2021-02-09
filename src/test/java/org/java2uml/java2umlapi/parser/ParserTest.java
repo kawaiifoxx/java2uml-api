@@ -1,12 +1,12 @@
 package org.java2uml.java2umlapi.parser;
 
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
+import org.java2uml.java2umlapi.util.unzipper.Unzipper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.List;
@@ -14,19 +14,17 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest
 class ParserTest {
-
-    @Autowired
-    private Parser parser;
     private List<ResolvedDeclaration> resolvedDeclarations;
     private Set<String> expectedClassNames;
-    private static final String PROJECT_TEST = "src/test/testSources/JavaParserFacadeTests/testParserClass/ProjectTest/thymeleaf-demo-thymeleaf-demo";
+    private static final String PROJECT_TEST = "src/test/testSources/JavaParserFacadeTests/testParserClass/ProjectTest/thymeleaf-demo-thymeleaf-demo.zip";
+    private static final String DST = "src/test/testOutput";
 
 
     @BeforeEach
-    void setUp() {
-        var sourceComponent = parser.parse(Path.of(PROJECT_TEST));
+    void setUp() throws IOException {
+        var destDir = Unzipper.unzipDir(Path.of(PROJECT_TEST), Path.of(DST));
+        var sourceComponent = Parser.parse(destDir.toPath());
 
         expectedClassNames = new HashSet<>();
         expectedClassNames.add("com.shreyansh.springboot.thymeleafdemo.controller.EmployeeController");
