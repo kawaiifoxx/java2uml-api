@@ -1,5 +1,6 @@
 package org.java2uml.java2umlapi.umlComponenets;
 
+import com.github.javaparser.symbolsolver.resolution.typesolvers.JarTypeSolver;
 import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.SourceStringReader;
@@ -18,13 +19,12 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 class SourceComponentTest {
     private SourceComponent sourceComponent;
-    private static final String PROJECT_ZIP_PATH = "src/test/testSources/JavaParserFacadeTests/testParserClass/ProjectTest/thymeleaf-demo-thymeleaf-demo.zip";
+    private static final String PROJECT_ZIP_PATH = "src/test/testSources/JavaParserFacadeTests/testParserClass/ProjectTest/test.zip";
     private static final String DST = "src/test/testOutput";
-    private File generatedSourceFiles;
 
     @BeforeEach
     void setUp() throws IOException {
-        generatedSourceFiles = Unzipper.unzipDir(Path.of(PROJECT_ZIP_PATH), Path.of(DST));
+        File generatedSourceFiles = Unzipper.unzipDir(Path.of(PROJECT_ZIP_PATH), Path.of(DST));
         sourceComponent = Parser.parse(generatedSourceFiles.toPath());
     }
 
@@ -60,6 +60,7 @@ class SourceComponentTest {
 
     @AfterEach
     private void tearDown() throws IOException {
-        FileDeleteStrategy.FORCE.delete(generatedSourceFiles);
+        JarTypeSolver.ShutDownHookRegistry.getRegistry().closeAllFiles();
+        FileDeleteStrategy.FORCE.delete(Path.of(DST).toFile());
     }
 }
