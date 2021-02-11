@@ -34,9 +34,16 @@ public class SourceComponent implements ParsedComponent {
         this.externalComponents = new HashMap<>();
 
         for (var resolvedDeclaration : allParsedTypes) {
-            ParsedComponent parsedClassOrInterfaceComponent = new ParsedClassOrInterfaceComponent(resolvedDeclaration, this);
-            children.put(parsedClassOrInterfaceComponent.getName(), parsedClassOrInterfaceComponent);
-            generateParsedClassOrInterfaceComponentFromResolvedDecl(resolvedDeclaration, parsedClassOrInterfaceComponent);
+            if (resolvedDeclaration.asType().isEnum()) {
+                ParsedEnumComponent parsedEnumComponent = new ParsedEnumComponent(resolvedDeclaration.asType().asEnum(), this);
+                children.put(parsedEnumComponent.getName(), parsedEnumComponent);
+                generateParsedEnumComponentFromResoldDecl(resolvedDeclaration, parsedEnumComponent);
+            } else {
+                ParsedComponent parsedClassOrInterfaceComponent = new ParsedClassOrInterfaceComponent(resolvedDeclaration, this);
+                children.put(parsedClassOrInterfaceComponent.getName(), parsedClassOrInterfaceComponent);
+                generateParsedClassOrInterfaceComponentFromResolvedDecl(resolvedDeclaration, parsedClassOrInterfaceComponent);
+            }
+
         }
 
         children.forEach((k, v) -> generateTypeRelations(v));
@@ -108,6 +115,38 @@ public class SourceComponent implements ParsedComponent {
                     .addChild(new ParsedMethodComponent(classOrInterfaceComponent, e)));
 
         }
+    }
+
+    /**
+     * Generates ParsedEnumComponent and adds it to children.
+     *
+     * @param resolvedDeclaration ResolvedEnumDeclaration for generation of ParsedEnumComponent's children
+     * @param parsedComponent new ParsedEnumComponent to be generated.
+     */
+    private void generateParsedEnumComponentFromResoldDecl(ResolvedDeclaration resolvedDeclaration, ParsedEnumComponent parsedComponent) {
+        if ( resolvedDeclaration.isType() && resolvedDeclaration.asType().isEnum()) {
+            var resolvedEnumDecl = resolvedDeclaration.asType().asEnum();
+            var allEnumConstants = resolvedEnumDecl.getEnumConstants();
+
+            allEnumConstants.forEach(resolvedEnumConstant -> parsedComponent
+                    .addChild(new ParsedEnumConstantComponent(resolvedEnumConstant, parsedComponent)));
+
+            var fieldList = resolvedEnumDecl.getDeclaredFields();
+
+            fieldList.forEach(field -> parsedComponent
+                    .addChild(new ParsedFieldComponent(parsedComponent, field)));
+
+            var methodList = resolvedEnumDecl.getDeclaredMethods();
+
+            methodList.forEach(method -> parsedComponent
+                    .addChild(new ParsedMethodComponent(parsedComponent, method)));
+
+            var constructorList = resolvedEnumDecl.getConstructors();
+
+            constructorList.forEach(constructor -> parsedComponent
+                    .addChild(new ParsedConstructorComponent(parsedComponent, constructor)));
+        }
+
     }
 
     private void generateTypeRelations(ParsedComponent from) {

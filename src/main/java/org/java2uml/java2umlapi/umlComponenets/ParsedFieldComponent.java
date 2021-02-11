@@ -16,7 +16,7 @@ import java.util.Optional;
  */
 public class ParsedFieldComponent implements ParsedComponent {
     private final ParsedComponent parent;
-    private ResolvedFieldDeclaration resolvedDeclaration;
+    private final ResolvedFieldDeclaration resolvedDeclaration;
     private final String printableName;
     private final String name;
 
@@ -39,7 +39,7 @@ public class ParsedFieldComponent implements ParsedComponent {
     }
 
     @Override
-    public boolean isParseFieldComponent() {
+    public boolean isParsedFieldComponent() {
         return true;
     }
 
@@ -63,7 +63,7 @@ public class ParsedFieldComponent implements ParsedComponent {
         return name;
     }
 
-    public String getClassOfField() {
+    private String getClassOfField() {
         if (resolvedDeclaration.getType().isReferenceType()) {
             var list = resolvedDeclaration.getType().asReferenceType().getQualifiedName().split("\\.");
             return list[list.length - 1];

@@ -67,7 +67,21 @@ public interface ParsedComponent {
     /**
      * @return returns true if the component is a ParsedFieldComponent.
      */
-    default boolean isParseFieldComponent() {
+    default boolean isParsedFieldComponent() {
+        return false;
+    }
+
+    /**
+     * @return returns true if the current component is a ParsedEnumComponent
+     */
+    default boolean isParsedEnumComponent() {
+        return false;
+    }
+
+    /**
+     * @return returns true if the current component is a ParsedEnumConstantComponent
+     */
+    default boolean isParsedEnumConstantComponent() {
         return false;
     }
 
@@ -108,6 +122,20 @@ public interface ParsedComponent {
      * @return returns Optional<ParsedFieldComponent>.
      */
     default Optional<ParsedFieldComponent> asParsedFieldComponent() {
+        return Optional.empty();
+    }
+
+    /**
+     * @return returns Optional.empty() if this component is not ParsedEnumComponent
+     */
+    default Optional<ParsedEnumComponent> asParsedEnumComponent() {
+        return Optional.empty();
+    }
+
+    /**
+     * @return returns Optional.empty() if this component is not ParsedEnumConstantComponent
+     */
+    default Optional<ParsedEnumConstantComponent> asParsedEnumConstantComponent() {
         return Optional.empty();
     }
 

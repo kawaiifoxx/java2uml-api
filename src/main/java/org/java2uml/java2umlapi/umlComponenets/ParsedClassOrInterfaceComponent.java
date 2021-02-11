@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.java2uml.java2umlapi.util.umlSymbols.TypeDeclarationSymbol.getTypeDeclarationSymbol;
+import static org.java2uml.java2umlapi.util.umlSymbols.UMLGeneratorUtil.*;
 
 /**
  * <p>
@@ -17,7 +18,7 @@ import static org.java2uml.java2umlapi.util.umlSymbols.TypeDeclarationSymbol.get
  */
 public class ParsedClassOrInterfaceComponent implements ParsedComponent {
 
-    private ResolvedDeclaration resolvedDeclaration;
+    private final ResolvedDeclaration resolvedDeclaration;
 
     private final ParsedComponent parent;
 
@@ -95,72 +96,21 @@ public class ParsedClassOrInterfaceComponent implements ParsedComponent {
     }
 
     /**
-     * Generates a single String containing all the method signatures,separated by newline character.
-     * for each child which is ParsedMethodComponent get there UML generated string and append them
-     * together with newline character in between.
-     */
-    private void generateUMLMethodSignatures() {
-        StringBuilder generatedSignatures = new StringBuilder();
-
-        children.forEach((k, v) -> {
-            if (v.isParsedMethodComponent()) {
-                generatedSignatures.append(v.toUML()).append("\n");
-            }
-        });
-
-        methodSignatures = generatedSignatures.toString();
-    }
-
-    /**
-     * Generates a single String containing all the constructor signatures,separated by newline character.
-     * for each child which is ParsedConstructorComponent get there UML generated string and append them
-     * together with newline character in between.
-     */
-    private void generateUMLConstructorSignatures() {
-        StringBuilder generatedConstructorSignatures = new StringBuilder();
-
-        children.forEach((k, v) -> {
-            if (v.isParsedConstructorComponent()) {
-                generatedConstructorSignatures.append(v.toUML()).append("\n");
-            }
-        });
-
-        constructorSignatures = generatedConstructorSignatures.toString();
-    }
-
-    /**
-     * Generates a single String containing all the field declarations, separated by newline character.
-     * for each child which is ParsedFieldComponent get there UML generated string and append them
-     * together with newline character in between.
-     */
-    private void generateUMLFieldDeclarations() {
-        StringBuilder generatedFields = new StringBuilder();
-
-        children.forEach((k, v) -> {
-            if (v.isParseFieldComponent()) {
-                generatedFields.append(v.toUML()).append("\n");
-            }
-        });
-
-        fieldsDeclarations = generatedFields.toString();
-    }
-
-    /**
      * Generate uml for this ParsedClassOrInterFaceComponent.
      * @return String containing generated uml for this class.
      */
     @Override
     public String toUML() {
         if (fieldsDeclarations == null) {
-            generateUMLFieldDeclarations();
+            fieldsDeclarations = generateUMLFieldDeclarations(children);
         }
 
         if (methodSignatures == null) {
-            generateUMLMethodSignatures();
+            methodSignatures = generateUMLMethodSignatures(children);
         }
 
         if (constructorSignatures == null) {
-            generateUMLConstructorSignatures();
+            constructorSignatures = generateUMLConstructorSignatures(children);
         }
 
         if (typeDeclaration == null) {

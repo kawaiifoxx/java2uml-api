@@ -60,7 +60,7 @@ class SourceComponentTest {
 
     @AfterEach
     private void tearDown() throws IOException {
-        JarTypeSolver.ShutDownHookRegistry.getRegistry().closeAllFiles();
+        JarTypeSolver.ResourceRegistry.getRegistry().cleanUp();
         FileDeleteStrategy.FORCE.delete(Path.of(DST).toFile());
     }
 }

@@ -2,6 +2,7 @@ package org.java2uml.java2umlapi.parser;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import com.github.javaparser.symbolsolver.utils.SymbolSolverCollectionStrategy;
@@ -52,7 +53,9 @@ public class Parser {
      */
     @NotNull
     private static List<ResolvedDeclaration> getResolvedDeclarations(List<SourceRoot> sourceRoots) {
-        var classOrInterfaceDeclarations = getClassOrInterfaceDeclarations(sourceRoots);
+        var compilationUnits = getAllCompilationUnits(sourceRoots);
+        var classOrInterfaceDeclarations = getClassOrInterfaceDeclarations(compilationUnits);
+        var enumDecl = getEnumDeclaration(compilationUnits);
 
         if (sourceRoots.get(0).getParserConfiguration().getSymbolResolver().isEmpty()) {
             throw new RuntimeException("[Parser] Unable to get symbolResolver.");
@@ -64,18 +67,36 @@ public class Parser {
                 .forEach(classOrInterfaceDeclaration -> resolvedDeclarations
                         .add(symbolResolver
                                 .resolveDeclaration(classOrInterfaceDeclaration, ResolvedDeclaration.class)));
+
+        enumDecl
+                .forEach(enumDeclaration -> resolvedDeclarations
+                        .add(symbolResolver
+                                .resolveDeclaration(enumDeclaration, ResolvedDeclaration.class)));
         return resolvedDeclarations;
+    }
+
+    private static List<EnumDeclaration> getEnumDeclaration(List<CompilationUnit> compilationUnits) {
+        List<EnumDeclaration> enumDeclarations = new ArrayList<>();
+
+        VoidVisitorAdapter<List<EnumDeclaration>> visitor = new VoidVisitorAdapter<>() {
+            @Override
+            public void visit(EnumDeclaration n, List<EnumDeclaration> arg) {
+                super.visit(n, arg);
+                arg.add(n);
+            }
+        };
+
+        compilationUnits.forEach(compilationUnit -> visitor.visit(compilationUnit, enumDeclarations));
+        return enumDeclarations;
     }
 
     /**
      * Uses visitor to explore each compilation unit and retrieve every ClassOrInterfaceDeclaration from it.
-     * @param sourceRoots list of sourceRoot, containing information about projects.
-     *                    each sourceRoot contains information about one project.
+     *
      * @return Returns a list of classOrInterfaceDeclarations
      */
     @NotNull
-    private  static List<ClassOrInterfaceDeclaration> getClassOrInterfaceDeclarations(List<SourceRoot> sourceRoots) {
-        var compilationUnits = getAllCompilationUnits(sourceRoots);
+    private static List<ClassOrInterfaceDeclaration> getClassOrInterfaceDeclarations(List<CompilationUnit> compilationUnits) {
         List<ClassOrInterfaceDeclaration> classOrInterfaceDeclarations = new ArrayList<>();
 
         VoidVisitorAdapter<List<ClassOrInterfaceDeclaration>> visitor = new VoidVisitorAdapter<>() {
@@ -94,6 +115,7 @@ public class Parser {
     /**
      * Takes a list of SourceRoot and try to parse parallely each .java file on success add them to list of compilationUnit.
      * Unsuccessful parse results are ignored.
+     *
      * @param sourceRoots List of SourceRoot.
      * @return Returns all the compilation units from the source directory.
      */

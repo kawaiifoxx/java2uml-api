@@ -1,7 +1,10 @@
 package org.java2uml.java2umlapi.parser;
 
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
+import com.github.javaparser.symbolsolver.resolution.typesolvers.JarTypeSolver;
+import org.apache.commons.io.FileDeleteStrategy;
 import org.java2uml.java2umlapi.util.unzipper.Unzipper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,6 +34,7 @@ class ParserTest {
         expectedClassNames.add("com.shreyansh.springboot.thymeleafdemo.dao.EmployeeRepository");
         expectedClassNames.add("com.shreyansh.springboot.thymeleafdemo.entity.Employee");
         expectedClassNames.add("com.shreyansh.springboot.thymeleafdemo.ThymeleafDemoApplication");
+        expectedClassNames.add("com.shreyansh.springboot.thymeleafdemo.EnumTest");
         expectedClassNames.add("com.shreyansh.springboot.thymeleafdemo.service.EmployeeService");
         expectedClassNames.add("com.shreyansh.springboot.thymeleafdemo.service.EmployeeServiceImpl");
         expectedClassNames.add("MavenWrapperDownloader");
@@ -48,5 +52,11 @@ class ParserTest {
         resolvedDeclarations.forEach(resolvedDeclaration -> actualClassNames.add(resolvedDeclaration.asType().getQualifiedName()));
 
         assertEquals(expectedClassNames, actualClassNames, "expected classes names did not match actual class names.");
+    }
+
+    @AfterEach
+    private void tearDown() throws IOException {
+        JarTypeSolver.ResourceRegistry.getRegistry().cleanUp();
+        FileDeleteStrategy.FORCE.delete(Path.of(DST).toFile());
     }
 }
