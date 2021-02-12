@@ -51,7 +51,10 @@ public class SourceComponent implements ParsedComponent {
 
         }
 
-        children.forEach((k, v) -> generateTypeRelations(v));
+        children.forEach((k, v) -> {
+            if (v.asParsedCompositeComponent().isPresent())
+                generateTypeRelations(v.asParsedCompositeComponent().get());
+        });
 
     }
 
@@ -162,7 +165,7 @@ public class SourceComponent implements ParsedComponent {
      *
      * @param from ParsedComponent from which relations need to be generated.
      */
-    private void generateTypeRelations(ParsedComponent from) {
+    private void generateTypeRelations(ParsedCompositeComponent from) {
         if (from.isParsedClassOrInterfaceComponent()) {
             generateExtensionRelations(from);
             generateAggregationRelations(from);
@@ -175,7 +178,7 @@ public class SourceComponent implements ParsedComponent {
      *
      * @param from ParsedComponent from which dependency relation needs to be generated.
      */
-    private void generateDependencyRelations(ParsedComponent from) {
+    private void generateDependencyRelations(ParsedCompositeComponent from) {
 
         //noinspection OptionalGetWithoutIsPresent
         var resolvedTypeDeclaration = from.getResolvedDeclaration().get().asType();
@@ -198,8 +201,8 @@ public class SourceComponent implements ParsedComponent {
                                     .asReferenceType()
                                     .getQualifiedName());
 
-                    if (to != null)
-                        allRelations.add(new TypeRelation(from, to, DEPENDENCY_AR.toString()));
+                    if (to != null && to.asParsedCompositeComponent().isPresent())
+                        allRelations.add(new TypeRelation(from, to.asParsedCompositeComponent().get(), DEPENDENCY_AR.toString()));
                 }
             });
         });
@@ -210,7 +213,7 @@ public class SourceComponent implements ParsedComponent {
      *
      * @param from ParsedComponent from which relations need to be generated.
      */
-    private void generateAggregationRelations(ParsedComponent from) {
+    private void generateAggregationRelations(ParsedCompositeComponent from) {
 
         //noinspection OptionalGetWithoutIsPresent
         var resolvedTypeDeclaration = from.getResolvedDeclaration().get().asType();
@@ -232,8 +235,8 @@ public class SourceComponent implements ParsedComponent {
                     }
                 }
 
-                if (to != null)
-                    allRelations.add(new TypeRelation(from, to, AGGREGATION.toString()));
+                if (to != null && to.asParsedCompositeComponent().isPresent())
+                    allRelations.add(new TypeRelation(from, to.asParsedCompositeComponent().get(), AGGREGATION.toString()));
             }
         });
     }
@@ -243,7 +246,7 @@ public class SourceComponent implements ParsedComponent {
      *
      * @param from ParsedComponent from which extension relations need to be generated.
      */
-    private void generateExtensionRelations(ParsedComponent from) {
+    private void generateExtensionRelations(ParsedCompositeComponent from) {
 
         //noinspection OptionalGetWithoutIsPresent
         var resolvedTypeDeclaration = from.getResolvedDeclaration().get().asType();
@@ -269,8 +272,8 @@ public class SourceComponent implements ParsedComponent {
                 to = externalComponents.get(ancestorName);
             }
 
-            if (to != null)
-                allRelations.add(new TypeRelation(from, to, UP + EXTENSION.toString()));
+            if (to != null && to.asParsedCompositeComponent().isPresent())
+                allRelations.add(new TypeRelation(from, to.asParsedCompositeComponent().get(), UP + EXTENSION.toString()));
         });
     }
 

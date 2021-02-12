@@ -9,16 +9,16 @@ import static org.java2uml.java2umlapi.util.umlSymbols.TypeDeclarationSymbol.get
 
 /**
  * <p>
- * This is a leaf component, any classOrInterfaceDeclaration or annotationDeclaration or enumDeclaration
+ * Any classOrInterfaceDeclaration or annotationDeclaration or enumDeclaration
  * which does not belong to the project being parsed and is dependency of the project being parsed is stored in
  * this component.
  * </p>
  *
  * @author kawaiifox
  */
-public class ParsedExternalComponent implements ParsedComponent {
+public class ParsedExternalComponent implements ParsedCompositeComponent {
 
-    private ResolvedTypeDeclaration resolvedTypeDeclaration;
+    private final ResolvedTypeDeclaration resolvedTypeDeclaration;
 
     private String typeDeclaration;
     private final String name;

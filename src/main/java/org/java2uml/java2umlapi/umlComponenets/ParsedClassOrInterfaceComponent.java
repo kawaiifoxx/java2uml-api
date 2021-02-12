@@ -16,7 +16,7 @@ import static org.java2uml.java2umlapi.util.umlSymbols.UMLGeneratorUtil.*;
  *
  * @author kawaiifox
  */
-public class ParsedClassOrInterfaceComponent implements ParsedComponent {
+public class ParsedClassOrInterfaceComponent implements ParsedCompositeComponent {
 
     private final ResolvedDeclaration resolvedDeclaration;
     private final ParsedComponent parent;

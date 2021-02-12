@@ -41,6 +41,7 @@ class ParsedFieldComponentTest {
     void testGetName() {
         verify(resolvedFieldDeclaration, atLeastOnce()).asField();
         assertEquals(fieldName, parsedFieldComponent.getName());
+        verifyNoMoreInteractions();
     }
 
     @Nested
@@ -86,9 +87,9 @@ class ParsedFieldComponentTest {
             var uml = parsedFieldComponent.toUML();
             var typeStr = qualifiedName.split("\\.");
 
-            assertTrue(uml.contains(typeStr[typeStr.length - 1]));
-            assertTrue(uml.contains(fieldName));
-            assertTrue(uml.contains(isStatic ? "static" : ""));
+            assertTrue(uml.contains(typeStr[typeStr.length - 1]), "generated uml syntax does not contain correct type");
+            assertTrue(uml.contains(fieldName), "generated uml syntax does not contain correct field name");
+            assertEquals(uml.contains("static"), isStatic);
             assertTrue(uml.contains(VisibilityModifierSymbol.of(accessSpecifierStr).toString()));
 
             verifyNoMoreInteractions(resolvedFieldDeclaration);
@@ -140,7 +141,7 @@ class ParsedFieldComponentTest {
 
             assertTrue(uml.contains(primitiveTypeName));
             assertTrue(uml.contains(fieldName));
-            assertTrue(uml.contains(isStatic ? "static" : ""));
+            assertEquals(uml.contains("static"), isStatic);
             assertTrue(uml.contains(VisibilityModifierSymbol.of(accessSpecifierStr).toString()));
 
             verifyNoMoreInteractions(resolvedFieldDeclaration);

@@ -140,6 +140,13 @@ public interface ParsedComponent {
     }
 
     /**
+     * @return returns ParsedCompositeComponent if current component is a ParsedCompositeComponent.
+     */
+    default Optional<ParsedCompositeComponent> asParsedCompositeComponent() {
+        return Optional.empty();
+    }
+
+    /**
      * @return returns parent of current component.
      */
     Optional<ParsedComponent> getParent();

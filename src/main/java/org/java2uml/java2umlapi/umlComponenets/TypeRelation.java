@@ -9,8 +9,8 @@ package org.java2uml.java2umlapi.umlComponenets;
  * @author kawaiifox
  */
 public class TypeRelation {
-    private final ParsedComponent from;
-    private final ParsedComponent to;
+    private final ParsedCompositeComponent from;
+    private final ParsedCompositeComponent to;
     private final String relationsType;
 
     /**
@@ -19,15 +19,7 @@ public class TypeRelation {
      * @param to ParsedComponent to which relation is defined.
      * @param relationsType type of relation, for e.g. ASSOCIATION, AGGREGATION, DEPENDENCY, EXTENSION.
      */
-    public TypeRelation(ParsedComponent from, ParsedComponent to, String relationsType) {
-
-        var isFromParsedClassOrInterfaceOrExtAncestor = from.isParsedClassOrInterfaceComponent() || from.isParsedExternalAncestor();
-        var isToParsedClassOrInterfaceOrExtAncestor = to.isParsedClassOrInterfaceComponent() || to.isParsedExternalAncestor();
-
-        if (!isFromParsedClassOrInterfaceOrExtAncestor || !isToParsedClassOrInterfaceOrExtAncestor) {
-            throw new RuntimeException("[TypeRelation] Passed ParsedComponent should be a ParsedClassOrInterfaceComponent or ParsedExternalAncestor.");
-        }
-
+    public TypeRelation(ParsedCompositeComponent from, ParsedCompositeComponent to, String relationsType) {
         this.from = from;
         this.to = to;
         this.relationsType = relationsType;
@@ -37,22 +29,7 @@ public class TypeRelation {
      * @return Returns generated UML syntax.
      */
     public String toUML() {
-        if (from.getResolvedDeclaration().isEmpty() || to.getResolvedDeclaration().isEmpty()) {
-            throw new RuntimeException("Unable to get ResolvedDeclaration, because from or to returned empty Optional.");
-        }
-
-        String fromClassDecl = from
-                .getResolvedDeclaration()
-                .get()
-                .asType()
-                .getQualifiedName();
-        String toClassDecl = to
-                .getResolvedDeclaration()
-                .get()
-                .asType()
-                .getQualifiedName();
-
-        return fromClassDecl + " " + relationsType + " " + toClassDecl;
+        return from.getName() + " " + relationsType + " " + to.getName();
     }
 
     @Override
