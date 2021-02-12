@@ -14,7 +14,7 @@ public class TypeRelation {
     private final String relationsType;
 
     /**
-     * Initializes typerelation with ParsedComponent from, to and relationsType.
+     * Initializes TypeRelation with ParsedComponent from, to and relationsType.
      * @param from ParsedComponent from which relation is defined.
      * @param to ParsedComponent to which relation is defined.
      * @param relationsType type of relation, for e.g. ASSOCIATION, AGGREGATION, DEPENDENCY, EXTENSION.

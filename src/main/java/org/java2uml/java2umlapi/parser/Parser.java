@@ -75,6 +75,12 @@ public class Parser {
         return resolvedDeclarations;
     }
 
+    /**
+     * Uses visitor to explore each compilation unit,  and then return these declarations.
+     *
+     * @param compilationUnits List of compilation units
+     * @return Returns a list of EnumDeclaration.
+     */
     private static List<EnumDeclaration> getEnumDeclaration(List<CompilationUnit> compilationUnits) {
         List<EnumDeclaration> enumDeclarations = new ArrayList<>();
 

@@ -15,7 +15,7 @@ import java.util.Optional;
  * @author kawaiifox
  */
 public class ParsedConstructorComponent implements ParsedComponent {
-    private ResolvedConstructorDeclaration resolvedDeclaration;
+    private final ResolvedConstructorDeclaration resolvedDeclaration;
     private final ParsedComponent parent;
     private final String printableName;
 

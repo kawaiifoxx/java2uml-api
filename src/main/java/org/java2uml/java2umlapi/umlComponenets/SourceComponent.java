@@ -22,11 +22,16 @@ public class SourceComponent implements ParsedComponent {
 
     private final Map<String, ParsedComponent> children;
     private final Map<String, ParsedComponent> externalComponents;
-    private List<ResolvedDeclaration> allParsedTypes;
+    private final List<ResolvedDeclaration> allParsedTypes;
     private final Set<TypeRelation> allRelations;
     private String generatedUMLClasses;
     private String generatedUMLTypeRelations;
 
+    /**
+     * Initializes sourceComponent and generates tree and all the type relations.
+     *
+     * @param allParsedTypes List of resolvedDeclarations
+     */
     public SourceComponent(List<ResolvedDeclaration> allParsedTypes) {
         this.allParsedTypes = allParsedTypes;
         this.children = new HashMap<>();
@@ -65,6 +70,9 @@ public class SourceComponent implements ParsedComponent {
         return Optional.of(this);
     }
 
+    /**
+     * @return Returns all the resolvedDeclarations contained in the sourceComponent.
+     */
     public List<ResolvedDeclaration> getAllParsedTypes() {
         return allParsedTypes;
     }
@@ -118,13 +126,13 @@ public class SourceComponent implements ParsedComponent {
     }
 
     /**
-     * Generates ParsedEnumComponent and adds it to children.
+     * Generates ParsedEnumComponent from ResolvedDeclaration and adds it to children.
      *
      * @param resolvedDeclaration ResolvedEnumDeclaration for generation of ParsedEnumComponent's children
-     * @param parsedComponent new ParsedEnumComponent to be generated.
+     * @param parsedComponent     new ParsedEnumComponent to be generated.
      */
     private void generateParsedEnumComponentFromResoldDecl(ResolvedDeclaration resolvedDeclaration, ParsedEnumComponent parsedComponent) {
-        if ( resolvedDeclaration.isType() && resolvedDeclaration.asType().isEnum()) {
+        if (resolvedDeclaration.isType() && resolvedDeclaration.asType().isEnum()) {
             var resolvedEnumDecl = resolvedDeclaration.asType().asEnum();
             var allEnumConstants = resolvedEnumDecl.getEnumConstants();
 
@@ -149,6 +157,11 @@ public class SourceComponent implements ParsedComponent {
 
     }
 
+    /**
+     * Generates all the relations for the ParsedComponent from. This ParsedComponent should not be a leaf.
+     *
+     * @param from ParsedComponent from which relations need to be generated.
+     */
     private void generateTypeRelations(ParsedComponent from) {
         if (from.isParsedClassOrInterfaceComponent()) {
             generateExtensionRelations(from);
@@ -157,6 +170,11 @@ public class SourceComponent implements ParsedComponent {
         }
     }
 
+    /**
+     * Generates dependency relation for ParsedComponent from.
+     *
+     * @param from ParsedComponent from which dependency relation needs to be generated.
+     */
     private void generateDependencyRelations(ParsedComponent from) {
 
         //noinspection OptionalGetWithoutIsPresent
@@ -187,6 +205,11 @@ public class SourceComponent implements ParsedComponent {
         });
     }
 
+    /**
+     * Generates aggregation relations for ParsedComponent from.
+     *
+     * @param from ParsedComponent from which relations need to be generated.
+     */
     private void generateAggregationRelations(ParsedComponent from) {
 
         //noinspection OptionalGetWithoutIsPresent
@@ -215,6 +238,11 @@ public class SourceComponent implements ParsedComponent {
         });
     }
 
+    /**
+     * Generates extension relations from 'from'  to every ancestor of the 'from' component.
+     *
+     * @param from ParsedComponent from which extension relations need to be generated.
+     */
     private void generateExtensionRelations(ParsedComponent from) {
 
         //noinspection OptionalGetWithoutIsPresent
@@ -246,6 +274,9 @@ public class SourceComponent implements ParsedComponent {
         });
     }
 
+    /**
+     * @return Returns Generated UML syntax.
+     */
     @Override
     public String toUML() {
         if (generatedUMLClasses == null)
@@ -261,6 +292,10 @@ public class SourceComponent implements ParsedComponent {
                 + "\n" + StartEnd.END;
     }
 
+    /**
+     * For each typeRelation in allRelations use .toUML() on it and appends a newline character, this generates
+     * a single string containing UML of all the relations.
+     */
     private void generateUMLTypeRelations() {
         StringBuilder generatedUMLTypesRelationsBuilder = new StringBuilder();
 
@@ -270,6 +305,10 @@ public class SourceComponent implements ParsedComponent {
         generatedUMLTypeRelations = generatedUMLTypesRelationsBuilder.toString();
     }
 
+    /**
+     * For each parsedComponent in children and externalComponent calls .toUML on it and appends them all to a string
+     * with a newline character in between.
+     */
     private void generateUMLClasses() {
         StringBuilder generatedUMLClassesBuilder = new StringBuilder();
 
