@@ -119,7 +119,7 @@ public class ParsedEnumComponent implements ParsedComponent {
         }
 
         return "enum " + name + " {\n"
-                + "..ENUM CONST..\n"
+                + "..Enum Constants..\n"
                 + enumConstants
                 + "..Fields..\n"
                 + fieldDeclarations

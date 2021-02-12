@@ -17,7 +17,6 @@ import java.util.Optional;
 public class ParsedFieldComponent implements ParsedComponent {
     private final ParsedComponent parent;
     private final ResolvedFieldDeclaration resolvedDeclaration;
-    private final String printableName;
     private final String name;
 
     /**
@@ -29,8 +28,7 @@ public class ParsedFieldComponent implements ParsedComponent {
     public ParsedFieldComponent(ParsedComponent parent, ResolvedFieldDeclaration resolvedDeclaration) {
         this.parent = parent;
         this.resolvedDeclaration = resolvedDeclaration;
-        this.printableName = resolvedDeclaration.asField().getName();
-        this.name = resolvedDeclaration.getName();
+        this.name = resolvedDeclaration.asField().getName();
     }
 
     @Override
@@ -77,14 +75,13 @@ public class ParsedFieldComponent implements ParsedComponent {
     public String toUML() {
         return VisibilityModifierSymbol.of(resolvedDeclaration.accessSpecifier().asString()) + " " + getClassOfField() + " "
                 + (resolvedDeclaration.isStatic() ? UMLModifier.STATIC : "")
-                + " " + printableName;
+                + " " + name;
     }
 
     @Override
     public String toString() {
         return "ParsedFieldComponent{" +
-                ", printableName='" + printableName + '\'' +
-                ", name='" + name + '\'' +
+                ", printableName='" + name + '\'' +
                 '}';
     }
 }

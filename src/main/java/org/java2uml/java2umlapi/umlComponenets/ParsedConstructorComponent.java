@@ -17,7 +17,7 @@ import java.util.Optional;
 public class ParsedConstructorComponent implements ParsedComponent {
     private final ResolvedConstructorDeclaration resolvedDeclaration;
     private final ParsedComponent parent;
-    private final String printableName;
+    private final String name;
 
     /**
      * Initializes ParsedConstructorComponent.
@@ -28,7 +28,7 @@ public class ParsedConstructorComponent implements ParsedComponent {
     public ParsedConstructorComponent(ParsedComponent parent, ResolvedConstructorDeclaration resolvedDeclaration) {
         this.resolvedDeclaration = resolvedDeclaration;
         this.parent = parent;
-        this.printableName = resolvedDeclaration.getSignature();
+        this.name = resolvedDeclaration.getSignature();
     }
 
     @Override
@@ -58,7 +58,7 @@ public class ParsedConstructorComponent implements ParsedComponent {
 
     @Override
     public String getName() {
-        return printableName;
+        return name;
     }
 
     /**
@@ -67,13 +67,13 @@ public class ParsedConstructorComponent implements ParsedComponent {
     @Override
     public String toUML() {
         return VisibilityModifierSymbol.of(resolvedDeclaration.accessSpecifier().asString()) + " "
-                + UMLModifier.METHOD + " [Constructor] " + printableName;
+                + UMLModifier.METHOD + " [Constructor] " + name;
     }
 
     @Override
     public String toString() {
         return "ParsedConstructorComponent{" +
-                ", printableName='" + printableName + '\'' +
+                ", printableName='" + name + '\'' +
                 '}';
     }
 }

@@ -17,9 +17,9 @@ import java.util.Optional;
 public class ParsedMethodComponent implements ParsedComponent {
 
     private final ParsedComponent parent;
-    private ResolvedMethodDeclaration resolvedDeclaration;
-    private final String printableName;
-    private final String name;
+    private final ResolvedMethodDeclaration resolvedDeclaration;
+    private final String UMLName;
+    private final String qualifiedName;
 
     /**
      * Initializes ParsedMethodComponent.
@@ -30,8 +30,8 @@ public class ParsedMethodComponent implements ParsedComponent {
     public ParsedMethodComponent(ParsedComponent parent, ResolvedMethodDeclaration resolvedDeclaration) {
         this.parent = parent;
         this.resolvedDeclaration = resolvedDeclaration;
-        this.printableName = resolvedDeclaration.getSignature();
-        this.name = resolvedDeclaration.getQualifiedSignature();
+        this.UMLName = resolvedDeclaration.getSignature();
+        this.qualifiedName = resolvedDeclaration.getQualifiedSignature();
     }
 
     @Override
@@ -61,7 +61,7 @@ public class ParsedMethodComponent implements ParsedComponent {
 
     @Override
     public String getName() {
-        return name;
+        return qualifiedName;
     }
 
     /**
@@ -72,14 +72,14 @@ public class ParsedMethodComponent implements ParsedComponent {
         return VisibilityModifierSymbol.of(resolvedDeclaration.accessSpecifier().asString()) + " "
                 + UMLModifier.METHOD + " "
                 + (resolvedDeclaration.isStatic() ? UMLModifier.STATIC : "")
-                + " " + printableName;
+                + " " + UMLName;
     }
 
     @Override
     public String toString() {
         return "ParsedMethodComponent{" +
-                ", printableName='" + printableName + '\'' +
-                ", name='" + name + '\'' +
+                ", printableName='" + UMLName + '\'' +
+                ", name='" + qualifiedName + '\'' +
                 '}';
     }
 }
