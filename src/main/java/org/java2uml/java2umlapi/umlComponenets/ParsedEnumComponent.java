@@ -9,7 +9,7 @@ import java.util.Optional;
 
 import static org.java2uml.java2umlapi.util.umlSymbols.UMLGeneratorUtil.*;
 
-public class ParsedEnumComponent implements ParsedComponent, ParsedCompositeComponent {
+public class ParsedEnumComponent implements ParsedCompositeComponent {
 
     private final ResolvedEnumDeclaration resolvedEnumDeclaration;
     private final ParsedComponent parent;
