@@ -99,7 +99,7 @@ class ParsedFieldComponentTest {
     @Nested
     @DisplayName("When Field's type is a primitive type,")
     @ExtendWith(MockitoExtension.class)
-    class FieldIsPrimitiveType {
+    class FieldIsPrimitiveTypeTest {
         @Mock
         ResolvedFieldDeclaration resolvedFieldDeclaration;
 

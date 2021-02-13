@@ -20,6 +20,7 @@ public class ParsedMethodComponent implements ParsedComponent {
     private final ResolvedMethodDeclaration resolvedDeclaration;
     private final String UMLName;
     private final String qualifiedName;
+    private final String returnType;
 
     /**
      * Initializes ParsedMethodComponent.
@@ -32,6 +33,27 @@ public class ParsedMethodComponent implements ParsedComponent {
         this.resolvedDeclaration = resolvedDeclaration;
         this.UMLName = resolvedDeclaration.getSignature();
         this.qualifiedName = resolvedDeclaration.getQualifiedSignature();
+        this.returnType = getReturnType();
+    }
+
+    /**
+     * Gets the correct return type from resolvedDeclaration and then returns it in string form.
+     *
+     * @return returns string of return type.
+     */
+    private String getReturnType() {
+        var resolvedType = resolvedDeclaration.getReturnType();
+
+        if (resolvedType.isVoid()) {
+            return "void";
+        }
+
+        if (resolvedType.isReferenceType()) {
+            var qualifiedReturnType = resolvedType.asReferenceType().getQualifiedName().split("\\.");
+            return qualifiedReturnType[qualifiedReturnType.length - 1];
+        }
+
+        return resolvedType.asPrimitive().name().toLowerCase();
     }
 
     @Override
@@ -65,6 +87,13 @@ public class ParsedMethodComponent implements ParsedComponent {
     }
 
     /**
+     * @return returns the return type of ParsedMethodComponent.
+     */
+    public String getReturnTypeName() {
+        return returnType;
+    }
+
+    /**
      * @return returns the uml form of this component.
      */
     @Override
@@ -72,7 +101,7 @@ public class ParsedMethodComponent implements ParsedComponent {
         return VisibilityModifierSymbol.of(resolvedDeclaration.accessSpecifier().asString()) + " "
                 + UMLModifier.METHOD + " "
                 + (resolvedDeclaration.isStatic() ? UMLModifier.STATIC : "")
-                + " " + UMLName;
+                + " " + UMLName + ": " + returnType;
     }
 
     @Override

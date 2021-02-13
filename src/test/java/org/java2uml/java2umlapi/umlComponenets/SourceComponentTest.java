@@ -17,6 +17,7 @@ import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
+@DisplayName("When using SourceComponent, ")
 class SourceComponentTest {
     private SourceComponent sourceComponent;
     private static final String PROJECT_ZIP_PATH = "src/test/testSources/JavaParserFacadeTests/testParserClass/ProjectTest/test.zip";
@@ -31,7 +32,7 @@ class SourceComponentTest {
 
     @SuppressWarnings("deprecation")
     @Test
-    @DisplayName("When executing toUML, should generate a valid plant uml syntax.")
+    @DisplayName("using toUML, should generate a valid plant uml syntax.")
     public void testToUML() throws IOException {
         String source = sourceComponent.toUML();
         final ByteArrayOutputStream os;
