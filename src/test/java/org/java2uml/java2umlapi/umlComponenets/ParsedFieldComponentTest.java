@@ -15,7 +15,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Tests for ParsedFieldComponent")
@@ -39,9 +40,7 @@ class ParsedFieldComponentTest {
     @Test
     @DisplayName("When using getName(), parsedFieldComponent should return name.")
     void testGetName() {
-        verify(resolvedFieldDeclaration, atLeastOnce()).asField();
         assertEquals(fieldName, parsedFieldComponent.getName());
-        verifyNoMoreInteractions();
     }
 
     @Nested
@@ -91,8 +90,6 @@ class ParsedFieldComponentTest {
             assertTrue(uml.contains(fieldName), "generated uml syntax does not contain correct field name");
             assertEquals(uml.contains("static"), isStatic);
             assertTrue(uml.contains(VisibilityModifierSymbol.of(accessSpecifierStr).toString()));
-
-            verifyNoMoreInteractions(resolvedFieldDeclaration);
         }
     }
 
@@ -143,8 +140,6 @@ class ParsedFieldComponentTest {
             assertTrue(uml.contains(fieldName));
             assertEquals(uml.contains("static"), isStatic);
             assertTrue(uml.contains(VisibilityModifierSymbol.of(accessSpecifierStr).toString()));
-
-            verifyNoMoreInteractions(resolvedFieldDeclaration);
         }
     }
 }
