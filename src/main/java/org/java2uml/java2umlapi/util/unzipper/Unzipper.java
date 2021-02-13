@@ -15,7 +15,7 @@ import java.util.zip.ZipInputStream;
  *
  * @author kawaiifox
  */
-public class Unzipper {
+public abstract class Unzipper {
 
     /**
      * unzip a given file from srcZipPath and generate unzipped files in UnzipOutput directory in destDirPath.

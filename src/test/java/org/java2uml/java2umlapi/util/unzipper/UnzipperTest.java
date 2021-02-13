@@ -10,14 +10,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.fail;
-
+@DisplayName("When using Unzipper,")
 class UnzipperTest {
 
     private static final String SRC = "src/test/testSources/JavaParserFacadeTests/testParserClass/ProjectTest/test.zip";
     private static final String DST = "src/test/testOutput";
 
     @Test
-    @DisplayName("When using Unzipper, unzips files from SRC path and generate output in DST path.")
+    @DisplayName("using unzipDir, should unzip files from SRC path and generate output in DST path.")
     void testUnzipDir()  throws IOException {
         File destDir = Unzipper.unzipDir(Path.of(SRC), Path.of(DST));
 
