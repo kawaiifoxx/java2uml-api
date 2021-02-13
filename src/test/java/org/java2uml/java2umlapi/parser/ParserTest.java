@@ -17,6 +17,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@DisplayName("When using Parser, ")
 class ParserTest {
     private List<ResolvedDeclaration> resolvedDeclarations;
     private Set<String> expectedClassNames;
@@ -45,8 +46,8 @@ class ParserTest {
     }
 
     @Test
-    @DisplayName("When parser parses code, should give fullyQualified classNames.")
-    void testParser() {
+    @DisplayName("using parse, should return correct resolved declaration.")
+    void testParse() {
         Set<String> actualClassNames = new HashSet<>();
 
         resolvedDeclarations.forEach(resolvedDeclaration -> actualClassNames.add(resolvedDeclaration.asType().getQualifiedName()));
