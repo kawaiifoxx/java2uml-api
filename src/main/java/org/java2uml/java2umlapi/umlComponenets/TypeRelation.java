@@ -35,8 +35,8 @@ public class TypeRelation {
     @Override
     public String toString() {
         return "TypeRelation{" +
-                "from=" + from +
-                ", to=" + to +
+                "from=" + from.getName() +
+                ", to=" + to.getName() +
                 ", relationsType=" + relationsType +
                 '}';
     }

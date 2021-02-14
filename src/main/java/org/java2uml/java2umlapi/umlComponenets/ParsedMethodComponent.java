@@ -100,8 +100,8 @@ public class ParsedMethodComponent implements ParsedComponent {
     public String toUML() {
         return VisibilityModifierSymbol.of(resolvedDeclaration.accessSpecifier().asString()) + " "
                 + UMLModifier.METHOD + " "
-                + (resolvedDeclaration.isStatic() ? UMLModifier.STATIC : "")
-                + " " + UMLName + ": " + returnType;
+                + (resolvedDeclaration.isStatic() ? UMLModifier.STATIC + " " : "")
+                + UMLName + ": " + returnType;
     }
 
     @Override
