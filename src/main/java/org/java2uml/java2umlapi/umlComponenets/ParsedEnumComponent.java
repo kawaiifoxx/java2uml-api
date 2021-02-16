@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.java2uml.java2umlapi.util.umlSymbols.Separators.DOTTED;
+import static org.java2uml.java2umlapi.util.umlSymbols.Separator.DOTTED;
 import static org.java2uml.java2umlapi.util.umlSymbols.UMLGeneratorUtil.*;
 
 public class ParsedEnumComponent implements ParsedCompositeComponent {

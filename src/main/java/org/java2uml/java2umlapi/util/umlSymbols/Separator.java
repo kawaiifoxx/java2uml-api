@@ -7,7 +7,7 @@ package org.java2uml.java2umlapi.util.umlSymbols;
  *
  * @author kawaiifox
  */
-public enum Separators {
+public enum Separator {
 
     DOTTED(".."),
     LINE("--"),
@@ -16,7 +16,7 @@ public enum Separators {
 
     private String printable;
 
-    Separators(String printable) {
+    Separator(String printable) {
         this.printable = printable;
     }
 
