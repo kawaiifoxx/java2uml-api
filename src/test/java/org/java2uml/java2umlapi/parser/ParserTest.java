@@ -17,7 +17,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("When using Parser, ")
+@DisplayName("When using Parser,")
 class ParserTest {
     private List<ResolvedDeclaration> resolvedDeclarations;
     private Set<String> expectedClassNames;

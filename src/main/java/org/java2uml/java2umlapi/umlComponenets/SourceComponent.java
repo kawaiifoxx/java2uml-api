@@ -326,8 +326,8 @@ public class SourceComponent implements ParsedComponent {
     @Override
     public String toString() {
         return "SourceComponent{" +
-                ", genratedUMLClasses='" + generatedUMLClasses + '\'' +
-                ", genratedUMLTypeRelations='" + generatedUMLTypeRelations + '\'' +
+                ", generatedUMLClasses='" + generatedUMLClasses + '\'' +
+                ", generatedUMLTypeRelations='" + generatedUMLTypeRelations + '\'' +
                 '}';
     }
 }

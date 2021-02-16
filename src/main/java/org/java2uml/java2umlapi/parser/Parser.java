@@ -8,6 +8,7 @@ import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import com.github.javaparser.symbolsolver.utils.SymbolSolverCollectionStrategy;
 import com.github.javaparser.utils.ProjectRoot;
 import com.github.javaparser.utils.SourceRoot;
+import org.java2uml.java2umlapi.exceptions.EmptySourceDirectoryException;
 import org.java2uml.java2umlapi.umlComponenets.SourceComponent;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,15 +31,15 @@ public class Parser {
      *
      * @param PATH path to the source directory to be parsed.
      * @return returns SourceComponent instance for corresponding java source directory.
-     * @throws RuntimeException if there is no .java files in given directory or its subdirectories.
+     * @throws EmptySourceDirectoryException if there is no .java files in given directory or its subdirectories.
      */
-    public static SourceComponent parse(Path PATH) {
+    public static SourceComponent parse(Path PATH) throws EmptySourceDirectoryException {
         ProjectRoot projectRoot = new SymbolSolverCollectionStrategy().collect(PATH);
 
         var sourceRoots = projectRoot.getSourceRoots();
 
         if (sourceRoots.isEmpty()) {
-            throw new RuntimeException("[Parser] Source directory is empty i.e it does not contain any .java or .jar files.");
+            throw new EmptySourceDirectoryException("[Parser] Source directory is empty i.e it does not contain any .java or .jar files.");
         }
 
         List<ResolvedDeclaration> resolvedDeclarations = getResolvedDeclarations(sourceRoots);
