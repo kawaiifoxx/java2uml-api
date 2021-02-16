@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static org.java2uml.java2umlapi.util.umlSymbols.Separators.DOTTED;
 import static org.java2uml.java2umlapi.util.umlSymbols.UMLGeneratorUtil.*;
 
 public class ParsedEnumComponent implements ParsedCompositeComponent {
@@ -119,11 +120,11 @@ public class ParsedEnumComponent implements ParsedCompositeComponent {
         }
 
         return "enum " + name + " {\n"
-                + "..Enum Constants..\n"
+                + DOTTED + "Enum Constants\n" + DOTTED
                 + enumConstants
-                + "..Fields..\n"
+                + DOTTED + "Fields\n" + DOTTED
                 + fieldDeclarations
-                + "..Methods..\n"
+                + DOTTED + "Methods\n" + DOTTED
                 + constructorSignatures
                 + methodSignatures
                 + "}";

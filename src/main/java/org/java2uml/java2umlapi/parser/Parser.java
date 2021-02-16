@@ -120,7 +120,7 @@ public class Parser {
 
 
     /**
-     * Takes a list of SourceRoot and try to parse parallely each .java file on success add them to list of compilationUnit.
+     * Takes a list of SourceRoot and try to parse parallelly each .java file on success add them to list of compilationUnit.
      * Unsuccessful parse results are ignored.
      *
      * @param sourceRoots List of SourceRoot.
