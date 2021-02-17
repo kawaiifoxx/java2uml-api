@@ -5,9 +5,36 @@
     <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
     <property name="LOG_FILE" value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}/}spring.log}"/>
     <include resource="org/springframework/boot/logging/logback/file-appender.xml"/>
+
+    <appender name="RollingFileTrace"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>./log/java2uml-trace.log</file>
+        <encoder
+                class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>${FILE_LOG_PATTERN}</Pattern>
+        </encoder>
+
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- rollover daily and when the file reaches 10 MegaBytes -->
+            <fileNamePattern>./log/archived/java2uml-trace-%d{yyyy-MM-dd}.%i.log
+            </fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
     </root>
     <logger name="org.springframework.web" level="DEBUG"/>
+    <!--  SimpleCallTracer traces every method call in org.java2uml.*.  -->
+    <!--   to disable change level to "OFF".  -->
+    <!--  to enable change level to "TRACE".  -->
+    <logger name="org.java2uml.java2umlapi.aspects.SimpleCallTracer" level="OFF" additivity="false">
+        <appender-ref ref="RollingFileTrace"/>
+    </logger>
 </configuration>
