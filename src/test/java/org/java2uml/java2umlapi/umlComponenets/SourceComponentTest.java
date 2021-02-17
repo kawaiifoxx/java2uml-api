@@ -39,7 +39,7 @@ class SourceComponentTest {
         try {
             SourceStringReader reader = new SourceStringReader(source);
             os = new ByteArrayOutputStream();
-            var desc = reader.generateImage(os, new FileFormatOption(FileFormat.SVG));
+            reader.generateImage(os, new FileFormatOption(FileFormat.SVG));
             os.close();
         } catch (NullPointerException exception) {
             fail("Source component was unable to generate a valid uml syntax, test failed.");
@@ -60,7 +60,7 @@ class SourceComponentTest {
     }
 
     @AfterEach
-    private void tearDown() throws IOException {
+    void tearDown() throws IOException {
         JarTypeSolver.ResourceRegistry.getRegistry().cleanUp();
         FileDeleteStrategy.FORCE.delete(Path.of(DST).toFile());
     }

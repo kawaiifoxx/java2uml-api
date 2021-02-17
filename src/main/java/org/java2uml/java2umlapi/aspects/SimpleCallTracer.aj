@@ -21,7 +21,7 @@ import java.util.Arrays;
  * @author kawaiifox
  */
 public aspect SimpleCallTracer {
-    Logger logger = LoggerFactory.getLogger(SimpleCallTracer.class);
+    public static final Logger logger = LoggerFactory.getLogger(SimpleCallTracer.class);
 
     /*
      * Pointcut expression which identifies joinPoints in java2uml code.
