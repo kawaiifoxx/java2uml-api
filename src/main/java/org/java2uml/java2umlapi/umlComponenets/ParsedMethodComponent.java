@@ -107,8 +107,7 @@ public class ParsedMethodComponent implements ParsedComponent {
     @Override
     public String toString() {
         return "ParsedMethodComponent{" +
-                ", printableName='" + UMLName + '\'' +
-                ", name='" + qualifiedName + '\'' +
+                "qualifiedName='" + qualifiedName + '\'' +
                 '}';
     }
 }

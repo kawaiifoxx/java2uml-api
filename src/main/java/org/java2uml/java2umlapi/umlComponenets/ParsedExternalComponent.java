@@ -69,4 +69,11 @@ public class ParsedExternalComponent implements ParsedCompositeComponent {
 
         return typeDeclaration + " {\n}";
     }
+
+    @Override
+    public String toString() {
+        return "ParsedExternalComponent{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }

@@ -73,7 +73,7 @@ public class ParsedConstructorComponent implements ParsedComponent {
     @Override
     public String toString() {
         return "ParsedConstructorComponent{" +
-                ", printableName='" + name + '\'' +
+                "name='" + name + '\'' +
                 '}';
     }
 }

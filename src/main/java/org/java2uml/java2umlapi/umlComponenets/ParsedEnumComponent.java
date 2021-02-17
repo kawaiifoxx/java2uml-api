@@ -133,7 +133,7 @@ public class ParsedEnumComponent implements ParsedCompositeComponent {
     @Override
     public String toString() {
         return "ParsedEnumComponent{" +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 '}';
     }
 }

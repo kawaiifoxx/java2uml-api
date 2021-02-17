@@ -60,10 +60,10 @@ public aspect SimpleCallTracer {
 
         //input parameters of the called method.
         var args = Arrays.asList(thisJoinPoint.getArgs());
+        if (logger.isTraceEnabled()) {
+            Object[] loggingArray = {className, line, target, args, signature.getDeclaringTypeName(), signature.getName()};
 
-        logger.trace("\n => Call From " + className + " line " + line
-                + "\n => On " + target
-                + "\n => With Args " + args
-                + "\n => to " + signature.getDeclaringTypeName() + "." + signature.getName());
+            logger.trace("\n => Call From {}: {} line\n => On {}\n => With Args {}\n => to {}.{}", loggingArray);
+        }
     }
 }

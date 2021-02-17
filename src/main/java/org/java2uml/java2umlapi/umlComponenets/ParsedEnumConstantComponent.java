@@ -72,4 +72,11 @@ public class ParsedEnumConstantComponent implements ParsedComponent {
     public String toUML() {
         return name;
     }
+
+    @Override
+    public String toString() {
+        return "ParsedEnumConstantComponent{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }

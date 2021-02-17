@@ -81,7 +81,7 @@ public class ParsedFieldComponent implements ParsedComponent {
     @Override
     public String toString() {
         return "ParsedFieldComponent{" +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 '}';
     }
 }

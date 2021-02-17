@@ -120,11 +120,7 @@ public class ParsedClassOrInterfaceComponent implements ParsedCompositeComponent
     @Override
     public String toString() {
         return "ParsedClassOrInterfaceComponent{" +
-                "  name='" + name + '\'' +
-                ", methodSignatures='" + methodSignatures + '\'' +
-                ", constructorSignatures='" + constructorSignatures + '\'' +
-                ", fieldsDeclarations='" + fieldsDeclarations + '\'' +
-                ", typeDeclaration='" + typeDeclaration + '\'' +
+                "name='" + name + '\'' +
                 '}';
     }
 }
