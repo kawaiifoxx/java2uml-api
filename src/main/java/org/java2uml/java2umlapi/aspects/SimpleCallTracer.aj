@@ -33,7 +33,8 @@ public aspect SimpleCallTracer {
              * captures all the method calls which can be public, private or protected and can have any return type
              * and Are present in org.java2uml.* package and are not within org.java2uml.java2umlapi.aspects.SimpleCallTracer
              */
-            call(* org.java2uml..*(..)) && !within(org.java2uml.java2umlapi.aspects.SimpleCallTracer);
+            call(* org.java2uml..*(..)) &&
+                    !within(org.java2uml.java2umlapi.aspects);
 
     /*
      * Before advice that does the actual logging using logger, before method is executed.
