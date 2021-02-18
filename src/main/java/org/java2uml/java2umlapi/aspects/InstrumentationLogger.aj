@@ -34,6 +34,8 @@ public aspect InstrumentationLogger {
 
     /*
      * Advice to perform instrumentation for Parser.parse
+     * !!!WARNING!!! Please do not touch this unless absolutely necessary, as changing code in this can break,
+     * core functionality of application. !!!WARNING!!!
      */
     SourceComponent around(Path path): ParserParse(path) {
         long startTime = System.currentTimeMillis();
@@ -52,6 +54,8 @@ public aspect InstrumentationLogger {
 
     /*
      * Advice to perform instrumentation for Unzipper.unzipDir
+     * !!!WARNING!!! Please do not touch this unless absolutely necessary, as changing code in this can break,
+     * core functionality of application. !!!WARNING!!!
      */
     File around(Path srcZipPath, Path destDirPath): unzipDir(srcZipPath,destDirPath) {
         long startTime = System.currentTimeMillis();
