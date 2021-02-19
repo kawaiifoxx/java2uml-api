@@ -120,11 +120,11 @@ public class ParsedEnumComponent implements ParsedCompositeComponent {
         }
 
         return "enum " + name + " {\n"
-                + DOTTED + "Enum Constants\n" + DOTTED
+                + DOTTED + "Enum Constants" + DOTTED + "\n"
                 + enumConstants
-                + DOTTED + "Fields\n" + DOTTED
+                + DOTTED + "Fields" + DOTTED + "\n"
                 + fieldDeclarations
-                + DOTTED + "Methods\n" + DOTTED
+                + DOTTED + "Methods" + DOTTED + "\n"
                 + constructorSignatures
                 + methodSignatures
                 + "}";
