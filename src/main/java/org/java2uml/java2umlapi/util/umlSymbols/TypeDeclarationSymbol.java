@@ -33,21 +33,22 @@ public class TypeDeclarationSymbol {
      * @return Symbol containing keywords like class, interface with typeDeclaration.
      */
     public static String getTypeDeclarationSymbol(ResolvedTypeDeclaration resolvedDeclaration) {
-        var typeDeclaration = "class " + resolvedDeclaration.getQualifiedName();
+        var qualifiedName = resolvedDeclaration.getQualifiedName();
+        var typeDeclaration = "class " + qualifiedName;
 
         if (resolvedDeclaration.isClass()) {
-            typeDeclaration = "class " + resolvedDeclaration.getQualifiedName();
+            typeDeclaration = "class " + qualifiedName;
             if (resolvedDeclaration.asReferenceType().isGeneric()) {
                 typeDeclaration = "class";
-                typeDeclaration = parametrizeOn(getTypeParamsString(resolvedDeclaration).toString().trim()
-                        , typeDeclaration, resolvedDeclaration.getQualifiedName());
+                typeDeclaration = parametrizeOn(getTypeParamsString(resolvedDeclaration)
+                        , typeDeclaration, qualifiedName);
             }
         } else if (resolvedDeclaration.isInterface()) {
-            typeDeclaration = "interface " + resolvedDeclaration.getQualifiedName();
+            typeDeclaration = "interface " + qualifiedName;
             if (resolvedDeclaration.asReferenceType().isGeneric()) {
                 typeDeclaration = "interface";
-                typeDeclaration = parametrizeOn(getTypeParamsString(resolvedDeclaration).toString().trim()
-                        , typeDeclaration, resolvedDeclaration.getQualifiedName());
+                typeDeclaration = parametrizeOn(getTypeParamsString(resolvedDeclaration)
+                        , typeDeclaration, qualifiedName);
             }
         }
 
@@ -60,7 +61,7 @@ public class TypeDeclarationSymbol {
      * @return a String containing all the type parameters separated by ", ".
      */
     @NotNull
-    private static StringBuilder getTypeParamsString(ResolvedTypeDeclaration resolvedDeclaration) {
+    private static String getTypeParamsString(ResolvedTypeDeclaration resolvedDeclaration) {
         var typeParams = resolvedDeclaration
                 .asReferenceType()
                 .getTypeParameters();
@@ -70,6 +71,6 @@ public class TypeDeclarationSymbol {
         typeParams.forEach(typeParam ->
                 typeParamsString.append(typeParam.getName()).append(", "));
         typeParamsString.deleteCharAt(typeParamsString.length() - 2);
-        return typeParamsString;
+        return typeParamsString.toString().trim();
     }
 }
