@@ -4,6 +4,7 @@ import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedReferenceTypeDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedTypeDeclaration;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -13,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("When using ParsedClassOrInterfaceComponent,")
 class ParsedClassOrInterfaceComponentTest {
 
     private ParsedClassOrInterfaceComponent parsedComponent;
@@ -70,11 +72,13 @@ class ParsedClassOrInterfaceComponentTest {
         parsedComponent.addChild(parsedMethodComponent2);
     }
 
+    @DisplayName("using getName, should return the fullyQualified name of ParsedClassOrInterfaceComponent")
     @Test
     void testGetName() {
         assertEquals(fullyQualifiedClassOrInterfaceName, parsedComponent.getName());
     }
 
+    @DisplayName("using toUML, should return the uml representation for ParsedClassOrInterfaceComponent")
     @Test
     void testToUML() {
         var uml = parsedComponent.toUML();
