@@ -10,7 +10,6 @@ import com.github.javaparser.utils.ProjectRoot;
 import com.github.javaparser.utils.SourceRoot;
 import org.java2uml.java2umlapi.exceptions.EmptySourceDirectoryException;
 import org.java2uml.java2umlapi.umlComponenets.SourceComponent;
-import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -52,7 +51,6 @@ public class Parser {
      * @return return a List<ResolvedDeclaration>.
      * @throws RuntimeException if passed sourceRoots is empty.
      */
-    @NotNull
     private static List<ResolvedDeclaration> getResolvedDeclarations(List<SourceRoot> sourceRoots) {
         var compilationUnits = getAllCompilationUnits(sourceRoots);
         var classOrInterfaceDeclarations = getClassOrInterfaceDeclarations(compilationUnits);
@@ -102,7 +100,6 @@ public class Parser {
      *
      * @return Returns a list of classOrInterfaceDeclarations
      */
-    @NotNull
     private static List<ClassOrInterfaceDeclaration> getClassOrInterfaceDeclarations(List<CompilationUnit> compilationUnits) {
         List<ClassOrInterfaceDeclaration> classOrInterfaceDeclarations = new ArrayList<>();
 

@@ -1,7 +1,6 @@
 package org.java2uml.java2umlapi.util.umlSymbols;
 
 import com.github.javaparser.resolution.declarations.ResolvedTypeDeclaration;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * <p>
@@ -60,7 +59,6 @@ public class TypeDeclarationSymbol {
      * @param resolvedDeclaration Resolved type declaration of classOrInterface for which symbol needs to be generated.
      * @return a String containing all the type parameters separated by ", ".
      */
-    @NotNull
     private static String getTypeParamsString(ResolvedTypeDeclaration resolvedDeclaration) {
         var typeParams = resolvedDeclaration
                 .asReferenceType()
