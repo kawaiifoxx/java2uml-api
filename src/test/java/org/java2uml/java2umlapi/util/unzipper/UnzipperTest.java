@@ -26,6 +26,6 @@ class UnzipperTest {
         }
 
         //clean up.
-        FileDeleteStrategy.FORCE.delete(destDir);
+        FileDeleteStrategy.FORCE.delete(Path.of(DST).toFile());
     }
 }
