@@ -43,7 +43,7 @@ class SourceComponentTest {
             os.close();
         } catch (NullPointerException exception) {
             fail("Source component was unable to generate a valid uml syntax, test failed.");
-            throw new RuntimeException("[SourceComponentTest] Invalid Source Component");
+            throw new IllegalStateException("[SourceComponentTest] Invalid Source Component", exception);
         }
 
         final String svg = os.toString();
