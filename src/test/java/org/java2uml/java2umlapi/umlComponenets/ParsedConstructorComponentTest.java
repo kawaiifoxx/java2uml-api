@@ -26,7 +26,8 @@ class ParsedConstructorComponentTest {
     @BeforeEach
     void setUp() {
         var resolvedDeclaration = mock(ResolvedConstructorDeclaration.class);
-        doReturn(name).when(resolvedDeclaration).getSignature();
+        lenient().doReturn(name).when(resolvedDeclaration).getSignature();
+        doReturn(name).when(resolvedDeclaration).getQualifiedSignature();
 
         var accessSpecifier = mock(AccessSpecifier.class);
         lenient().doReturn(accessSpecifierStr).when(accessSpecifier).asString();

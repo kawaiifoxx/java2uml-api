@@ -26,21 +26,23 @@ class ParsedFieldComponentTest {
     ParsedFieldComponent parsedFieldComponent;
 
     private final String fieldName = "testField";
+    private final String parentName = "co.test";
 
     @BeforeEach
     void setUp() {
         assertNotNull(resolvedFieldDeclaration, "ResolvedFieldDeclaration is null.");
 
-        doReturn(resolvedFieldDeclaration).when(resolvedFieldDeclaration).asField();
         doReturn(fieldName).when(resolvedFieldDeclaration).getName();
 
-        parsedFieldComponent = new ParsedFieldComponent(null, resolvedFieldDeclaration);
+        var parent = mock(ParsedComponent.class);
+        doReturn(parentName).when(parent).getName();
+        parsedFieldComponent = new ParsedFieldComponent(parent, resolvedFieldDeclaration);
     }
 
     @Test
     @DisplayName("When using getName(), parsedFieldComponent should return name.")
     void testGetName() {
-        assertEquals(fieldName, parsedFieldComponent.getName());
+        assertEquals(parentName + "." + fieldName, parsedFieldComponent.getName());
     }
 
     @Nested
@@ -60,7 +62,6 @@ class ParsedFieldComponentTest {
 
         @BeforeEach
         void setUp() {
-            doReturn(resolvedFieldDeclaration).when(resolvedFieldDeclaration).asField();
             doReturn(fieldName).when(resolvedFieldDeclaration).getName();
 
             var resolvedReferenceType = mock(ResolvedReferenceType.class);
@@ -77,7 +78,10 @@ class ParsedFieldComponentTest {
             doReturn(accessSpecifier).when(resolvedFieldDeclaration).accessSpecifier();
             doReturn(isStatic).when(resolvedFieldDeclaration).isStatic();
 
-            parsedFieldComponent = new ParsedFieldComponent(null, resolvedFieldDeclaration);
+            var parent = mock(ParsedComponent.class);
+            doReturn(parentName).when(parent).getName();
+
+            parsedFieldComponent = new ParsedFieldComponent(parent, resolvedFieldDeclaration);
         }
 
         @Test
@@ -110,7 +114,6 @@ class ParsedFieldComponentTest {
 
         @BeforeEach
         void setUp() {
-            doReturn(resolvedFieldDeclaration).when(resolvedFieldDeclaration).asField();
             doReturn(fieldName).when(resolvedFieldDeclaration).getName();
 
             var resolvedPrimitiveType = mock(ResolvedPrimitiveType.class);
@@ -128,7 +131,10 @@ class ParsedFieldComponentTest {
             doReturn(accessSpecifier).when(resolvedFieldDeclaration).accessSpecifier();
             doReturn(isStatic).when(resolvedFieldDeclaration).isStatic();
 
-            parsedFieldComponent = new ParsedFieldComponent(null, resolvedFieldDeclaration);
+            var parent = mock(ParsedComponent.class);
+            doReturn(parentName).when(parent).getName();
+
+            parsedFieldComponent = new ParsedFieldComponent(parent, resolvedFieldDeclaration);
         }
 
         @Test

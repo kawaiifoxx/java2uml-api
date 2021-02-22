@@ -19,7 +19,7 @@ import static org.java2uml.java2umlapi.util.umlSymbols.RelationsSymbol.Direction
  *
  * @author kawaiifox
  */
-public class SourceComponent implements ParsedComponent {
+public class SourceComponent implements ParsedCompositeComponent {
 
     private final Map<String, ParsedComponent> children;
     private final Map<String, ParsedComponent> externalComponents;
@@ -89,10 +89,8 @@ public class SourceComponent implements ParsedComponent {
     }
 
     @Override
-    public Optional<Map<String, ParsedComponent>> getChildren() {
-        if (children == null)
-            return Optional.empty();
-        return Optional.of(children);
+    public Map<String, ParsedComponent> getChildren() {
+        return children;
     }
 
     @Override
@@ -324,6 +322,44 @@ public class SourceComponent implements ParsedComponent {
                 generatedUMLClassesBuilder.append(v.toUML()).append("\n"));
 
         generatedUMLClasses = generatedUMLClassesBuilder.toString();
+    }
+
+    /**
+     * Finds and returns the reference for ParsedComponent for which name and class is provided.
+     *
+     * @param exactName Name of the component to be found.
+     * @param clazz     class of the component.
+     * @return ParsedComponent if present, empty optional otherwise.
+     */
+    @Override
+    public <T extends ParsedComponent> Optional<T> find(String exactName, Class<T> clazz) {
+
+        if (clazz.equals(ParsedExternalComponent.class)) {
+            var result = externalComponents.get(exactName);
+            if (result != null)
+                //noinspection unchecked
+                return (Optional<T>) result.asParsedExternalComponent();
+
+            return  Optional.empty();
+        }
+
+        if (clazz.equals(ParsedClassOrInterfaceComponent.class) ||
+                clazz.equals(ParsedEnumComponent.class)) {
+            var result = children.get(exactName);
+            if (result != null && result.isParsedClassOrInterfaceComponent()) {
+                //noinspection unchecked
+                return (Optional<T>) result.asParsedClassOrInterfaceComponent();
+            }
+
+            if (result != null && result.isParsedEnumComponent()) {
+                //noinspection unchecked
+                return (Optional<T>) result.asParsedEnumComponent();
+            }
+
+            return Optional.empty();
+        }
+
+        return findInChildren(exactName, clazz);
     }
 
     @Override

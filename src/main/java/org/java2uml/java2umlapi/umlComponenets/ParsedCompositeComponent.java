@@ -34,4 +34,18 @@ public interface ParsedCompositeComponent extends ParsedComponent {
     default Optional<ParsedCompositeComponent> asParsedCompositeComponent() {
         return Optional.of(this);
     }
+
+    default <T extends ParsedComponent> Optional<T> findInChildren(String exactName, Class<T> clazz) {
+        var children = getChildren();
+
+        for (var child : children.entrySet()) {
+            var result = child.getValue().find(exactName, clazz);
+
+            if (result.isPresent()) {
+                return result;
+            }
+        }
+
+        return Optional.empty();
+    }
 }

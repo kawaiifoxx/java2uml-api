@@ -7,24 +7,25 @@ import net.sourceforge.plantuml.SourceStringReader;
 import org.apache.commons.io.FileDeleteStrategy;
 import org.java2uml.java2umlapi.parser.Parser;
 import org.java2uml.java2umlapi.util.unzipper.Unzipper;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.nio.file.Path;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @DisplayName("When using SourceComponent, ")
 class SourceComponentTest {
-    private SourceComponent sourceComponent;
+    private static SourceComponent sourceComponent;
     private static final String PROJECT_ZIP_PATH = "src/test/testSources/JavaParserFacadeTests/testParserClass/ProjectTest/test.zip";
     private static final String DST = "src/test/testOutput";
 
-    @BeforeEach
-    void setUp() throws IOException {
+    @BeforeAll
+    static void setUp() throws IOException {
         File generatedSourceFiles = Unzipper.unzipDir(Path.of(PROJECT_ZIP_PATH), Path.of(DST));
         sourceComponent = Parser.parse(generatedSourceFiles.toPath());
     }
@@ -59,8 +60,64 @@ class SourceComponentTest {
         writer.close();
     }
 
-    @AfterEach
-    void tearDown() throws IOException {
+    @Test
+    @DisplayName("using find, with class name and ParsedClassOrInterfaceComponent.class should " +
+            "return ParsedClassOrInterfaceComponent reference for given class.")
+    void TestFindClassOrInterface() {
+        var toFind = "com.shreyansh.springboot.thymeleafdemo.service.EmployeeService";
+        var result = sourceComponent.find(toFind, ParsedClassOrInterfaceComponent.class);
+
+        if (result.isEmpty()) {
+            fail("Source component should contain " + toFind);
+        }
+
+        assertEquals(toFind, result.get().getName(), "Component name is not equal to passed exactName");
+    }
+
+    @Test
+    @DisplayName("using find, with enum name and ParsedEnumComponent.class should " +
+            "return ParsedEnumComponent reference for given enum.")
+    void TestFindEnum() {
+        var toFind = "com.shreyansh.springboot.thymeleafdemo.EnumTest";
+        var result = sourceComponent.find(toFind, ParsedEnumComponent.class);
+
+        if (result.isEmpty()) {
+            fail("Source component should contain " + toFind);
+        }
+
+        assertEquals(toFind, result.get().getName(), "Component name is not equal to passed exactName");
+    }
+
+    @Test
+    @DisplayName("using find, with class name and ParsedExternalComponent.class should " +
+            "return ParsedExternalComponent reference for given class.")
+    void TestFindExternal() {
+        var toFind = "org.springframework.data.jpa.repository.JpaRepository";
+        var result = sourceComponent.find(toFind, ParsedExternalComponent.class);
+
+        if (result.isEmpty()) {
+            fail("Source component should contain " + toFind);
+        }
+
+        assertEquals(toFind, result.get().getName(), "Component name is not equal to passed exactName");
+    }
+
+    @Test
+    @DisplayName("using find, with method name and ParsedMethodComponent.class should " +
+            "return ParsedMethodComponent reference for given method.")
+    void TestFindMethod() {
+        var toFind = "com.shreyansh.springboot.thymeleafdemo.service.EmployeeServiceImpl.findAll()";
+        var result = sourceComponent.find(toFind, ParsedMethodComponent.class);
+
+        if (result.isEmpty()) {
+            fail("Source component should contain " + toFind);
+        }
+
+        assertEquals(toFind, result.get().getName(), "Component name is not equal to passed exactName");
+    }
+
+    @AfterAll
+    static void tearDown() throws IOException {
         JarTypeSolver.ResourceRegistry.getRegistry().cleanUp();
         FileDeleteStrategy.FORCE.delete(Path.of(DST).toFile());
     }

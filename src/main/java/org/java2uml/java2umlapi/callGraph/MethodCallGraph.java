@@ -1,6 +1,6 @@
 package org.java2uml.java2umlapi.callGraph;
 
-import org.java2uml.java2umlapi.umlComponenets.ParsedComponent;
+import org.java2uml.java2umlapi.umlComponenets.ParsedMethodComponent;
 
 import java.util.List;
 import java.util.Map;
@@ -26,8 +26,8 @@ public interface MethodCallGraph {
     Map<String, List<String>> getCallGraphMap();
 
     /**
-     * Get a mapping from methodName (String) -> method (ParsedComponent)
-     * @return map from methodName to parsedComponent.
+     * Get a mapping from methodName (String) -> method (ParsedMethodComponent)
+     * @return map from methodName to parsedMethodComponent.
      */
-    Map<String, ParsedComponent> getAllMethods();
+    Map<String, ParsedMethodComponent> getAllMethods();
 }

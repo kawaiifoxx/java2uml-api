@@ -1,11 +1,12 @@
 package org.java2uml.java2umlapi.callGraph;
 
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.resolution.SymbolResolver;
 import org.java2uml.java2umlapi.exceptions.OrphanComponentException;
-import org.java2uml.java2umlapi.umlComponenets.ParsedComponent;
 import org.java2uml.java2umlapi.umlComponenets.ParsedMethodComponent;
 import org.java2uml.java2umlapi.umlComponenets.SourceComponent;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ public class MethodCallGraphImpl implements MethodCallGraph {
     private final SourceComponent sourceComponent;
     private final SymbolResolver symbolResolver;
     private final ParsedMethodComponent root;
+    private final boolean isRecursive = false;
 
     /**
      * Constructor for MethodCallGraphImpl, it takes in ParsedMethodComponent and tries to traverse up the tree and
@@ -92,7 +94,20 @@ public class MethodCallGraphImpl implements MethodCallGraph {
      * @return map from methodName to parsedComponent.
      */
     @Override
-    public Map<String, ParsedComponent> getAllMethods() {
+    public Map<String, ParsedMethodComponent> getAllMethods() {
+        var rootMethodDeclaration = root.getAsResolvedMethodDeclaration()
+                .orElseThrow(() -> new IllegalStateException("Parsed method component does not contain resolvedDeclaration."))
+                .toAst()
+                .orElseThrow(() -> new RuntimeException("unable to get AST from ResolvedMethodDeclaration."));
+
+
+        Map<String, ParsedMethodComponent> methodComponentMap = new HashMap<>();
+
+        rootMethodDeclaration
+                .findAll(MethodCallExpr.class)
+                .forEach(methodCallExpr -> {
+
+                });
         return null;
     }
 }
