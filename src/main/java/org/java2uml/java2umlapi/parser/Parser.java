@@ -4,6 +4,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
+import com.github.javaparser.resolution.SymbolResolver;
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import com.github.javaparser.symbolsolver.utils.SymbolSolverCollectionStrategy;
 import com.github.javaparser.utils.ProjectRoot;
@@ -23,6 +24,9 @@ import java.util.List;
  * @author kawaiifox.
  */
 public class Parser {
+
+    private static SymbolResolver symbolResolver = null;
+
     /**
      * <p>
      * resolves all reference types in given java source directory and returns a SourceComponent.
@@ -43,7 +47,7 @@ public class Parser {
 
         List<ResolvedDeclaration> resolvedDeclarations = getResolvedDeclarations(sourceRoots);
 
-        return new SourceComponent(resolvedDeclarations);
+        return new SourceComponent(resolvedDeclarations, symbolResolver);
     }
 
     /**
@@ -60,7 +64,7 @@ public class Parser {
             throw new RuntimeException("[Parser] Unable to get symbolResolver.");
         }
 
-        var symbolResolver = sourceRoots.get(0).getParserConfiguration().getSymbolResolver().get();
+        symbolResolver = sourceRoots.get(0).getParserConfiguration().getSymbolResolver().get();
         List<ResolvedDeclaration> resolvedDeclarations = new ArrayList<>();
         classOrInterfaceDeclarations
                 .forEach(classOrInterfaceDeclaration -> resolvedDeclarations

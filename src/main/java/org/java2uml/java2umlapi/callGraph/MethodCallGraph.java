@@ -13,10 +13,21 @@ import java.util.Map;
  * @author kawaiifox
  */
 public interface MethodCallGraph {
-
+    /**
+     * Get a concatenated representation of call graph.
+     * @return returns a representation of call graph in string form.
+     */
     String getCallGraphString();
 
+    /**
+     * Get a mapping from methodName (String) -> neighbors (List<String>)
+     * @return map from methodName to all its neighbors.
+     */
     Map<String, List<String>> getCallGraphMap();
 
+    /**
+     * Get a mapping from methodName (String) -> method (ParsedComponent)
+     * @return map from methodName to parsedComponent.
+     */
     Map<String, ParsedComponent> getAllMethods();
 }
