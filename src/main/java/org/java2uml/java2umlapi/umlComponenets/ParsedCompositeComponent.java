@@ -35,17 +35,22 @@ public interface ParsedCompositeComponent extends ParsedComponent {
         return Optional.of(this);
     }
 
+    /**
+     * This method tries to find the component you are looking for in its children.
+     *
+     * @param exactName Name of the component which you want to find.
+     * @param clazz class of the component you want to find.
+     * @param <T> this is automatically inferred from passed clazz.
+     * @return returns a Optional containing the component.
+     */
     default <T extends ParsedComponent> Optional<T> findInChildren(String exactName, Class<T> clazz) {
-        var children = getChildren();
 
-        for (var child : children.entrySet()) {
-            var result = child.getValue().find(exactName, clazz);
-
-            if (result.isPresent()) {
-                return result;
-            }
-        }
-
-        return Optional.empty();
+        return getChildren()
+                .values()
+                .stream()
+                .map(parsedComponent -> parsedComponent.find(exactName, clazz))
+                .filter(Optional::isPresent)
+                .findFirst()
+                .orElse(Optional.empty());
     }
 }
