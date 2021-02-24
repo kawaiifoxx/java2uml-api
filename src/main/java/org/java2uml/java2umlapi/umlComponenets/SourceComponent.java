@@ -1,5 +1,6 @@
 package org.java2uml.java2umlapi.umlComponenets;
 
+import com.github.javaparser.resolution.SymbolResolver;
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedMethodDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedParameterDeclaration;
@@ -18,11 +19,12 @@ import static org.java2uml.java2umlapi.util.umlSymbols.RelationsSymbol.Direction
  *
  * @author kawaiifox
  */
-public class SourceComponent implements ParsedComponent {
+public class SourceComponent implements ParsedCompositeComponent {
 
     private final Map<String, ParsedComponent> children;
     private final Map<String, ParsedComponent> externalComponents;
     private final List<ResolvedDeclaration> allParsedTypes;
+    private final SymbolResolver symbolResolver;
     private final Set<TypeRelation> allRelations;
     private String generatedUMLClasses;
     private String generatedUMLTypeRelations;
@@ -32,8 +34,9 @@ public class SourceComponent implements ParsedComponent {
      *
      * @param allParsedTypes List of resolvedDeclarations
      */
-    public SourceComponent(List<ResolvedDeclaration> allParsedTypes) {
+    public SourceComponent(List<ResolvedDeclaration> allParsedTypes, SymbolResolver symbolResolver) {
         this.allParsedTypes = allParsedTypes;
+        this.symbolResolver = symbolResolver;
         this.children = new HashMap<>();
         this.allRelations = new HashSet<>();
         this.externalComponents = new HashMap<>();
@@ -86,10 +89,8 @@ public class SourceComponent implements ParsedComponent {
     }
 
     @Override
-    public Optional<Map<String, ParsedComponent>> getChildren() {
-        if (children == null)
-            return Optional.empty();
-        return Optional.of(children);
+    public Map<String, ParsedComponent> getChildren() {
+        return children;
     }
 
     @Override
@@ -323,11 +324,56 @@ public class SourceComponent implements ParsedComponent {
         generatedUMLClasses = generatedUMLClassesBuilder.toString();
     }
 
+    /**
+     * Finds and returns the reference for ParsedComponent for which name and class is provided.
+     *
+     * @param exactName Name of the component to be found.
+     * @param clazz     class of the component.
+     * @return ParsedComponent if present, empty optional otherwise.
+     */
+    @Override
+    public <T extends ParsedComponent> Optional<T> find(String exactName, Class<T> clazz) {
+
+        if (clazz.equals(ParsedExternalComponent.class)) {
+            var result = externalComponents.get(exactName);
+            if (result != null)
+                //noinspection unchecked
+                return (Optional<T>) result.asParsedExternalComponent();
+
+            return  Optional.empty();
+        }
+
+        if (clazz.equals(ParsedClassOrInterfaceComponent.class) ||
+                clazz.equals(ParsedEnumComponent.class)) {
+            var result = children.get(exactName);
+            if (result != null && result.isParsedClassOrInterfaceComponent()) {
+                //noinspection unchecked
+                return (Optional<T>) result.asParsedClassOrInterfaceComponent();
+            }
+
+            if (result != null && result.isParsedEnumComponent()) {
+                //noinspection unchecked
+                return (Optional<T>) result.asParsedEnumComponent();
+            }
+
+            return Optional.empty();
+        }
+
+        return findInChildren(exactName, clazz);
+    }
+
     @Override
     public String toString() {
         return "SourceComponent{" +
                 ", generatedUMLClasses='" + generatedUMLClasses + '\'' +
                 ", generatedUMLTypeRelations='" + generatedUMLTypeRelations + '\'' +
                 '}';
+    }
+
+    /**
+     * @return SymbolResolver for this source component.
+     */
+    public SymbolResolver getSymbolResolver() {
+        return symbolResolver;
     }
 }

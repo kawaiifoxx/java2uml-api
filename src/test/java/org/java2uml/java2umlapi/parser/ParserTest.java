@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ParserTest {
     private List<ResolvedDeclaration> resolvedDeclarations;
     private Set<String> expectedClassNames;
-    private static final String PROJECT_TEST = "src/test/testSources/JavaParserFacadeTests/testParserClass/ProjectTest/test.zip";
+    private static final String PROJECT_TEST = "src/test/testSources/ParserTest/test.zip";
     private static final String DST = "src/test/testOutput";
 
 

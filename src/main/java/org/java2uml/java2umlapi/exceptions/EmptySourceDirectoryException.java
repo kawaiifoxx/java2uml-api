@@ -2,7 +2,7 @@ package org.java2uml.java2umlapi.exceptions;
 
 /**
  * <p>
- *     This exception can be thrown when parser encounters that source directory being parsed is empty.
+ * This exception can be thrown when parser encounters that source directory being parsed is empty.
  * </p>
  *
  * @author kawaiifox

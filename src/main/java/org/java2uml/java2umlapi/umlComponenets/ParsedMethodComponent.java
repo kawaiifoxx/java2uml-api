@@ -1,6 +1,5 @@
 package org.java2uml.java2umlapi.umlComponenets;
 
-import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedMethodDeclaration;
 import org.java2uml.java2umlapi.util.umlSymbols.UMLModifier;
 import org.java2uml.java2umlapi.util.umlSymbols.VisibilityModifierSymbol;
@@ -24,7 +23,8 @@ public class ParsedMethodComponent implements ParsedComponent {
 
     /**
      * Initializes ParsedMethodComponent.
-     * @param parent Parent of this component.
+     *
+     * @param parent              Parent of this component.
      * @param resolvedDeclaration resolvedMethodDeclaration is type solved method declaration
      *                            retrieved from resolvedReferenceTypeDeclaration.
      */
@@ -71,8 +71,24 @@ public class ParsedMethodComponent implements ParsedComponent {
         return Optional.of(this);
     }
 
-    @Override
-    public Optional<ResolvedDeclaration> getResolvedDeclaration() {
+    /**
+     * This returns the Optional<ResolvedMethodDeclaration>.
+     *
+     * <p>
+     *     <p>Why I did not just override the getResolvedDeclaration() method, overridden by all parsedComponents?</p>
+     * <code>
+     * public Optional<ResolvedDeclaration> getResolvedDeclaration() {
+     *      return Optional.of(resolvedDeclaration);
+     * }
+     * </code>
+     * <p>
+     * This is useless because of javaParser library, as it doesn't override method named asResolvedMethodDeclaration()
+     * <p>
+     * please see https://github.com/javaparser/javaparser/blob/master/javaparser-core/src/main/java/com/github/javaparser/resolution/declarations/ResolvedDeclaration.java
+     * Line No. 116.
+     * <p>
+     */
+    public Optional<ResolvedMethodDeclaration> getAsResolvedMethodDeclaration() {
         return Optional.of(resolvedDeclaration);
     }
 

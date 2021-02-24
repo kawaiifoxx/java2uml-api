@@ -53,6 +53,14 @@ public class ParsedExternalComponent implements ParsedCompositeComponent {
         return Optional.of(resolvedTypeDeclaration);
     }
 
+    /**
+     * @return returns Optional.empty() if this component is not ParsedExternalComponent
+     */
+    @Override
+    public Optional<ParsedExternalComponent> asParsedExternalComponent() {
+        return Optional.of(this);
+    }
+
     @Override
     public String getName() {
         return name;

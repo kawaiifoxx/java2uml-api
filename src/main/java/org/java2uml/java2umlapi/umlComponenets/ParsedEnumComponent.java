@@ -19,12 +19,13 @@ public class ParsedEnumComponent implements ParsedCompositeComponent {
     private String methodSignatures;
     private String fieldDeclarations;
     private String constructorSignatures;
-    private HashMap<String, ParsedComponent> children;
+    private final HashMap<String, ParsedComponent> children;
 
     public ParsedEnumComponent(ResolvedEnumDeclaration resolvedEnumDeclaration, ParsedComponent parent) {
         this.resolvedEnumDeclaration = resolvedEnumDeclaration;
         this.parent = parent;
         this.name = resolvedEnumDeclaration.getQualifiedName();
+        this.children = new HashMap<>();
     }
 
     /**
@@ -64,8 +65,8 @@ public class ParsedEnumComponent implements ParsedCompositeComponent {
      * Empty Optional is returned if current component is a leaf.
      */
     @Override
-    public Optional<Map<String, ParsedComponent>> getChildren() {
-        return Optional.of(children);
+    public Map<String, ParsedComponent> getChildren() {
+        return children;
     }
 
     /**
@@ -75,10 +76,6 @@ public class ParsedEnumComponent implements ParsedCompositeComponent {
      *                        method or any other component which can be contained in a Enum.
      */
     public void addChild(ParsedComponent parsedComponent) {
-        if (children == null) {
-            children = new HashMap<>();
-        }
-
         children.put(parsedComponent.getName(), parsedComponent);
     }
 
@@ -96,6 +93,24 @@ public class ParsedEnumComponent implements ParsedCompositeComponent {
     @Override
     public Optional<ParsedEnumComponent> asParsedEnumComponent() {
         return Optional.of(this);
+    }
+
+    /**
+     * Finds and returns the reference for ParsedComponent for which name and class is provided.
+     *
+     * @param exactName Name of the component to be found.
+     * @param clazz     class of the component.
+     * @return ParsedComponent if present, empty optional otherwise.
+     */
+    @Override
+    public <T extends ParsedComponent> Optional<T> find(String exactName, Class<T> clazz) {
+
+        if (exactName.equals(name) && clazz.equals(this.getClass())) {
+            //noinspection unchecked
+            return Optional.of((T) this);
+        }
+
+        return findInChildren(exactName, clazz);
     }
 
     /**

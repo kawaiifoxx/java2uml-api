@@ -28,7 +28,7 @@ public class ParsedConstructorComponent implements ParsedComponent {
     public ParsedConstructorComponent(ParsedComponent parent, ResolvedConstructorDeclaration resolvedDeclaration) {
         this.resolvedDeclaration = resolvedDeclaration;
         this.parent = parent;
-        this.name = resolvedDeclaration.getSignature();
+        this.name = resolvedDeclaration.getQualifiedSignature();
     }
 
     @Override
@@ -67,7 +67,7 @@ public class ParsedConstructorComponent implements ParsedComponent {
     @Override
     public String toUML() {
         return VisibilityModifierSymbol.of(resolvedDeclaration.accessSpecifier().asString()) + " "
-                + UMLModifier.METHOD + " [Constructor] " + name;
+                + UMLModifier.METHOD + " [Constructor] " + resolvedDeclaration.getSignature();
     }
 
     @Override

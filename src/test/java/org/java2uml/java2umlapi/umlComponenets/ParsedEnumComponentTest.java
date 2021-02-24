@@ -109,10 +109,7 @@ class ParsedEnumComponentTest {
     @DisplayName("using toUML, should return uml syntax with all its children elements.")
     void testToUML() {
         var uml = parsedComponent.toUML();
-
-        //noinspection OptionalGetWithoutIsPresent
-        var children = parsedComponent.getChildren().get();
-
+        var children = parsedComponent.getChildren();
         children.forEach((k,v) -> assertTrue(uml.contains(v.toUML())));
     }
 }

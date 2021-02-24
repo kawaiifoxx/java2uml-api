@@ -21,14 +21,15 @@ public class ParsedFieldComponent implements ParsedComponent {
 
     /**
      * Initializes ParsedFieldComponent.
-     * @param parent Parent of this component.
+     *
+     * @param parent              Parent of this component.
      * @param resolvedDeclaration resolvedFieldDeclaration is type solved field declaration
      *                            retrieved from resolvedReferenceTypeDeclaration.
      */
     public ParsedFieldComponent(ParsedComponent parent, ResolvedFieldDeclaration resolvedDeclaration) {
         this.parent = parent;
         this.resolvedDeclaration = resolvedDeclaration;
-        this.name = resolvedDeclaration.asField().getName();
+        this.name = parent.getName() + "." + resolvedDeclaration.getName();
     }
 
     @Override
@@ -75,7 +76,7 @@ public class ParsedFieldComponent implements ParsedComponent {
     public String toUML() {
         return VisibilityModifierSymbol.of(resolvedDeclaration.accessSpecifier().asString()) + " " + getClassOfField() + " "
                 + (resolvedDeclaration.isStatic() ? UMLModifier.STATIC : "")
-                + " " + name;
+                + " " + resolvedDeclaration.getName();
     }
 
     @Override

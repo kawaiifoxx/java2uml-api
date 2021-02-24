@@ -12,7 +12,7 @@ public class ParsedEnumConstantComponent implements ParsedComponent {
     private final ParsedComponent parent;
 
     public ParsedEnumConstantComponent(ResolvedEnumConstantDeclaration resolvedDeclaration, ParsedComponent parent) {
-        this.name = resolvedDeclaration.getName();
+        this.name = parent.getName() + "." + resolvedDeclaration.getName();
         this.resolvedDeclaration = resolvedDeclaration;
         this.parent = parent;
     }
@@ -70,7 +70,7 @@ public class ParsedEnumConstantComponent implements ParsedComponent {
      */
     @Override
     public String toUML() {
-        return name;
+        return resolvedDeclaration.getName();
     }
 
     @Override

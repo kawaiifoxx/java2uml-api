@@ -25,17 +25,19 @@ public class ParsedClassOrInterfaceComponent implements ParsedCompositeComponent
     private String constructorSignatures;
     private String fieldsDeclarations;
     private String typeDeclaration;
-    private Map<String, ParsedComponent> children;
+    private final Map<String, ParsedComponent> children;
 
     /**
      * Initializes ParsedClassOrInterfaceComponent with resolvedDeclaration and reference to parent.
+     *
      * @param resolvedDeclaration ResolvedDeclaration received after typeSolving using a symbol resolver.
-     * @param parent parent of this component.
+     * @param parent              parent of this component.
      */
     public ParsedClassOrInterfaceComponent(ResolvedDeclaration resolvedDeclaration, ParsedComponent parent) {
         this.resolvedDeclaration = resolvedDeclaration;
         this.parent = parent;
         this.name = resolvedDeclaration.asType().getQualifiedName();
+        this.children = new HashMap<>();
     }
 
     @Override
@@ -64,10 +66,8 @@ public class ParsedClassOrInterfaceComponent implements ParsedCompositeComponent
     }
 
     @Override
-    public Optional<Map<String, ParsedComponent>> getChildren() {
-        if (children == null)
-            return Optional.empty();
-        return Optional.of(children);
+    public Map<String, ParsedComponent> getChildren() {
+        return children;
     }
 
     @Override
@@ -77,19 +77,35 @@ public class ParsedClassOrInterfaceComponent implements ParsedCompositeComponent
 
     /**
      * Add a child to the this component, such as field, constructor or method.
+     *
      * @param parsedComponent component representing child could be field, constructor,
      *                        method or any other component which can be contained in a Class or Interface.
      */
     public void addChild(ParsedComponent parsedComponent) {
-        if (children == null) {
-            children = new HashMap<>();
-        }
-
         children.put(parsedComponent.getName(), parsedComponent);
     }
 
     /**
+     * Finds and returns the reference for ParsedComponent for which name and class is provided.
+     *
+     * @param exactName Name of the component to be found.
+     * @param clazz     class of the component.
+     * @return ParsedComponent if present, empty optional otherwise.
+     */
+    @Override
+    public <T extends ParsedComponent> Optional<T> find(String exactName, Class<T> clazz) {
+
+        if (exactName.equals(name) && clazz.equals(this.getClass())) {
+            //noinspection unchecked
+            return Optional.of((T) this);
+        }
+
+        return findInChildren(exactName, clazz);
+    }
+
+    /**
      * Generate uml for this ParsedClassOrInterFaceComponent.
+     *
      * @return String containing generated uml for this class.
      */
     @Override

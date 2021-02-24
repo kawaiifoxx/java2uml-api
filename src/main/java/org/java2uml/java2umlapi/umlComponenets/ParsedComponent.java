@@ -2,6 +2,7 @@ package org.java2uml.java2umlapi.umlComponenets;
 
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -26,6 +27,22 @@ public interface ParsedComponent {
      * @return returns wrapped Optional<ResolvedDeclaration>.
      */
     default Optional<ResolvedDeclaration> getResolvedDeclaration() {
+        return Optional.empty();
+    }
+
+    /**
+     * Finds and returns the reference for ParsedComponent for which name and class is provided.
+     *
+     * @param exactName Name of the component to be found.
+     * @param clazz     class of the component.
+     * @return ParsedComponent if present, empty optional otherwise.
+     */
+    default <T extends ParsedComponent> Optional<T> find(String exactName, Class<T> clazz) {
+        if (exactName.equals(getName()) && clazz.equals(this.getClass())) {
+            //noinspection unchecked
+            return Optional.of((T) this);
+        }
+
         return Optional.empty();
     }
 
@@ -126,6 +143,13 @@ public interface ParsedComponent {
     }
 
     /**
+     * @return returns Optional.empty() if this component is not ParsedExternalComponent
+     */
+    default Optional<ParsedExternalComponent> asParsedExternalComponent() {
+        return Optional.empty();
+    }
+
+    /**
      * @return returns Optional.empty() if this component is not ParsedEnumComponent
      */
     default Optional<ParsedEnumComponent> asParsedEnumComponent() {
@@ -155,8 +179,8 @@ public interface ParsedComponent {
      * @return returns children of current component.
      * Empty Optional is returned if current component is a leaf.
      */
-    default Optional<Map<String, ParsedComponent>> getChildren() {
-        return Optional.empty();
+    default Map<String, ParsedComponent> getChildren() {
+        return new HashMap<>();
     }
 
     /**
