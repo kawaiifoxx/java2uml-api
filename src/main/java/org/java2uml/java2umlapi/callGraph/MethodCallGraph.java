@@ -1,7 +1,5 @@
 package org.java2uml.java2umlapi.callGraph;
 
-import org.java2uml.java2umlapi.umlComponenets.ParsedMethodComponent;
-
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +15,7 @@ public interface MethodCallGraph {
      * Get a concatenated representation of call graph.
      * @return returns a representation of call graph in string form.
      */
-    String getCallGraphString();
+    String getPlantUMLMindMap();
 
     /**
      * Get a mapping from methodName (String) -> neighbors (List<String>)
@@ -26,8 +24,9 @@ public interface MethodCallGraph {
     Map<String, List<String>> getCallGraphMap();
 
     /**
-     * Get a mapping from methodName (String) -> method (ParsedMethodComponent)
-     * @return map from methodName to parsedMethodComponent.
+     * Generates the call graph and returns the root node.
+     * @return root node.
      */
-    Map<String, ParsedMethodComponent> getAllMethods();
+    CallGraphNode getCallGraph();
+
 }
