@@ -21,8 +21,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 @DisplayName("When using SourceComponent, ")
 class SourceComponentTest {
     private static SourceComponent sourceComponent;
-    private static final String PROJECT_ZIP_PATH = "src/test/testSources/JavaParserFacadeTests/testParserClass/ProjectTest/test.zip";
-    private static final String DST = "src/test/testOutput";
+    private static final String PROJECT_ZIP_PATH = "src/test/testSources/ParserTest/test.zip";
+    private static final String DST = "src/test/testSources/ParserTest/testOutput";
 
     @BeforeAll
     static void setUp() throws IOException {
@@ -48,7 +48,7 @@ class SourceComponentTest {
         }
 
         final String svg = os.toString();
-        BufferedWriter writer = new BufferedWriter(new FileWriter("src/test/testOutput/test.svg"));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(DST + "/test.svg"));
 
         if (svg.contains("Syntax Error?")) {
             fail("Source component was unable to generate a valid uml syntax, test failed.");

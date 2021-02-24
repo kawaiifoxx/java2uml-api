@@ -13,8 +13,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 @DisplayName("When using Unzipper,")
 class UnzipperTest {
 
-    private static final String SRC = "src/test/testSources/JavaParserFacadeTests/testParserClass/ProjectTest/test.zip";
-    private static final String DST = "src/test/testOutput";
+    private static final String SRC = "src/test/testSources/ParserTest/test.zip";
+    private static final String DST = "src/test/testSources/ParserTest/testOutput";
 
     @Test
     @DisplayName("using unzipDir, should unzip files from SRC path and generate output in DST path.")
