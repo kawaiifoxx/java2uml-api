@@ -61,6 +61,12 @@ public class MethodCallGraphImpl implements MethodCallGraph {
         return map;
     }
 
+    /**
+     * Performs a dfs on currentNode and generates a Map of  nodeName(String) -> neighbors(List<String>))
+     * @param currentNode node on which dfs needs to be done.
+     * @param visited already visited nodes.
+     * @return a map of nodeName(String) -> neighbors(List<String>).
+     */
     private Map<String, List<String>> generateCallGraphMap(CallGraphNode currentNode, Set<String> visited) {
         visited.add(currentNode.getName());
 
@@ -142,6 +148,13 @@ public class MethodCallGraphImpl implements MethodCallGraph {
         return set;
     }
 
+    /**
+     * Performs DFS on given resolvedMethodDeclaration and returns a set of ResolvedMethodDeclaration, excluding given
+     * resolvedMethodDeclaration.
+     * @param resolvedMethodDeclaration resolvedMethodDeclaration of which you want all the children of.
+     * @param visited contains names of already visited resolvedMethodDeclarations. (just pass an empty set if you are calling this method.)
+     * @return Set of resolvedMethodDeclaration.
+     */
     private Set<ResolvedMethodDeclaration> getSetOfRMD(ResolvedMethodDeclaration resolvedMethodDeclaration, Set<String> visited) {
         visited.add(resolvedMethodDeclaration.getQualifiedSignature());
 
@@ -156,6 +169,14 @@ public class MethodCallGraphImpl implements MethodCallGraph {
                 .collect(Collectors.toSet());
     }
 
+    /**
+     * Takes in resolvedMethodDeclaration and finds resolvedMethodDeclarations of methods
+     * that are present in the body of passed resolvedMethodDeclaration and returns a
+     * stream containing these resolvedMethodDeclarations.
+     * @param resolvedMethodDeclaration resolvedMethodDeclaration of which you want to find all resolvedMethodDeclarations
+     *                                  of method calls present in body of the passed resolvedMethodDeclaration.
+     * @return stream of resolvedMethodDeclarations
+     */
     private Stream<ResolvedMethodDeclaration> getResolvedMethodDeclarationStream(ResolvedMethodDeclaration resolvedMethodDeclaration) {
         return resolvedMethodDeclaration
                 .toAst()
