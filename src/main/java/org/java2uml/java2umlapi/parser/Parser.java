@@ -55,12 +55,9 @@ public class Parser {
         var compilationUnits = getAllCompilationUnits(sourceRoots);
         var classOrInterfaceDeclarations = getClassOrInterfaceDeclarations(compilationUnits);
         var enumDecl = getEnumDeclaration(compilationUnits);
+        var symbolResolver = sourceRoots.get(0).getParserConfiguration().getSymbolResolver()
+                .orElseThrow(() -> new RuntimeException("[Parser] Unable to get symbolResolver."));
 
-        if (sourceRoots.get(0).getParserConfiguration().getSymbolResolver().isEmpty()) {
-            throw new RuntimeException("[Parser] Unable to get symbolResolver.");
-        }
-
-        var symbolResolver = sourceRoots.get(0).getParserConfiguration().getSymbolResolver().get();
         List<ResolvedDeclaration> resolvedDeclarations = new ArrayList<>();
         classOrInterfaceDeclarations
                 .forEach(classOrInterfaceDeclaration -> resolvedDeclarations
