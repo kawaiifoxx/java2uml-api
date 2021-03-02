@@ -1,6 +1,5 @@
 package org.java2uml.java2umlapi.umlComponenets;
 
-import com.github.javaparser.resolution.SymbolResolver;
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedMethodDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedParameterDeclaration;
@@ -24,7 +23,6 @@ public class SourceComponent implements ParsedCompositeComponent {
     private final Map<String, ParsedComponent> children;
     private final Map<String, ParsedComponent> externalComponents;
     private final List<ResolvedDeclaration> allParsedTypes;
-    private final SymbolResolver symbolResolver;
     private final Set<TypeRelation> allRelations;
     private String generatedUMLClasses;
     private String generatedUMLTypeRelations;
@@ -34,9 +32,8 @@ public class SourceComponent implements ParsedCompositeComponent {
      *
      * @param allParsedTypes List of resolvedDeclarations
      */
-    public SourceComponent(List<ResolvedDeclaration> allParsedTypes, SymbolResolver symbolResolver) {
+    public SourceComponent(List<ResolvedDeclaration> allParsedTypes) {
         this.allParsedTypes = allParsedTypes;
-        this.symbolResolver = symbolResolver;
         this.children = new HashMap<>();
         this.allRelations = new HashSet<>();
         this.externalComponents = new HashMap<>();
@@ -368,12 +365,5 @@ public class SourceComponent implements ParsedCompositeComponent {
                 ", generatedUMLClasses='" + generatedUMLClasses + '\'' +
                 ", generatedUMLTypeRelations='" + generatedUMLTypeRelations + '\'' +
                 '}';
-    }
-
-    /**
-     * @return SymbolResolver for this source component.
-     */
-    public SymbolResolver getSymbolResolver() {
-        return symbolResolver;
     }
 }
