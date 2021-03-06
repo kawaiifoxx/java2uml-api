@@ -60,7 +60,7 @@
     </root>
 
     <!-- LOG "org.java2uml.java2umlapi.aspects.SimpleCallTracer" at TRACE level -->
-    <logger name="org.java2uml.java2umlapi.aspects.SimpleCallTracer" level="trace" additivity="false">
+    <logger name="org.java2uml.java2umlapi.aspects.SimpleCallTracer" level="OFF" additivity="false">
         <appender-ref ref="RollingFileTrace" />
         <appender-ref ref="Console" />
     </logger>
