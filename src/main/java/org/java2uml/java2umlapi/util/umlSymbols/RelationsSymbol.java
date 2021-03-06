@@ -9,13 +9,13 @@ package org.java2uml.java2umlapi.util.umlSymbols;
  * @author kawaiifox
  */
 public enum RelationsSymbol {
-    EXTENSION("--|>"),
-    COMPOSITION("*--"),
-    AGGREGATION("o--"),
-    ASSOCIATION("--"),
-    DEPENDENCY(".."),
-    ASSOCIATION_AR("->"),
-    DEPENDENCY_AR(".>");
+    EXTENSION("--|>", "EXTENSION"),
+    COMPOSITION("*--", "COMPOSITION"),
+    AGGREGATION("o--", "AGGREGATION"),
+    ASSOCIATION("--", "ASSOCIATION"),
+    DEPENDENCY("..", "DEPENDENCY"),
+    ASSOCIATION_AR("->", "ASSOCIATION_AR"),
+    DEPENDENCY_AR(".>", "DEPENDENCY_AR");
 
     public enum Direction {
         UP("-up"),
@@ -33,12 +33,20 @@ public enum RelationsSymbol {
         public String toString() {
             return printable;
         }
+
     }
 
     private final String printable;
 
-    RelationsSymbol(String printable) {
+    private final String name;
+
+    RelationsSymbol(String printable, String name) {
         this.printable = printable;
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
 
