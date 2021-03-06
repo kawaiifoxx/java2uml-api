@@ -3,6 +3,7 @@ package org.java2uml.java2umlapi.umlComponenets;
 import com.github.javaparser.resolution.declarations.ResolvedMethodDeclaration;
 import org.java2uml.java2umlapi.util.umlSymbols.UMLModifier;
 import org.java2uml.java2umlapi.util.umlSymbols.VisibilityModifierSymbol;
+import org.java2uml.java2umlapi.visitors.Visitor;
 
 import java.util.Optional;
 
@@ -118,6 +119,17 @@ public class ParsedMethodComponent implements ParsedComponent {
                 + UMLModifier.METHOD + " "
                 + (resolvedDeclaration.isStatic() ? UMLModifier.STATIC + " " : "")
                 + UMLName + ": " + returnType;
+    }
+
+    /**
+     * Accepts a visitor and returns whatever is returned by the visitor.
+     *
+     * @param v v is the Visitor
+     * @return data extracted by visitor.
+     */
+    @Override
+    public <T> T accept(Visitor<T> v) {
+        return v.visit(this);
     }
 
     @Override

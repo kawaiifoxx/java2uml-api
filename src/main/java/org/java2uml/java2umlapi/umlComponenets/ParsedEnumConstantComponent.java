@@ -2,6 +2,7 @@ package org.java2uml.java2umlapi.umlComponenets;
 
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedEnumConstantDeclaration;
+import org.java2uml.java2umlapi.visitors.Visitor;
 
 import java.util.Optional;
 
@@ -49,6 +50,10 @@ public class ParsedEnumConstantComponent implements ParsedComponent {
         return Optional.of(resolvedDeclaration);
     }
 
+    public ResolvedEnumConstantDeclaration getResolvedEnumConstantDeclaration() {
+        return resolvedDeclaration;
+    }
+
     /**
      * @return returns true if the current component is a ParsedEnumConstantComponent
      */
@@ -71,6 +76,17 @@ public class ParsedEnumConstantComponent implements ParsedComponent {
     @Override
     public String toUML() {
         return resolvedDeclaration.getName();
+    }
+
+    /**
+     * Accepts a visitor and returns whatever is returned by the visitor.
+     *
+     * @param v v is the Visitor
+     * @return data extracted by visitor.
+     */
+    @Override
+    public <T> T accept(Visitor<T> v) {
+        return v.visit(this);
     }
 
     @Override

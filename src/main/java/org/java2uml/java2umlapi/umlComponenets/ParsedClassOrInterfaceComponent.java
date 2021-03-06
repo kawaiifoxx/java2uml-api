@@ -1,6 +1,7 @@
 package org.java2uml.java2umlapi.umlComponenets;
 
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
+import org.java2uml.java2umlapi.visitors.Visitor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +26,7 @@ public class ParsedClassOrInterfaceComponent implements ParsedCompositeComponent
     private String constructorSignatures;
     private String fieldsDeclarations;
     private String typeDeclaration;
+    private final boolean isClass;
     private final Map<String, ParsedComponent> children;
 
     /**
@@ -38,6 +40,7 @@ public class ParsedClassOrInterfaceComponent implements ParsedCompositeComponent
         this.parent = parent;
         this.name = resolvedDeclaration.asType().getQualifiedName();
         this.children = new HashMap<>();
+        this.isClass = resolvedDeclaration.asType().isClass();
     }
 
     @Override
@@ -131,6 +134,24 @@ public class ParsedClassOrInterfaceComponent implements ParsedCompositeComponent
                 + constructorSignatures
                 + methodSignatures
                 + "}";
+    }
+
+    /**
+     * Accepts a visitor and returns whatever is returned by the visitor.
+     *
+     * @param v v is the Visitor
+     * @return data extracted by visitor.
+     */
+    @Override
+    public <T> T accept(Visitor<T> v) {
+        return v.visit(this);
+    }
+
+    /**
+     * @return true if parsedClassOrInterfaceComponent is class.
+     */
+    public boolean isClass() {
+        return isClass;
     }
 
     @Override

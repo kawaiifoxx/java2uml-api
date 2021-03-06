@@ -29,7 +29,7 @@ class TypeRelationTest {
         var to = mock(ParsedCompositeComponent.class);
         doReturn(toTypeName).when(to).getName();
 
-        typeRelation = new TypeRelation(from, to, relationType);
+        typeRelation = new TypeRelation(from, to, relationType, RelationsSymbol.ASSOCIATION_AR);
     }
 
     @Test

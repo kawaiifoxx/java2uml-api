@@ -2,6 +2,7 @@ package org.java2uml.java2umlapi.umlComponenets;
 
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedTypeDeclaration;
+import org.java2uml.java2umlapi.visitors.Visitor;
 
 import java.util.Optional;
 
@@ -76,6 +77,17 @@ public class ParsedExternalComponent implements ParsedCompositeComponent {
         }
 
         return typeDeclaration + " {\n}";
+    }
+
+    /**
+     * Accepts a visitor and returns whatever is returned by the visitor.
+     *
+     * @param v v is the Visitor
+     * @return data extracted by visitor.
+     */
+    @Override
+    public <T> T accept(Visitor<T> v) {
+        return v.visit(this);
     }
 
     @Override

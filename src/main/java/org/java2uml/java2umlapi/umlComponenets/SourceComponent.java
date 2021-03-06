@@ -4,6 +4,7 @@ import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedMethodDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedParameterDeclaration;
 import org.java2uml.java2umlapi.util.umlSymbols.StartEnd;
+import org.java2uml.java2umlapi.visitors.Visitor;
 
 import java.util.*;
 
@@ -200,7 +201,7 @@ public class SourceComponent implements ParsedCompositeComponent {
                                     .getQualifiedName());
 
                     if (to != null && to.asParsedCompositeComponent().isPresent())
-                        allRelations.add(new TypeRelation(from, to.asParsedCompositeComponent().get(), DEPENDENCY_AR.toString()));
+                        allRelations.add(new TypeRelation(from, to.asParsedCompositeComponent().get(), DEPENDENCY_AR.toString(), DEPENDENCY_AR));
                 }
             });
         });
@@ -234,7 +235,7 @@ public class SourceComponent implements ParsedCompositeComponent {
                 }
 
                 if (to != null && to.asParsedCompositeComponent().isPresent())
-                    allRelations.add(new TypeRelation(from, to.asParsedCompositeComponent().get(), AGGREGATION.toString()));
+                    allRelations.add(new TypeRelation(from, to.asParsedCompositeComponent().get(), AGGREGATION.toString(), AGGREGATION));
             }
         });
     }
@@ -271,7 +272,7 @@ public class SourceComponent implements ParsedCompositeComponent {
             }
 
             if (to != null && to.asParsedCompositeComponent().isPresent())
-                allRelations.add(new TypeRelation(from, to.asParsedCompositeComponent().get(), UP + EXTENSION.toString()));
+                allRelations.add(new TypeRelation(from, to.asParsedCompositeComponent().get(), UP + EXTENSION.toString(), EXTENSION));
         });
     }
 
@@ -357,6 +358,25 @@ public class SourceComponent implements ParsedCompositeComponent {
         }
 
         return findInChildren(exactName, clazz);
+    }
+
+    /**
+     * Accepts a visitor and returns whatever is returned by the visitor.
+     *
+     * @param v v is the Visitor
+     * @return data extracted by visitor.
+     */
+    @Override
+    public <T> T accept(Visitor<T> v) {
+        return v.visit(this);
+    }
+
+    public Map<String, ParsedComponent> getExternalComponents() {
+        return externalComponents;
+    }
+
+    public Set<TypeRelation> getAllRelations() {
+        return allRelations;
     }
 
     @Override

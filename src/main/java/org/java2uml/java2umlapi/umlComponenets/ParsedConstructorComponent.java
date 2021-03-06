@@ -4,6 +4,7 @@ import com.github.javaparser.resolution.declarations.ResolvedConstructorDeclarat
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import org.java2uml.java2umlapi.util.umlSymbols.UMLModifier;
 import org.java2uml.java2umlapi.util.umlSymbols.VisibilityModifierSymbol;
+import org.java2uml.java2umlapi.visitors.Visitor;
 
 import java.util.Optional;
 
@@ -34,6 +35,13 @@ public class ParsedConstructorComponent implements ParsedComponent {
     @Override
     public Optional<ResolvedDeclaration> getResolvedDeclaration() {
         return Optional.of(resolvedDeclaration);
+    }
+
+    /**
+     * @return ResolvedConstructorDeclaration belonging to this component.
+     */
+    public ResolvedConstructorDeclaration getResolvedConstructorDeclaration() {
+        return resolvedDeclaration;
     }
 
     @Override
@@ -68,6 +76,17 @@ public class ParsedConstructorComponent implements ParsedComponent {
     public String toUML() {
         return VisibilityModifierSymbol.of(resolvedDeclaration.accessSpecifier().asString()) + " "
                 + UMLModifier.METHOD + " [Constructor] " + resolvedDeclaration.getSignature();
+    }
+
+    /**
+     * Accepts a visitor and returns whatever is returned by the visitor.
+     *
+     * @param v v is the Visitor
+     * @return data extracted by visitor.
+     */
+    @Override
+    public <T> T accept(Visitor<T> v) {
+        return v.visit(this);
     }
 
     @Override

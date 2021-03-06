@@ -1,6 +1,7 @@
 package org.java2uml.java2umlapi.umlComponenets;
 
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
+import org.java2uml.java2umlapi.visitors.Visitor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -182,6 +183,14 @@ public interface ParsedComponent {
     default Map<String, ParsedComponent> getChildren() {
         return new HashMap<>();
     }
+
+    /**
+     * Accepts a visitor and returns whatever is returned by the visitor.
+     * @param v v is the Visitor
+     * @param <T> Type of data that should be extracted.
+     * @return data extracted by visitor.
+     */
+    <T> T accept(Visitor<T> v);
 
     /**
      * @return Returns name of the component, on which it is called.
