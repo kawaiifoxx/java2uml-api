@@ -67,6 +67,7 @@ public abstract class LightWeightExtractorUtilMethods {
         return children
                 .values()
                 .stream()
+                .filter(ParsedComponent::isParsedEnumComponent)
                 .map(ParsedComponent::asParsedEnumComponent)
                 .map(Optional::get)
                 .map(parsedEnumComponent -> parsedEnumComponent.accept(lightWeightExtractor))

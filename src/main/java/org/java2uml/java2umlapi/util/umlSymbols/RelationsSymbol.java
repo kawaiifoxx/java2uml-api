@@ -14,8 +14,8 @@ public enum RelationsSymbol {
     AGGREGATION("o--", "AGGREGATION"),
     ASSOCIATION("--", "ASSOCIATION"),
     DEPENDENCY("..", "DEPENDENCY"),
-    ASSOCIATION_AR("->", "ASSOCIATION_AR"),
-    DEPENDENCY_AR(".>", "DEPENDENCY_AR");
+    ASSOCIATION_AR("->", "ASSOCIATION"),
+    DEPENDENCY_AR(".>", "DEPENDENCY");
 
     public enum Direction {
         UP("-up"),
