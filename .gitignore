@@ -35,3 +35,6 @@ build/
 ### LOGS ###
 log
 logs
+
+### Coverage Report ###
+coverage
