@@ -29,6 +29,7 @@ public class Constructor implements LightWeight {
     @JsonIgnore
     @OneToOne(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Body body;
+    private boolean compilerGenerated;
     private Long ownerId;
 
     @Id
@@ -50,13 +51,14 @@ public class Constructor implements LightWeight {
         this.typeParams = new ArrayList<>();
     }
 
-    public Constructor(String name, String signature, String visibility, List<Param> params, List<TypeParam> typeParams, Body body) {
+    public Constructor(String name, String signature, String visibility, List<Param> params, List<TypeParam> typeParams, Body body, boolean compilerGenerated) {
         this.name = name;
         this.signature = signature;
         this.visibility = visibility;
         this.params = params;
         this.typeParams = typeParams;
         this.body = body;
+        this.compilerGenerated = compilerGenerated;
     }
 
     public String getName() {
@@ -135,5 +137,13 @@ public class Constructor implements LightWeight {
 
     public void setTypeParams(List<TypeParam> typeParams) {
         this.typeParams = typeParams;
+    }
+
+    public boolean isCompilerGenerated() {
+        return compilerGenerated;
+    }
+
+    public void setCompilerGenerated(boolean compilerGenerated) {
+        this.compilerGenerated = compilerGenerated;
     }
 }

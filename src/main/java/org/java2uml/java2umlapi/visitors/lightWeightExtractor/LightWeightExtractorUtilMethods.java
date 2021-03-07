@@ -121,9 +121,23 @@ public abstract class LightWeightExtractorUtilMethods {
         if (resolvedDeclaration.isClass() && resolvedDeclaration.asClass().toAst().isPresent()) {
             return new Body(resolvedDeclaration.asClass().toAst().get().toString());
         } else if (resolvedDeclaration.isInterface() && resolvedDeclaration.asInterface().toAst().isPresent()) {
-            return new Body(resolvedDeclaration.asInterface().toAst().toString());
+            return new Body(resolvedDeclaration.asInterface().toAst().get().toString());
         }
         return new Body(resolvedDeclaration.getName() + " {}");
+    }
+
+    /**
+     * @param resolvedDeclaration ResolvedConstructorDeclaration of which you want body of.
+     * @return body of constructor.
+     */
+    static Body getBody(com.github.javaparser.resolution.declarations.ResolvedConstructorDeclaration resolvedDeclaration) {
+        Body body;
+        if (resolvedDeclaration.toAst().isPresent()) {
+            body = new Body(resolvedDeclaration.toAst().get().toString());
+        } else {
+            body = new Body(resolvedDeclaration.getSignature() + " {\n}");
+        }
+        return body;
     }
 
     /**

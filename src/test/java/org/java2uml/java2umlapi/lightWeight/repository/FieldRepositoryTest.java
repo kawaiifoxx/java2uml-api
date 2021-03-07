@@ -25,7 +25,7 @@ class FieldRepositoryTest {
     @Test
     @DisplayName("using findAllByName should return list containing all the instances which contains passed name.")
     void findAllByName() {
-        var saved = fieldRepository.save(new Field("int", "test", "private"));
+        var saved = getSavedField();
         var retrieved = fieldRepository.findAllByName("test").get(0);
         assertEquals(saved, retrieved, "saved instance should be same as retrieved instance");
     }
@@ -33,7 +33,7 @@ class FieldRepositoryTest {
     @Test
     @DisplayName("using findAllByOwnerId should return list containing all the instances which contains passed ownerId.")
     void findAllByOwnerId() {
-        var saved = fieldRepository.save(new Field("int", "test", "private"));
+        var saved = getSavedField();
         saved.setOwnerId(1L);
         var retrieved = fieldRepository.findAllByOwnerId(1L).get(0);
         assertEquals(saved, retrieved, "saved instance should be same as retrieved instance");
@@ -42,8 +42,12 @@ class FieldRepositoryTest {
     @Test
     @DisplayName("using findAllByTypeName should return list containing all the instances which contains passed typeName.")
     void findAllByTypeName() {
-        var saved = fieldRepository.save(new Field("int", "test", "private"));
+        var saved = getSavedField();
         var retrieved = fieldRepository.findAllByTypeName("int").get(0);
         assertEquals(saved, retrieved, "saved instance should be same as retrieved instance");
+    }
+
+    private Field getSavedField() {
+        return fieldRepository.save(new Field("int", "test", "private", false));
     }
 }

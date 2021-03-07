@@ -21,6 +21,7 @@ public class Field implements LightWeight {
     private String name;
     @Column(columnDefinition = "varchar(10)")
     private String visibility;
+    private boolean isStatic;
     private Long ownerId;
 
     @Id
@@ -30,10 +31,11 @@ public class Field implements LightWeight {
     protected Field() {
     }
 
-    public Field(String typeName, String name, String visibility) {
+    public Field(String typeName, String name, String visibility, boolean isStatic) {
         this.typeName = typeName;
         this.name = name;
         this.visibility = visibility;
+        this.isStatic = isStatic;
     }
 
     public String getName() {
@@ -84,5 +86,13 @@ public class Field implements LightWeight {
     @Override
     public Optional<Field> asField() {
         return Optional.of(this);
+    }
+
+    public boolean isStatic() {
+        return isStatic;
+    }
+
+    public void setStatic(boolean aStatic) {
+        isStatic = aStatic;
     }
 }

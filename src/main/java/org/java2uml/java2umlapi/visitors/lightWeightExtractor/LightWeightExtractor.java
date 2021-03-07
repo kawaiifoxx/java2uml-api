@@ -118,10 +118,13 @@ public class LightWeightExtractor implements Visitor<LightWeight> {
                 parsedMethodComponent.getReturnTypeName(),
                 resolvedMethodDeclaration.getSignature(),
                 resolvedMethodDeclaration.accessSpecifier().asString(),
+                resolvedMethodDeclaration.isStatic(),
                 getParamList(resolvedMethodDeclaration.getNumberOfParams(), resolvedMethodDeclaration::getParam),
                 getTypeParametersFromRTPD(resolvedMethodDeclaration.getTypeParameters()),
                 getSpecifiedExceptions(resolvedMethodDeclaration.getSpecifiedExceptions()),
-                new Body(resolvedMethodDeclaration.toAst().toString())
+                new Body(resolvedMethodDeclaration.toAst()
+                        .orElseThrow(() -> new RuntimeException("unable to get ast of method," +
+                                " body cannot be generated")).toString())
         );
     }
 
@@ -142,7 +145,8 @@ public class LightWeightExtractor implements Visitor<LightWeight> {
                 resolvedDeclaration.accessSpecifier().asString(),
                 getParamList(resolvedDeclaration.getNumberOfParams(), resolvedDeclaration::getParam),
                 getTypeParametersFromRTPD(resolvedDeclaration.getTypeParameters()),
-                new Body(resolvedDeclaration.toAst().toString())
+                getBody(resolvedDeclaration),
+                resolvedDeclaration.toAst().isEmpty()
         );
     }
 
@@ -158,7 +162,8 @@ public class LightWeightExtractor implements Visitor<LightWeight> {
         return new Field(
                 resolvedDeclaration.getType().describe(),
                 resolvedDeclaration.getName(),
-                resolvedDeclaration.accessSpecifier().asString()
+                resolvedDeclaration.accessSpecifier().asString(),
+                resolvedDeclaration.isStatic()
         );
     }
 

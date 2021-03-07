@@ -23,6 +23,7 @@ public class Method implements LightWeight {
     private String signature;
     @Column(columnDefinition = "varchar(10)")
     private String visibility;
+    private boolean isStatic;
     @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Param> params;
     @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -50,18 +51,20 @@ public class Method implements LightWeight {
         this.signature = signature;
         this.visibility = visibility;
         this.returnType = returnType;
+        this.isStatic = false;
         this.params = new ArrayList<>();
         this.typeParams = new ArrayList<>();
         this.specifiedExceptions = new ArrayList<>();
     }
 
     public Method(String name, String returnType, String signature,
-                  String visibility, List<Param> params, List<TypeParam> typeParams,
+                  String visibility, boolean isStatic,List<Param> params, List<TypeParam> typeParams,
                   List<SpecifiedException> specifiedExceptions, Body body) {
         this.name = name;
         this.returnType = returnType;
         this.signature = signature;
         this.visibility = visibility;
+        this.isStatic = isStatic;
         this.params = params;
         this.typeParams = typeParams;
         this.specifiedExceptions = specifiedExceptions;
