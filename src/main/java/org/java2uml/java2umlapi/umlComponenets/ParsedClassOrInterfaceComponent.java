@@ -7,9 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.java2uml.java2umlapi.util.umlSymbols.TypeDeclarationSymbol.getTypeDeclarationSymbol;
-import static org.java2uml.java2umlapi.util.umlSymbols.UMLGeneratorUtil.*;
-
 /**
  * <p>
  * A composite Component, containing other classes or interfaces, or methods or fields as children.
@@ -22,10 +19,6 @@ public class ParsedClassOrInterfaceComponent implements ParsedCompositeComponent
     private final ResolvedDeclaration resolvedDeclaration;
     private final ParsedComponent parent;
     private final String name;
-    private String methodSignatures;
-    private String constructorSignatures;
-    private String fieldsDeclarations;
-    private String typeDeclaration;
     private final boolean isClass;
     private final Map<String, ParsedComponent> children;
 
@@ -104,36 +97,6 @@ public class ParsedClassOrInterfaceComponent implements ParsedCompositeComponent
         }
 
         return findInChildren(exactName, clazz);
-    }
-
-    /**
-     * Generate uml for this ParsedClassOrInterFaceComponent.
-     *
-     * @return String containing generated uml for this class.
-     */
-    @Override
-    public String toUML() {
-        if (fieldsDeclarations == null) {
-            fieldsDeclarations = generateUMLFieldDeclarations(children);
-        }
-
-        if (methodSignatures == null) {
-            methodSignatures = generateUMLMethodSignatures(children);
-        }
-
-        if (constructorSignatures == null) {
-            constructorSignatures = generateUMLConstructorSignatures(children);
-        }
-
-        if (typeDeclaration == null) {
-            typeDeclaration = getTypeDeclarationSymbol(resolvedDeclaration.asType());
-        }
-
-        return typeDeclaration + " {\n"
-                + fieldsDeclarations
-                + constructorSignatures
-                + methodSignatures
-                + "}";
     }
 
     /**

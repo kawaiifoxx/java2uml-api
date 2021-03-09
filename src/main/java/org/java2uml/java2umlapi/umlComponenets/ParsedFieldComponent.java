@@ -2,8 +2,6 @@ package org.java2uml.java2umlapi.umlComponenets;
 
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedFieldDeclaration;
-import org.java2uml.java2umlapi.util.umlSymbols.UMLModifier;
-import org.java2uml.java2umlapi.util.umlSymbols.VisibilityModifierSymbol;
 import org.java2uml.java2umlapi.visitors.Visitor;
 
 import java.util.Optional;
@@ -68,23 +66,6 @@ public class ParsedFieldComponent implements ParsedComponent {
     @Override
     public String getName() {
         return name;
-    }
-
-    private String getClassOfField() {
-        if (resolvedDeclaration.getType().isReferenceType()) {
-            var list = resolvedDeclaration.getType().asReferenceType().getQualifiedName().split("\\.");
-            return list[list.length - 1];
-        }
-
-        return resolvedDeclaration.getType().asPrimitive().name()
-                + (resolvedDeclaration.getType().asPrimitive().isArray() ? "[]" : "");
-    }
-
-    @Override
-    public String toUML() {
-        return VisibilityModifierSymbol.of(resolvedDeclaration.accessSpecifier().asString()) + " " + getClassOfField() + " "
-                + (resolvedDeclaration.isStatic() ? UMLModifier.STATIC : "")
-                + " " + resolvedDeclaration.getName();
     }
 
     /**

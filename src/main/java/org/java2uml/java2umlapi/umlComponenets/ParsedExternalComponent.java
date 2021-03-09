@@ -6,8 +6,6 @@ import org.java2uml.java2umlapi.visitors.Visitor;
 
 import java.util.Optional;
 
-import static org.java2uml.java2umlapi.util.umlSymbols.TypeDeclarationSymbol.getTypeDeclarationSymbol;
-
 /**
  * <p>
  * Any classOrInterfaceDeclaration or annotationDeclaration or enumDeclaration
@@ -69,18 +67,6 @@ public class ParsedExternalComponent implements ParsedCompositeComponent {
     @Override
     public String getName() {
         return name;
-    }
-
-    /**
-     * @return Returns uml form of this component.
-     */
-    @Override
-    public String toUML() {
-        if (typeDeclaration == null) {
-            typeDeclaration = getTypeDeclarationSymbol(resolvedTypeDeclaration);
-        }
-
-        return typeDeclaration + " {\n}";
     }
 
     /**

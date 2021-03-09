@@ -51,13 +51,6 @@ public class TypeRelation {
         return relationsType;
     }
 
-    /**
-     * @return Returns generated UML syntax.
-     */
-    public String toUML() {
-        return from.getName() + " " + relationsType + " " + to.getName();
-    }
-
     public <T> T accept(Visitor<T> v) {
         return v.visit(this);
     }

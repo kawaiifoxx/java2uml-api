@@ -71,14 +71,6 @@ public class ParsedEnumConstantComponent implements ParsedComponent {
     }
 
     /**
-     * @return Returns generated UML code.
-     */
-    @Override
-    public String toUML() {
-        return resolvedDeclaration.getName();
-    }
-
-    /**
      * Accepts a visitor and returns whatever is returned by the visitor.
      *
      * @param v v is the Visitor

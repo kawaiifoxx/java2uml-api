@@ -3,7 +3,6 @@ package org.java2uml.java2umlapi.umlComponenets;
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedMethodDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedParameterDeclaration;
-import org.java2uml.java2umlapi.util.umlSymbols.StartEnd;
 import org.java2uml.java2umlapi.visitors.Visitor;
 
 import java.util.*;
@@ -25,8 +24,6 @@ public class SourceComponent implements ParsedCompositeComponent {
     private final Map<String, ParsedComponent> externalComponents;
     private final List<ResolvedDeclaration> allParsedTypes;
     private final Set<TypeRelation> allRelations;
-    private String generatedUMLClasses;
-    private String generatedUMLTypeRelations;
 
     /**
      * Initializes sourceComponent and generates tree and all the type relations.
@@ -277,52 +274,6 @@ public class SourceComponent implements ParsedCompositeComponent {
     }
 
     /**
-     * @return Returns Generated UML syntax.
-     */
-    @Override
-    public String toUML() {
-        if (generatedUMLClasses == null)
-            generateUMLClasses();
-
-        if (generatedUMLTypeRelations == null) {
-            generateUMLTypeRelations();
-        }
-
-        return StartEnd.START.toString()
-                + "\n" + generatedUMLClasses
-                + "\n" + generatedUMLTypeRelations
-                + "\n" + StartEnd.END;
-    }
-
-    /**
-     * For each typeRelation in allRelations use .toUML() on it and appends a newline character, this generates
-     * a single string containing UML of all the relations.
-     */
-    private void generateUMLTypeRelations() {
-        StringBuilder generatedUMLTypesRelationsBuilder = new StringBuilder();
-
-        allRelations.forEach(e ->
-                generatedUMLTypesRelationsBuilder.append(e.toUML()).append("\n"));
-
-        generatedUMLTypeRelations = generatedUMLTypesRelationsBuilder.toString();
-    }
-
-    /**
-     * For each parsedComponent in children and externalComponent calls .toUML on it and appends them all to a string
-     * with a newline character in between.
-     */
-    private void generateUMLClasses() {
-        StringBuilder generatedUMLClassesBuilder = new StringBuilder();
-
-        children.forEach((k, v) ->
-                generatedUMLClassesBuilder.append(v.toUML()).append("\n"));
-        externalComponents.forEach((k, v) ->
-                generatedUMLClassesBuilder.append(v.toUML()).append("\n"));
-
-        generatedUMLClasses = generatedUMLClassesBuilder.toString();
-    }
-
-    /**
      * Finds and returns the reference for ParsedComponent for which name and class is provided.
      *
      * @param exactName Name of the component to be found.
@@ -382,8 +333,9 @@ public class SourceComponent implements ParsedCompositeComponent {
     @Override
     public String toString() {
         return "SourceComponent{" +
-                ", generatedUMLClasses='" + generatedUMLClasses + '\'' +
-                ", generatedUMLTypeRelations='" + generatedUMLTypeRelations + '\'' +
+                "children=" + children +
+                ", externalComponents=" + externalComponents +
+                ", allRelations=" + allRelations +
                 '}';
     }
 }

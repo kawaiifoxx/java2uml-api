@@ -1,8 +1,6 @@
 package org.java2uml.java2umlapi.umlComponenets;
 
 import com.github.javaparser.resolution.declarations.ResolvedMethodDeclaration;
-import org.java2uml.java2umlapi.util.umlSymbols.UMLModifier;
-import org.java2uml.java2umlapi.util.umlSymbols.VisibilityModifierSymbol;
 import org.java2uml.java2umlapi.visitors.Visitor;
 
 import java.util.Optional;
@@ -18,7 +16,6 @@ public class ParsedMethodComponent implements ParsedComponent {
 
     private final ParsedComponent parent;
     private final ResolvedMethodDeclaration resolvedDeclaration;
-    private final String UMLName;
     private final String qualifiedName;
     private final String returnType;
 
@@ -32,7 +29,6 @@ public class ParsedMethodComponent implements ParsedComponent {
     public ParsedMethodComponent(ParsedComponent parent, ResolvedMethodDeclaration resolvedDeclaration) {
         this.parent = parent;
         this.resolvedDeclaration = resolvedDeclaration;
-        this.UMLName = resolvedDeclaration.getSignature();
         this.qualifiedName = resolvedDeclaration.getQualifiedSignature();
         this.returnType = getReturnType();
     }
@@ -112,17 +108,6 @@ public class ParsedMethodComponent implements ParsedComponent {
      */
     public String getReturnTypeName() {
         return returnType;
-    }
-
-    /**
-     * @return returns the uml form of this component.
-     */
-    @Override
-    public String toUML() {
-        return VisibilityModifierSymbol.of(resolvedDeclaration.accessSpecifier().asString()) + " "
-                + UMLModifier.METHOD + " "
-                + (resolvedDeclaration.isStatic() ? UMLModifier.STATIC + " " : "")
-                + UMLName + ": " + returnType;
     }
 
     /**

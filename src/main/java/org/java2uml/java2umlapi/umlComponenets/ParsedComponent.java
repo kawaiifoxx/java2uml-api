@@ -196,9 +196,4 @@ public interface ParsedComponent {
      * @return Returns name of the component, on which it is called.
      */
     String getName();
-
-    /**
-     * @return Returns generated UML code.
-     */
-    String toUML();
 }

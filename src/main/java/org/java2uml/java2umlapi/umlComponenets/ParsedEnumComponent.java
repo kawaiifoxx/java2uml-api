@@ -8,18 +8,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.java2uml.java2umlapi.util.umlSymbols.Separator.DOTTED;
-import static org.java2uml.java2umlapi.util.umlSymbols.UMLGeneratorUtil.*;
-
 public class ParsedEnumComponent implements ParsedCompositeComponent {
 
     private final ResolvedEnumDeclaration resolvedEnumDeclaration;
     private final ParsedComponent parent;
     private final String name;
-    private String enumConstants;
-    private String methodSignatures;
-    private String fieldDeclarations;
-    private String constructorSignatures;
     private final HashMap<String, ParsedComponent> children;
 
     public ParsedEnumComponent(ResolvedEnumDeclaration resolvedEnumDeclaration, ParsedComponent parent) {
@@ -112,38 +105,6 @@ public class ParsedEnumComponent implements ParsedCompositeComponent {
         }
 
         return findInChildren(exactName, clazz);
-    }
-
-    /**
-     * @return Returns generated UML code.
-     */
-    @Override
-    public String toUML() {
-        if (enumConstants == null) {
-            enumConstants = generateUMLEnumConstantDecl(children);
-        }
-
-        if (fieldDeclarations == null) {
-            fieldDeclarations = generateUMLFieldDeclarations(children);
-        }
-
-        if (constructorSignatures == null) {
-            constructorSignatures = generateUMLConstructorSignatures(children);
-        }
-
-        if (methodSignatures == null) {
-            methodSignatures = generateUMLMethodSignatures(children);
-        }
-
-        return "enum " + name + " {\n"
-                + DOTTED + "Enum Constants" + DOTTED + "\n"
-                + enumConstants
-                + DOTTED + "Fields" + DOTTED + "\n"
-                + fieldDeclarations
-                + DOTTED + "Methods" + DOTTED + "\n"
-                + constructorSignatures
-                + methodSignatures
-                + "}";
     }
 
     /**

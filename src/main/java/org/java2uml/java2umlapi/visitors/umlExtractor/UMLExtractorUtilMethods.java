@@ -100,8 +100,8 @@ public abstract class UMLExtractorUtilMethods {
     }
 
     /**
-     * For each typeRelation in allRelations use .toUML() on it and appends a newline character, this generates
-     * a single string containing UML of all the relations.
+     * For each typeRelation in allRelations inject UMLExtractor in it and append a newline character,
+     * this generates a single string containing UML of all the relations.
      */
     static String generateUMLTypeRelations(Set<TypeRelation> allRelations, UMLExtractor umlExtractor) {
         StringBuilder generatedUMLTypesRelationsBuilder = new StringBuilder();

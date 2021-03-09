@@ -2,8 +2,6 @@ package org.java2uml.java2umlapi.umlComponenets;
 
 import com.github.javaparser.resolution.declarations.ResolvedConstructorDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
-import org.java2uml.java2umlapi.util.umlSymbols.UMLModifier;
-import org.java2uml.java2umlapi.util.umlSymbols.VisibilityModifierSymbol;
 import org.java2uml.java2umlapi.visitors.Visitor;
 
 import java.util.Optional;
@@ -67,15 +65,6 @@ public class ParsedConstructorComponent implements ParsedComponent {
     @Override
     public String getName() {
         return name;
-    }
-
-    /**
-     * @return returns the uml form of this component.
-     */
-    @Override
-    public String toUML() {
-        return VisibilityModifierSymbol.of(resolvedDeclaration.accessSpecifier().asString()) + " "
-                + UMLModifier.METHOD + " [Constructor] " + resolvedDeclaration.getSignature();
     }
 
     /**

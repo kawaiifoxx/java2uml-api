@@ -43,7 +43,7 @@ class ParsedMethodComponentTest {
         lenient().doReturn(resolvedReferenceType).when(resolvedType).asReferenceType();
 
         doReturn(qualifiedName).when(resolvedDeclaration).getQualifiedSignature();
-        doReturn(umlName).when(resolvedDeclaration).getSignature();
+        lenient().doReturn(umlName).when(resolvedDeclaration).getSignature();
         lenient().doReturn(resolvedType).when(resolvedDeclaration).getReturnType();
         lenient().doReturn(accessSpecifier).when(resolvedDeclaration).accessSpecifier();
         lenient().doReturn(isStatic).when(resolvedDeclaration).isStatic();
