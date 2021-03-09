@@ -41,4 +41,4 @@ coverage
 
 ### MISC ###
 # ignore logback.xml
-src/main/resources/logback.xml
+./src/main/resources/logback.xml
