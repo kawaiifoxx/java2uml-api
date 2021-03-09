@@ -2,7 +2,6 @@ package org.java2uml.java2umlapi.visitors.umlExtractor;
 
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedFieldDeclaration;
-import com.github.javaparser.resolution.declarations.ResolvedMethodDeclaration;
 import org.java2uml.java2umlapi.umlComponenets.ParsedClassOrInterfaceComponent;
 import org.java2uml.java2umlapi.umlComponenets.ParsedComponent;
 import org.java2uml.java2umlapi.umlComponenets.TypeRelation;
@@ -10,6 +9,13 @@ import org.java2uml.java2umlapi.umlComponenets.TypeRelation;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * <p>
+ * A util class providing utility methods for UMLExtractor.
+ * </p>
+ *
+ * @author kawaiifox
+ */
 public abstract class UMLExtractorUtilMethods {
     /**
      * Generates a single String containing all the Enum constants, separated by newline character.
@@ -110,26 +116,6 @@ public abstract class UMLExtractorUtilMethods {
                 generatedUMLTypesRelationsBuilder.append(e.accept(umlExtractor)).append("\n"));
 
         return generatedUMLTypesRelationsBuilder.toString();
-    }
-
-    /**
-     * Gets the correct return type from resolvedDeclaration and then returns it in string form.
-     *
-     * @return returns string of return type.
-     */
-    static String getReturnType(ResolvedMethodDeclaration resolvedDeclaration) {
-        var resolvedType = resolvedDeclaration.getReturnType();
-
-        if (resolvedType.isVoid()) {
-            return "void";
-        }
-
-        if (resolvedType.isReferenceType()) {
-            var qualifiedReturnType = resolvedType.asReferenceType().getQualifiedName().split("\\.");
-            return qualifiedReturnType[qualifiedReturnType.length - 1];
-        }
-
-        return resolvedType.asPrimitive().name().toLowerCase();
     }
 
     static ResolvedDeclaration getResolvedDeclaration(ParsedClassOrInterfaceComponent parsedClassOrInterfaceComponent) {

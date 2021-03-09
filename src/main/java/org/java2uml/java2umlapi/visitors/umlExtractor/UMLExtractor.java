@@ -10,6 +10,13 @@ import static org.java2uml.java2umlapi.util.umlSymbols.Separator.DOTTED;
 import static org.java2uml.java2umlapi.util.umlSymbols.TypeDeclarationSymbol.getTypeDeclarationSymbol;
 import static org.java2uml.java2umlapi.visitors.umlExtractor.UMLExtractorUtilMethods.*;
 
+/**
+ * <p>
+ * UMLExtractor is visitor class which extracts plant uml code from ParsedComponents.
+ * </p>
+ *
+ * @author kawaiifox
+ */
 public class UMLExtractor implements Visitor<String> {
     /**
      * Visits passed component and performs some operation on it.
@@ -81,7 +88,7 @@ public class UMLExtractor implements Visitor<String> {
         return VisibilityModifierSymbol.of(resolvedDeclaration.accessSpecifier().asString()) + " "
                 + UMLModifier.METHOD + " "
                 + (resolvedDeclaration.isStatic() ? UMLModifier.STATIC + " " : "")
-                + resolvedDeclaration.getSignature() + ": " + getReturnType(resolvedDeclaration);
+                + resolvedDeclaration.getSignature() + ": " + parsedMethodComponent.getReturnTypeName();
     }
 
     /**
