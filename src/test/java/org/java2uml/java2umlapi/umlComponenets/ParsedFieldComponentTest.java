@@ -6,6 +6,7 @@ import com.github.javaparser.resolution.types.ResolvedPrimitiveType;
 import com.github.javaparser.resolution.types.ResolvedReferenceType;
 import com.github.javaparser.resolution.types.ResolvedType;
 import org.java2uml.java2umlapi.util.umlSymbols.VisibilityModifierSymbol;
+import org.java2uml.java2umlapi.visitors.umlExtractor.UMLExtractor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -85,9 +86,9 @@ class ParsedFieldComponentTest {
         }
 
         @Test
-        @DisplayName("using toUML(), should return uml syntax for field.")
+        @DisplayName("using umlExtractor on this component, should return uml syntax for field.")
         void testToUML() {
-            var uml = parsedFieldComponent.toUML();
+            var uml = parsedFieldComponent.accept(new UMLExtractor());
             var typeStr = qualifiedName.split("\\.");
 
             assertTrue(uml.contains(typeStr[typeStr.length - 1]), "generated uml syntax does not contain correct type");
@@ -138,9 +139,9 @@ class ParsedFieldComponentTest {
         }
 
         @Test
-        @DisplayName("using toUML(), should return uml syntax for field.")
+        @DisplayName("using umlExtractor on this component, should return uml syntax for field.")
         void testToUML() {
-            var uml = parsedFieldComponent.toUML();
+            var uml = parsedFieldComponent.accept(new UMLExtractor());
 
             assertTrue(uml.contains(primitiveTypeName));
             assertTrue(uml.contains(fieldName));

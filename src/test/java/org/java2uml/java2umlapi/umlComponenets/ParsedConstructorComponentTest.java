@@ -3,6 +3,7 @@ package org.java2uml.java2umlapi.umlComponenets;
 import com.github.javaparser.ast.AccessSpecifier;
 import com.github.javaparser.resolution.declarations.ResolvedConstructorDeclaration;
 import org.java2uml.java2umlapi.util.umlSymbols.VisibilityModifierSymbol;
+import org.java2uml.java2umlapi.visitors.umlExtractor.UMLExtractor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,9 +45,10 @@ class ParsedConstructorComponentTest {
     }
 
     @Test
-    @DisplayName("using toUML, should return UML syntax for the constructor.")
+    @DisplayName("using umlExtractor on this component, " +
+            "should return UML syntax for the constructor.")
     void testToUML() {
-        var uml = parsedComponent.toUML();
+        var uml = parsedComponent.accept(new UMLExtractor());
 
         assertTrue(uml.contains(name));
         assertTrue(uml.contains(VisibilityModifierSymbol

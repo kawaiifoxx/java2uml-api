@@ -1,6 +1,7 @@
 package org.java2uml.java2umlapi.umlComponenets;
 
 import org.java2uml.java2umlapi.util.umlSymbols.RelationsSymbol;
+import org.java2uml.java2umlapi.visitors.umlExtractor.UMLExtractor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,9 +34,9 @@ class TypeRelationTest {
     }
 
     @Test
-    @DisplayName("using toUML, should return correct uml syntax.")
+    @DisplayName("using umlExtractor on this component, should return correct uml syntax.")
     void testToUML() {
-        var uml = typeRelation.toUML();
+        var uml = typeRelation.accept(new UMLExtractor());
 
         assertTrue(uml.contains(fromTypeName), "generated uml does not contain correct fromTypeName");
         assertTrue(uml.contains(toTypeName), "generated uml does not contain correct toTypeName");

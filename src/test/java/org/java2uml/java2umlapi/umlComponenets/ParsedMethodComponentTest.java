@@ -5,6 +5,7 @@ import com.github.javaparser.resolution.declarations.ResolvedMethodDeclaration;
 import com.github.javaparser.resolution.types.ResolvedReferenceType;
 import com.github.javaparser.resolution.types.ResolvedType;
 import org.java2uml.java2umlapi.util.umlSymbols.VisibilityModifierSymbol;
+import org.java2uml.java2umlapi.visitors.umlExtractor.UMLExtractor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,9 +65,9 @@ class ParsedMethodComponentTest {
     }
 
     @Test
-    @DisplayName("using toUML, should return uml syntax for method component.")
+    @DisplayName("using umlExtractor on this component, should return uml syntax for method component.")
     void testToUML() {
-        var uml = parsedComponent.toUML();
+        var uml = parsedComponent.accept(new UMLExtractor());
 
         assertTrue(uml.contains(VisibilityModifierSymbol.of(accessSpecifierStr).toString())
                 , "generated uml does not contain correct accessSpecifier");

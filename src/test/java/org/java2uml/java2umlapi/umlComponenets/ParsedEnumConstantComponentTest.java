@@ -1,6 +1,7 @@
 package org.java2uml.java2umlapi.umlComponenets;
 
 import com.github.javaparser.resolution.declarations.ResolvedEnumConstantDeclaration;
+import org.java2uml.java2umlapi.visitors.umlExtractor.UMLExtractor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,9 +40,9 @@ class ParsedEnumConstantComponentTest {
     }
 
     @Test
-    @DisplayName("using toUML() should return enum's uml syntax.")
+    @DisplayName("using umlExtractor on this component, should return enum's uml syntax.")
     void testToUML() {
-        assertEquals(name, parsedEnumConstantComponent.toUML());
+        assertEquals(name, parsedEnumConstantComponent.accept(new UMLExtractor()));
     }
 
 }

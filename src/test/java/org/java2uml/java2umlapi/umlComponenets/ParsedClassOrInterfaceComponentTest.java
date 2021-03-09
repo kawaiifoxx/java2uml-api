@@ -3,6 +3,7 @@ package org.java2uml.java2umlapi.umlComponenets;
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedReferenceTypeDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedTypeDeclaration;
+import org.java2uml.java2umlapi.visitors.umlExtractor.UMLExtractor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,28 +41,28 @@ class ParsedClassOrInterfaceComponentTest {
 
         var parsedFieldComponent1 = mock(ParsedFieldComponent.class);
         lenient().doReturn(true).when(parsedFieldComponent1).isParsedFieldComponent();
-        lenient().doReturn(child1UML).when(parsedFieldComponent1).toUML();
         lenient().doReturn("child1").when(parsedFieldComponent1).getName();
+        lenient().doReturn(child1UML).when(parsedFieldComponent1).accept(any(UMLExtractor.class));
 
         var parsedFieldComponent2 = mock(ParsedFieldComponent.class);
         lenient().doReturn(true).when(parsedFieldComponent2).isParsedFieldComponent();
-        lenient().doReturn(child2UML).when(parsedFieldComponent2).toUML();
         lenient().doReturn("child2").when(parsedFieldComponent2).getName();
+        lenient().doReturn(child2UML).when(parsedFieldComponent2).accept(any(UMLExtractor.class));
 
         var parsedConstructorComponent = mock(ParsedConstructorComponent.class);
         lenient().doReturn(true).when(parsedConstructorComponent).isParsedConstructorComponent();
-        lenient().doReturn(child3UML).when(parsedConstructorComponent).toUML();
         lenient().doReturn("child3").when(parsedConstructorComponent).getName();
+        lenient().doReturn(child3UML).when(parsedConstructorComponent).accept(any(UMLExtractor.class));
 
         var parsedMethodComponent1 = mock(ParsedMethodComponent.class);
         lenient().doReturn(true).when(parsedMethodComponent1).isParsedMethodComponent();
-        lenient().doReturn(child4UML).when(parsedMethodComponent1).toUML();
         lenient().doReturn("child4").when(parsedMethodComponent1).getName();
+        lenient().doReturn(child4UML).when(parsedMethodComponent1).accept(any(UMLExtractor.class));
 
         var parsedMethodComponent2 = mock(ParsedMethodComponent.class);
         lenient().doReturn(true).when(parsedMethodComponent2).isParsedMethodComponent();
-        lenient().doReturn(child5UML).when(parsedMethodComponent2).toUML();
         lenient().doReturn("child5").when(parsedMethodComponent2).getName();
+        lenient().doReturn(child5UML).when(parsedMethodComponent2).accept(any(UMLExtractor.class));
 
         parsedComponent = new ParsedClassOrInterfaceComponent(resolvedDeclaration, mock(ParsedComponent.class));
 
@@ -78,10 +79,11 @@ class ParsedClassOrInterfaceComponentTest {
         assertEquals(fullyQualifiedClassOrInterfaceName, parsedComponent.getName());
     }
 
-    @DisplayName("using toUML, should return the uml representation for ParsedClassOrInterfaceComponent")
+    @DisplayName("using umlExtractor on this component, should return" +
+            " the uml representation for ParsedClassOrInterfaceComponent")
     @Test
     void testToUML() {
-        var uml = parsedComponent.toUML();
+        var uml = parsedComponent.accept(new UMLExtractor());
 
         assertTrue(uml.contains("class"));
         assertTrue(uml.contains(fullyQualifiedClassOrInterfaceName));

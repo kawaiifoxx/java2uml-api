@@ -7,6 +7,7 @@ import net.sourceforge.plantuml.SourceStringReader;
 import org.apache.commons.io.FileDeleteStrategy;
 import org.java2uml.java2umlapi.parser.Parser;
 import org.java2uml.java2umlapi.util.unzipper.Unzipper;
+import org.java2uml.java2umlapi.visitors.umlExtractor.UMLExtractor;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +36,7 @@ class SourceComponentTest {
     @Test
     @DisplayName("using toUML, should generate a valid plant uml syntax.")
     public void testToUML() throws IOException {
-        String source = sourceComponent.toUML();
+        String source = sourceComponent.accept(new UMLExtractor());
         final ByteArrayOutputStream os;
         try {
             SourceStringReader reader = new SourceStringReader(source);
