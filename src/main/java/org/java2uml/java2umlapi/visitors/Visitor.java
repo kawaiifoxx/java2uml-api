@@ -73,4 +73,9 @@ public interface Visitor<R> {
      * @return Object of type R
      */
     R visit(ParsedEnumConstantComponent parsedEnumConstantComponent);
+
+    /**
+     * Visits passed TypeRelation and performs some operation on it.
+     */
+    R visit(TypeRelation typeRelation);
 }

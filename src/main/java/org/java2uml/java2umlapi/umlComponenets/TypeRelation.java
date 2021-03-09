@@ -2,6 +2,7 @@ package org.java2uml.java2umlapi.umlComponenets;
 
 
 import org.java2uml.java2umlapi.util.umlSymbols.RelationsSymbol;
+import org.java2uml.java2umlapi.visitors.Visitor;
 
 /**
  * <p>
@@ -55,6 +56,10 @@ public class TypeRelation {
      */
     public String toUML() {
         return from.getName() + " " + relationsType + " " + to.getName();
+    }
+
+    public <T> T accept(Visitor<T> v) {
+        return v.visit(this);
     }
 
     @Override

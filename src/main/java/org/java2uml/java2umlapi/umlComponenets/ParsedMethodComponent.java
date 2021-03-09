@@ -93,6 +93,10 @@ public class ParsedMethodComponent implements ParsedComponent {
         return Optional.of(resolvedDeclaration);
     }
 
+    public ResolvedMethodDeclaration getResolvedMethodDeclaration() {
+        return resolvedDeclaration;
+    }
+
     @Override
     public Optional<ParsedComponent> getParent() {
         return Optional.of(parent);

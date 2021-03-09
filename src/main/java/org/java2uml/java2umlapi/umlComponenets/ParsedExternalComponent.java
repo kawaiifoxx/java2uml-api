@@ -54,6 +54,10 @@ public class ParsedExternalComponent implements ParsedCompositeComponent {
         return Optional.of(resolvedTypeDeclaration);
     }
 
+    public ResolvedTypeDeclaration getResolvedTypeDeclaration() {
+        return resolvedTypeDeclaration;
+    }
+
     /**
      * @return returns Optional.empty() if this component is not ParsedExternalComponent
      */

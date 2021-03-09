@@ -177,4 +177,18 @@ public class LightWeightExtractor implements Visitor<LightWeight> {
     public LightWeight visit(ParsedEnumConstantComponent parsedEnumConstantComponent) {
         return new EnumConstant(parsedEnumConstantComponent.getName());
     }
+
+    /**
+     * Visits passed TypeRelation and performs some operation on it.
+     *
+     * Please note that, this method always returns null because it has not been
+     * implemented.
+     *
+     * @param typeRelation typeRelation on  which you want to perform the operation.
+     */
+    @Override
+    @Deprecated
+    public LightWeight visit(TypeRelation typeRelation) {
+        return null;
+    }
 }
