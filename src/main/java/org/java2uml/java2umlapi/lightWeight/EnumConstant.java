@@ -1,5 +1,8 @@
 package org.java2uml.java2umlapi.lightWeight;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.Optional;
 
@@ -11,15 +14,15 @@ import java.util.Optional;
  * @author kawaiifox
  */
 @Entity
-public class EnumConstant implements LightWeight {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class EnumConstant extends LightWeight {
     @Column(columnDefinition = "varchar(500)")
     private String name;
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     private EnumLW enumLW;
-
-    @Id
-    @GeneratedValue
-    private Long id;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    private LightWeight parent;
 
     protected EnumConstant() {
     }
@@ -28,20 +31,12 @@ public class EnumConstant implements LightWeight {
         this.name = name;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
 
     public void setEnumLW(EnumLW enumLW) {
         this.enumLW = enumLW;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public String getName() {
@@ -60,5 +55,14 @@ public class EnumConstant implements LightWeight {
     @Override
     public Optional<EnumConstant> asEnumConstant() {
         return Optional.of(this);
+    }
+
+    @Override
+    public LightWeight getParent() {
+        return parent;
+    }
+
+    public void setParent(LightWeight parent) {
+        this.parent = parent;
     }
 }

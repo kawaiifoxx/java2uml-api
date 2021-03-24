@@ -1,10 +1,13 @@
 package org.java2uml.java2umlapi.lightWeight;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.Proxy;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 
 /**
  * <p>
@@ -14,29 +17,26 @@ import javax.persistence.Id;
  * @author kawaiifox
  */
 @Entity
-public class Body {
+@Proxy(lazy = false)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Body extends LightWeight{
     @Type(type = "text")
     private String content;
 
-    private Long ownerID;
-
-    @Id
-    @GeneratedValue
-    private Long id;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    private LightWeight parent;
 
     public Body(String text) {
         this.content = text;
     }
 
+    public Body(String content, LightWeight parent) {
+        this.content = content;
+        this.parent = parent;
+    }
+
     protected Body() {
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public String getContent() {
@@ -47,11 +47,12 @@ public class Body {
         this.content = content;
     }
 
-    public Long getOwnerID() {
-        return ownerID;
+    @Override
+    public LightWeight getParent() {
+        return parent;
     }
 
-    public void setOwnerID(Long ownerID) {
-        this.ownerID = ownerID;
+    public void setParent(LightWeight parent) {
+        this.parent = parent;
     }
 }

@@ -1,9 +1,12 @@
 package org.java2uml.java2umlapi.lightWeight;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 
 /**
  * <p>
@@ -13,15 +16,14 @@ import javax.persistence.Id;
  * @author kawaiifox
  */
 @Entity
-public class TypeParam implements LightWeight {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class TypeParam extends LightWeight {
     @Column(columnDefinition = "varchar(500)")
     private String name;
 
-    private Long ownerId;
-
-    @Id
-    @GeneratedValue
-    private Long id;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    private LightWeight parent;
 
     protected TypeParam() {
     }
@@ -38,19 +40,12 @@ public class TypeParam implements LightWeight {
         this.name = name;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    @Override
+    public LightWeight getParent() {
+        return parent;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public Long getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
+    public void setParent(LightWeight parent) {
+        this.parent = parent;
     }
 }

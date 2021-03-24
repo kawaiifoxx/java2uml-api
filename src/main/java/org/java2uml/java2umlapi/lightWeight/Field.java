@@ -1,9 +1,12 @@
 package org.java2uml.java2umlapi.lightWeight;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import java.util.Optional;
 
 /**
@@ -14,7 +17,8 @@ import java.util.Optional;
  * @author kawaiifox
  */
 @Entity
-public class Field implements LightWeight {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Field extends LightWeight {
     @Column(columnDefinition = "varchar(500)")
     private String typeName;
     @Column(columnDefinition = "varchar(500)")
@@ -22,11 +26,9 @@ public class Field implements LightWeight {
     @Column(columnDefinition = "varchar(10)")
     private String visibility;
     private boolean isStatic;
-    private Long ownerId;
-
-    @Id
-    @GeneratedValue
-    private Long id;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    private LightWeight parent;
 
     protected Field() {
     }
@@ -62,22 +64,6 @@ public class Field implements LightWeight {
         this.visibility = visibility;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Long getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
-    }
-
     /**
      * if this light weight is Field then a Field is returned.
      *
@@ -94,5 +80,14 @@ public class Field implements LightWeight {
 
     public void setStatic(boolean aStatic) {
         isStatic = aStatic;
+    }
+
+    @Override
+    public LightWeight getParent() {
+        return parent;
+    }
+
+    public void setParent(LightWeight parent) {
+        this.parent = parent;
     }
 }

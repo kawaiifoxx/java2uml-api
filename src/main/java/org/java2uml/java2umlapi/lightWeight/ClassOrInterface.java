@@ -1,6 +1,7 @@
 package org.java2uml.java2umlapi.lightWeight;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -17,65 +18,76 @@ import java.util.Optional;
  */
 
 @Entity
-public class ClassOrInterface implements LightWeight {
-    @Id
-    @GeneratedValue
-    private Long id;
-
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class ClassOrInterface extends LightWeight {
     @Column(columnDefinition = "varchar(500)")
     private String name;
+    @Column(columnDefinition = "varchar(500)")
+    private String packageName;
     private boolean isClass;
     private boolean isExternal;
 
     @JsonIgnore
     @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Constructor> constructors;
+    private List<Constructor> classConstructors;
 
     @JsonIgnore
     @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Method> methods;
+    private List<Method> classOrInterfaceMethods;
 
     @JsonIgnore
     @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Field> fields;
+    private List<Field> classFields;
 
     @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<TypeParam> typeParameters;
+    private List<TypeParam> classOrInterfaceTypeParameters;
 
     @JsonIgnore
     @OneToOne(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Body body;
-    private Long sourceId;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    private LightWeight parent;
 
     protected ClassOrInterface() {
-        constructors = new ArrayList<>();
-        methods = new ArrayList<>();
-        fields = new ArrayList<>();
-        typeParameters = new ArrayList<>();
     }
 
-    public ClassOrInterface(String name, boolean isClass, boolean isExternal, Body body) {
+    public ClassOrInterface(String name,boolean isClass, boolean isExternal, Body body) {
         this.name = name;
         this.isClass = isClass;
         this.isExternal = isExternal;
-        this.typeParameters = new ArrayList<>();
-        this.constructors = new ArrayList<>();
-        this.methods = new ArrayList<>();
-        this.fields = new ArrayList<>();
+        this.classOrInterfaceTypeParameters = new ArrayList<>();
+        this.classConstructors = new ArrayList<>();
+        this.classOrInterfaceMethods = new ArrayList<>();
+        this.classFields = new ArrayList<>();
         this.body = body;
     }
 
+    public ClassOrInterface(String name, boolean isClass, boolean isExternal) {
+        this.name = name;
+        this.isClass = isClass;
+        this.isExternal = isExternal;
+    }
+
+    public ClassOrInterface(String name, String packageName, boolean isClass, boolean isExternal) {
+        this.name = name;
+        this.isClass = isClass;
+        this.packageName = packageName;
+        this.isExternal = isExternal;
+    }
+
     public ClassOrInterface(String name, boolean isClass, boolean isExternal,
-                            List<Constructor> constructors, List<Method> methods,
+                            List<Constructor> classConstructors, List<Method> methods,
                             List<Field> fields, List<TypeParam> typeParameters,
                             Body body) {
         this.name = name;
         this.isClass = isClass;
         this.isExternal = isExternal;
-        this.constructors = constructors;
-        this.methods = methods;
-        this.fields = fields;
-        this.typeParameters = typeParameters;
+        this.classConstructors = classConstructors;
+        this.classOrInterfaceMethods = methods;
+        this.classFields = fields;
+        this.classOrInterfaceTypeParameters = typeParameters;
         this.body = body;
     }
 
@@ -83,32 +95,24 @@ public class ClassOrInterface implements LightWeight {
         return name;
     }
 
-    public List<Constructor> getConstructors() {
-        return constructors;
+    public List<Constructor> getClassConstructors() {
+        return classConstructors;
     }
 
-    public List<Method> getMethods() {
-        return methods;
+    public List<Method> getClassOrInterfaceMethods() {
+        return classOrInterfaceMethods;
     }
 
-    public List<Field> getFields() {
-        return fields;
+    public List<Field> getClassFields() {
+        return classFields;
     }
 
-    public List<TypeParam> getTypeParameters() {
-        return typeParameters;
-    }
-
-    public Long getId() {
-        return id;
+    public List<TypeParam> getClassOrInterfaceTypeParameters() {
+        return classOrInterfaceTypeParameters;
     }
 
     public Body getBody() {
         return body;
-    }
-
-    public Long getSourceId() {
-        return sourceId;
     }
 
     public boolean isExternal() {
@@ -116,15 +120,11 @@ public class ClassOrInterface implements LightWeight {
     }
 
     public boolean isGeneric() {
-        return !typeParameters.isEmpty();
+        return !classOrInterfaceTypeParameters.isEmpty();
     }
 
     public boolean isClass() {
         return isClass;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setName(String name) {
@@ -135,28 +135,24 @@ public class ClassOrInterface implements LightWeight {
         this.isClass = isClass;
     }
 
-    public void setConstructors(List<Constructor> constructors) {
-        this.constructors = constructors;
+    public void setClassConstructors(List<Constructor> constructors) {
+        this.classConstructors = constructors;
     }
 
-    public void setMethods(List<Method> methods) {
-        this.methods = methods;
+    public void setClassOrInterfaceMethods(List<Method> methods) {
+        this.classOrInterfaceMethods = methods;
     }
 
-    public void setFields(List<Field> fields) {
-        this.fields = fields;
+    public void setClassFields(List<Field> fields) {
+        this.classFields = fields;
     }
 
-    public void setTypeParameters(List<TypeParam> typeParameters) {
-        this.typeParameters = typeParameters;
+    public void setClassOrInterfaceTypeParameters(List<TypeParam> typeParameters) {
+        this.classOrInterfaceTypeParameters = typeParameters;
     }
 
     public void setBody(Body body) {
         this.body = body;
-    }
-
-    public void setSourceId(Long sourceId) {
-        this.sourceId = sourceId;
     }
 
     public void setExternal(boolean external) {
@@ -173,17 +169,37 @@ public class ClassOrInterface implements LightWeight {
         if (this == o) return true;
         if (!(o instanceof ClassOrInterface)) return false;
         ClassOrInterface that = (ClassOrInterface) o;
-        return isClass() == that.isClass() && getName().equals(that.getName())
-                && Objects.equals(getConstructors(),
-                that.getConstructors()) && Objects.equals(getMethods(),
-                that.getMethods()) && Objects.equals(getFields(),
-                that.getFields()) && getTypeParameters().equals(that.getTypeParameters()) && Objects.equals(getBody(),
-                that.getBody()) && Objects.equals(getSourceId(), that.getSourceId());
+        return isClass() == that.isClass() &&
+                isExternal() == that.isExternal() &&
+                Objects.equals(getId(), that.getId()) &&
+                getName().equals(that.getName()) &&
+                Objects.equals(getClassConstructors(), that.getClassConstructors()) &&
+                Objects.equals(getClassOrInterfaceMethods(), that.getClassOrInterfaceMethods()) &&
+                Objects.equals(getClassFields(), that.getClassFields()) &&
+                Objects.equals(getClassOrInterfaceTypeParameters(), that.getClassOrInterfaceTypeParameters()) &&
+                Objects.equals(getBody(), that.getBody()) &&
+                Objects.equals(getParent(), that.getParent());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), isClass(), getConstructors(), getMethods(),
-                getFields(), getTypeParameters(), getBody(), getSourceId());
+        return Objects.hash(getId(), getName(), isClass(), isExternal());
+    }
+
+    @Override
+    public LightWeight getParent() {
+        return parent;
+    }
+
+    public void setParent(LightWeight parent) {
+        this.parent = parent;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
     }
 }

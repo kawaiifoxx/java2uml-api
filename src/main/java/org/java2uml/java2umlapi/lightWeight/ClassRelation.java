@@ -1,5 +1,7 @@
 package org.java2uml.java2umlapi.lightWeight;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.java2uml.java2umlapi.util.umlSymbols.RelationsSymbol;
 
 import javax.persistence.*;
@@ -11,12 +13,15 @@ import javax.persistence.*;
  * @author kawaiifox
  */
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ClassRelation {
-    @ManyToOne(fetch = FetchType.EAGER)
-    private ClassOrInterface from;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    private LightWeight from;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private ClassOrInterface to;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    private LightWeight to;
 
     private RelationsSymbol relationsSymbol;
 
@@ -24,10 +29,15 @@ public class ClassRelation {
     @GeneratedValue
     private Long id;
 
-    public ClassRelation(ClassOrInterface from, ClassOrInterface to, RelationsSymbol relationsSymbol) {
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Source parent;
+
+    public ClassRelation(LightWeight from, LightWeight to, RelationsSymbol relationsSymbol, Source parent) {
         this.from = from;
         this.to = to;
         this.relationsSymbol = relationsSymbol;
+        this.parent = parent;
     }
 
     protected ClassRelation() {
@@ -41,19 +51,19 @@ public class ClassRelation {
         return id;
     }
 
-    public ClassOrInterface getFrom() {
+    public LightWeight getFrom() {
         return from;
     }
 
-    public void setFrom(ClassOrInterface from) {
+    public void setFrom(LightWeight from) {
         this.from = from;
     }
 
-    public ClassOrInterface getTo() {
+    public LightWeight getTo() {
         return to;
     }
 
-    public void setTo(ClassOrInterface to) {
+    public void setTo(LightWeight to) {
         this.to = to;
     }
 
@@ -63,5 +73,13 @@ public class ClassRelation {
 
     public void setRelationsSymbol(RelationsSymbol relationsSymbol) {
         this.relationsSymbol = relationsSymbol;
+    }
+
+    public Source getParent() {
+        return parent;
+    }
+
+    public void setParent(Source parent) {
+        this.parent = parent;
     }
 }

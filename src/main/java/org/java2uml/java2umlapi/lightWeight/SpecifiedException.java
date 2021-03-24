@@ -1,8 +1,12 @@
 package org.java2uml.java2umlapi.lightWeight;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+
 /**
  * <p>
  * An Entity Class representing specified exceptions on a method or a constructor.
@@ -11,19 +15,19 @@ import javax.persistence.Id;
  * @author kawaiifox
  */
 @Entity
-public class SpecifiedException implements LightWeight {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class SpecifiedException extends LightWeight {
     private String name;
-    @Id
-    @GeneratedValue
-    private Long id;
-
-    private Long ownerId;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    private LightWeight parent;
 
     protected SpecifiedException() {
     }
 
-    public SpecifiedException(String name) {
+    public SpecifiedException(String name, LightWeight parent) {
         this.name = name;
+        this.parent = parent;
     }
 
     public String getName() {
@@ -34,19 +38,12 @@ public class SpecifiedException implements LightWeight {
         this.name = name;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setParent(LightWeight parent) {
+        this.parent = parent;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public Long getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
+    @Override
+    public LightWeight getParent() {
+        return parent;
     }
 }

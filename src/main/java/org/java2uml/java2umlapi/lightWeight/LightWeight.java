@@ -1,14 +1,40 @@
 package org.java2uml.java2umlapi.lightWeight;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.Optional;
 
-public interface LightWeight {
+@Entity
+public abstract class LightWeight {
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * @return parent of this lightWeight.
+     */
+    @JsonIgnore
+    public LightWeight getParent() {
+        throw new UnsupportedOperationException("Parent of this lightWeight does not exist.");
+    }
+
     /**
      * if this light weight is source then a source is returned.
      *
      * @return source
      */
-    default Optional<Source> asSource() {
+    public Optional<Source> asSource() {
         return Optional.empty();
     }
 
@@ -17,7 +43,7 @@ public interface LightWeight {
      *
      * @return classOrInterface
      */
-    default Optional<ClassOrInterface> asClassOrInterface() {
+    public Optional<ClassOrInterface> asClassOrInterface() {
         return Optional.empty();
     }
 
@@ -26,7 +52,7 @@ public interface LightWeight {
      *
      * @return EnumLW
      */
-    default Optional<EnumLW> asEnumLW() {
+    public Optional<EnumLW> asEnumLW() {
         return Optional.empty();
     }
 
@@ -35,7 +61,7 @@ public interface LightWeight {
      *
      * @return Constructor
      */
-    default Optional<Constructor> asConstructor() {
+    public Optional<Constructor> asConstructor() {
         return Optional.empty();
     }
 
@@ -44,7 +70,7 @@ public interface LightWeight {
      *
      * @return Field
      */
-    default Optional<Field> asField() {
+   public Optional<Field> asField() {
         return Optional.empty();
     }
 
@@ -53,7 +79,7 @@ public interface LightWeight {
      *
      * @return Method
      */
-    default Optional<Method> asMethod() {
+    public Optional<Method> asMethod() {
         return Optional.empty();
     }
 
@@ -62,7 +88,7 @@ public interface LightWeight {
      *
      * @return EnumConstant
      */
-    default Optional<EnumConstant> asEnumConstant() {
+    public Optional<EnumConstant> asEnumConstant() {
         return Optional.empty();
     }
 }

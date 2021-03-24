@@ -1,9 +1,12 @@
 package org.java2uml.java2umlapi.lightWeight;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 
 /**
  * <p>
@@ -14,15 +17,15 @@ import javax.persistence.Id;
  */
 
 @Entity
-public class Param implements LightWeight {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Param extends LightWeight {
     @Column(columnDefinition = "varchar(500)")
     private String typeName;
     @Column(columnDefinition = "varchar(500)")
     private String name;
-    private Long ownerId;
-    @Id
-    @GeneratedValue
-    private Long id;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    private LightWeight parent;
 
     protected Param() {
     }
@@ -30,6 +33,12 @@ public class Param implements LightWeight {
     public Param(String typeName, String name) {
         this.typeName = typeName;
         this.name = name;
+    }
+
+    public Param(String typeName, String name, LightWeight parent) {
+        this.typeName = typeName;
+        this.name = name;
+        this.parent = parent;
     }
 
     public String getName() {
@@ -40,14 +49,6 @@ public class Param implements LightWeight {
         return typeName;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public Long getOwnerId() {
-        return ownerId;
-    }
-
     public void setTypeName(String typeName) {
         this.typeName = typeName;
     }
@@ -56,11 +57,12 @@ public class Param implements LightWeight {
         this.name = name;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    @Override
+    public LightWeight getParent() {
+        return parent;
     }
 
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
+    public void setParent(LightWeight parent) {
+        this.parent = parent;
     }
 }

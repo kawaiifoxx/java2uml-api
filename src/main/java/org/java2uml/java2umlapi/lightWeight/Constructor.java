@@ -1,6 +1,7 @@
 package org.java2uml.java2umlapi.lightWeight;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -9,13 +10,14 @@ import java.util.Optional;
 
 /**
  * <p>
- * A lightweight data class containing all necessary information for a particular constructor in source files.
+ * A lightweight data class containing all necessary information for a particular constructor in a source file.
  * </p>
  *
  * @author kawaiifox
  */
 @Entity
-public class Constructor implements LightWeight {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Constructor extends LightWeight {
     @Column(columnDefinition = "varchar(500)")
     private String name;
     @Column(columnDefinition = "varchar(500)")
@@ -23,14 +25,18 @@ public class Constructor implements LightWeight {
     @Column(columnDefinition = "varchar(10)")
     private String visibility;
     @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Param> params;
+    private List<Param> constructorParameters;
     @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<TypeParam> typeParams;
+    private List<TypeParam> constructorTypeParameters;
+    @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<SpecifiedException> constructorSpecifiedExceptions;
     @JsonIgnore
     @OneToOne(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Body body;
     private boolean compilerGenerated;
-    private Long ownerId;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    private LightWeight parent;
 
     @Id
     @GeneratedValue
@@ -38,8 +44,8 @@ public class Constructor implements LightWeight {
 
 
     protected Constructor() {
-        this.params = new ArrayList<>();
-        this.typeParams = new ArrayList<>();
+        this.constructorParameters = new ArrayList<>();
+        this.constructorTypeParameters = new ArrayList<>();
     }
 
     public Constructor(String name, String signature, String visibility, Body body) {
@@ -47,16 +53,27 @@ public class Constructor implements LightWeight {
         this.signature = signature;
         this.visibility = visibility;
         this.body = body;
-        this.params = new ArrayList<>();
-        this.typeParams = new ArrayList<>();
+        this.constructorParameters = new ArrayList<>();
+        this.constructorTypeParameters = new ArrayList<>();
     }
 
-    public Constructor(String name, String signature, String visibility, List<Param> params, List<TypeParam> typeParams, Body body, boolean compilerGenerated) {
+    public Constructor(String name, String signature, String visibility, boolean compilerGenerated) {
         this.name = name;
         this.signature = signature;
         this.visibility = visibility;
-        this.params = params;
-        this.typeParams = typeParams;
+        this.compilerGenerated = compilerGenerated;
+    }
+
+    public Constructor(
+            String name, String signature, String visibility,
+            List<Param> params, List<TypeParam> constructorTypeParameters,
+            Body body, boolean compilerGenerated
+    ) {
+        this.name = name;
+        this.signature = signature;
+        this.visibility = visibility;
+        this.constructorParameters = params;
+        this.constructorTypeParameters = constructorTypeParameters;
         this.body = body;
         this.compilerGenerated = compilerGenerated;
     }
@@ -74,11 +91,11 @@ public class Constructor implements LightWeight {
     }
 
     public void addParam(Param param) {
-        params.add(param);
+        constructorParameters.add(param);
     }
 
-    public List<Param> getParams() {
-        return params;
+    public List<Param> getConstructorParameters() {
+        return constructorParameters;
     }
 
     public Long getId() {
@@ -87,10 +104,6 @@ public class Constructor implements LightWeight {
 
     public Body getBody() {
         return body;
-    }
-
-    public Long getOwnerId() {
-        return ownerId;
     }
 
     public void setId(Long id) {
@@ -105,20 +118,32 @@ public class Constructor implements LightWeight {
         this.signature = signature;
     }
 
+    public void setParent(LightWeight parent) {
+        this.parent = parent;
+    }
+
     public void setVisibility(String visibility) {
         this.visibility = visibility;
     }
 
-    public void setParams(List<Param> params) {
-        this.params = params;
+    public void setConstructorTypeParameters(List<TypeParam> typeParams) {
+        this.constructorTypeParameters = typeParams;
+    }
+
+    public void setConstructorParameters(List<Param> params) {
+        this.constructorParameters = params;
     }
 
     public void setBody(Body body) {
         this.body = body;
     }
 
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
+    public void setConstructorSpecifiedExceptions(List<SpecifiedException> constructorSpecifiedExceptions) {
+        this.constructorSpecifiedExceptions = constructorSpecifiedExceptions;
+    }
+
+    public void setCompilerGenerated(boolean compilerGenerated) {
+        this.compilerGenerated = compilerGenerated;
     }
 
     /**
@@ -131,19 +156,20 @@ public class Constructor implements LightWeight {
         return Optional.of(this);
     }
 
-    public List<TypeParam> getTypeParams() {
-        return typeParams;
+    public List<TypeParam> getConstructorTypeParameters() {
+        return constructorTypeParameters;
     }
 
-    public void setTypeParams(List<TypeParam> typeParams) {
-        this.typeParams = typeParams;
+    public List<SpecifiedException> getConstructorSpecifiedExceptions() {
+        return constructorSpecifiedExceptions;
     }
 
     public boolean isCompilerGenerated() {
         return compilerGenerated;
     }
 
-    public void setCompilerGenerated(boolean compilerGenerated) {
-        this.compilerGenerated = compilerGenerated;
+    @Override
+    public LightWeight getParent() {
+        return parent;
     }
 }

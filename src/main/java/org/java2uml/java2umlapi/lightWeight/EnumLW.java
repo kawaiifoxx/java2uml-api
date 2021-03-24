@@ -1,6 +1,7 @@
 package org.java2uml.java2umlapi.lightWeight;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -14,9 +15,13 @@ import java.util.Optional;
  * @author kawaiifox
  */
 @Entity
-public class EnumLW implements LightWeight {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class EnumLW extends LightWeight {
     @Column(columnDefinition = "varchar(500)")
     private String name;
+
+    @Column(columnDefinition = "varchar(500)")
+    private String packageName;
 
     @JsonIgnore
     @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -24,32 +29,26 @@ public class EnumLW implements LightWeight {
 
     @JsonIgnore
     @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Constructor> constructors;
+    private List<Constructor> enumConstructors;
 
     @JsonIgnore
     @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Method> methods;
+    private List<Method> enumMethods;
 
     @JsonIgnore
     @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Field> fields;
+    private List<Field> enumFields;
 
     @JsonIgnore
     @OneToOne(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Body body;
 
-    private Long sourceId;
-
-    @Id
-    @GeneratedValue
-    private Long id;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    private LightWeight parent;
 
     public EnumLW(String name) {
         this.name = name;
-        this.enumConstants = new ArrayList<>();
-        this.constructors = new ArrayList<>();
-        this.methods = new ArrayList<>();
-        this.fields = new ArrayList<>();
     }
 
     public EnumLW(String name, List<EnumConstant> enumConstants,
@@ -57,21 +56,17 @@ public class EnumLW implements LightWeight {
                   List<Field> fields, Body body) {
         this.name = name;
         this.enumConstants = enumConstants;
-        this.constructors = constructors;
-        this.methods = methods;
-        this.fields = fields;
+        this.enumConstructors = constructors;
+        this.enumMethods = methods;
+        this.enumFields = fields;
         this.body = body;
     }
 
     protected EnumLW() {
         this.enumConstants = new ArrayList<>();
-        this.constructors = new ArrayList<>();
-        this.methods = new ArrayList<>();
-        this.fields = new ArrayList<>();
-    }
-
-    public String getName() {
-        return name;
+        this.enumConstructors = new ArrayList<>();
+        this.enumMethods = new ArrayList<>();
+        this.enumFields = new ArrayList<>();
     }
 
     public void addEnumConstant(EnumConstant enumConstant) {
@@ -79,39 +74,44 @@ public class EnumLW implements LightWeight {
     }
 
     public void addConstructor(Constructor constructor) {
-        constructors.add(constructor);
+        enumConstructors.add(constructor);
     }
 
     public void addMethod(Method method) {
-        methods.add(method);
+        enumMethods.add(method);
+    }
+
+    public String getName() {
+        return name;
     }
 
     public List<EnumConstant> getEnumConstants() {
         return enumConstants;
     }
 
-    public List<Constructor> getConstructors() {
-        return constructors;
+    public List<Constructor> getEnumConstructors() {
+        return enumConstructors;
     }
 
-    public List<Method> getMethods() {
-        return methods;
+    public List<Method> getEnumMethods() {
+        return enumMethods;
     }
 
     public Body getBody() {
         return body;
     }
 
-    public List<Field> getFields() {
-        return fields;
+    public List<Field> getEnumFields() {
+        return enumFields;
     }
 
-    public Long getId() {
-        return id;
+    @Override
+    public LightWeight getParent() {
+        return parent;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public String getPackageName() {
+        return packageName;
     }
 
     public void setName(String name) {
@@ -122,28 +122,28 @@ public class EnumLW implements LightWeight {
         this.enumConstants = enumConstants;
     }
 
-    public void setConstructors(List<Constructor> constructors) {
-        this.constructors = constructors;
+    public void setEnumConstructors(List<Constructor> constructors) {
+        this.enumConstructors = constructors;
     }
 
-    public void setMethods(List<Method> methods) {
-        this.methods = methods;
+    public void setEnumMethods(List<Method> methods) {
+        this.enumMethods = methods;
     }
 
     public void setBody(Body body) {
         this.body = body;
     }
 
-    public void setFields(List<Field> fields) {
-        this.fields = fields;
+    public void setEnumFields(List<Field> fields) {
+        this.enumFields = fields;
     }
 
-    public Long getSourceId() {
-        return sourceId;
+    public void setParent(LightWeight parent) {
+        this.parent = parent;
     }
 
-    public void setSourceId(Long sourceId) {
-        this.sourceId = sourceId;
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
     }
 
     @Override

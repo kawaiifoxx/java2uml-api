@@ -1,11 +1,12 @@
 package org.java2uml.java2umlapi.lightWeight;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 /**
  * <p>
  * An Entity Class representing method in source files.
@@ -14,9 +15,13 @@ import java.util.Optional;
  * @author kawaiifox
  */
 @Entity
-public class Method implements LightWeight {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Method extends LightWeight {
     @Column(columnDefinition = "varchar(500)")
     private String name;
+    @JsonIgnore
+    @Column(columnDefinition = "varchar(500)")
+    private String packageName;
     @Column(columnDefinition = "varchar(500)")
     private String returnType;
     @Column(columnDefinition = "varchar(500)")
@@ -25,48 +30,51 @@ public class Method implements LightWeight {
     private String visibility;
     private boolean isStatic;
     @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Param> params;
+    private List<Param> methodParameters;
     @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<TypeParam> typeParams;
+    private List<TypeParam> methodTypeParameters;
     @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<SpecifiedException> specifiedExceptions;
     @JsonIgnore
     @OneToOne(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Body body;
-    private Long ownerId;
-
-    @Id
-    @GeneratedValue
-    private Long id;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    private LightWeight parent;
 
 
     protected Method() {
-        this.params = new ArrayList<>();
-        this.typeParams = new ArrayList<>();
-        this.specifiedExceptions = new ArrayList<>();
     }
 
-    public Method(String name, String signature, String returnType,String visibility) {
+    public Method(String name, String signature, String returnType, String visibility) {
         this.name = name;
         this.signature = signature;
         this.visibility = visibility;
         this.returnType = returnType;
         this.isStatic = false;
-        this.params = new ArrayList<>();
-        this.typeParams = new ArrayList<>();
-        this.specifiedExceptions = new ArrayList<>();
     }
 
-    public Method(String name, String returnType, String signature,
-                  String visibility, boolean isStatic,List<Param> params, List<TypeParam> typeParams,
-                  List<SpecifiedException> specifiedExceptions, Body body) {
+    public Method(String name, String signature, String returnType, String visibility, boolean isStatic) {
         this.name = name;
         this.returnType = returnType;
         this.signature = signature;
         this.visibility = visibility;
         this.isStatic = isStatic;
-        this.params = params;
-        this.typeParams = typeParams;
+    }
+
+    public Method(
+            String name, String returnType, String signature,
+            String visibility, boolean isStatic,
+            List<Param> params, List<TypeParam> typeParams,
+            List<SpecifiedException> specifiedExceptions, Body body
+    ) {
+        this.name = name;
+        this.returnType = returnType;
+        this.signature = signature;
+        this.visibility = visibility;
+        this.isStatic = isStatic;
+        this.methodParameters = params;
+        this.methodTypeParameters = typeParams;
         this.specifiedExceptions = specifiedExceptions;
         this.body = body;
     }
@@ -84,15 +92,15 @@ public class Method implements LightWeight {
     }
 
     public void addParam(Param param) {
-        params.add(param);
+        methodParameters.add(param);
     }
 
-    public List<Param> getParams() {
-        return params;
+    public List<Param> getMethodParameters() {
+        return methodParameters;
     }
 
-    public List<TypeParam> getTypeParams() {
-        return typeParams;
+    public List<TypeParam> getMethodTypeParameters() {
+        return methodTypeParameters;
     }
 
     public void setName(String name) {
@@ -115,24 +123,16 @@ public class Method implements LightWeight {
         this.body = body;
     }
 
-    public void setParams(List<Param> params) {
-        this.params = params;
+    public void setMethodParameters(List<Param> params) {
+        this.methodParameters = params;
     }
 
-    public void setTypeParams(List<TypeParam> typeParams) {
-        this.typeParams = typeParams;
+    public void setMethodTypeParameters(List<TypeParam> typeParams) {
+        this.methodTypeParameters = typeParams;
     }
 
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
+    public void setParent(LightWeight parent) {
+        this.parent = parent;
     }
 
     public String getReturnType() {
@@ -143,9 +143,6 @@ public class Method implements LightWeight {
         return body;
     }
 
-    public Long getOwnerId() {
-        return ownerId;
-    }
 
     /**
      * if this light weight is Method then a Method is returned.
@@ -163,5 +160,26 @@ public class Method implements LightWeight {
 
     public void setSpecifiedExceptions(List<SpecifiedException> specifiedExceptions) {
         this.specifiedExceptions = specifiedExceptions;
+    }
+
+    @Override
+    public LightWeight getParent() {
+        return parent;
+    }
+
+    public boolean isStatic() {
+        return isStatic;
+    }
+
+    public void setStatic(boolean aStatic) {
+        isStatic = aStatic;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
     }
 }
