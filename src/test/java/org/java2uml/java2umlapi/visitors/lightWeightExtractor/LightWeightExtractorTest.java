@@ -3,8 +3,8 @@ package org.java2uml.java2umlapi.visitors.lightWeightExtractor;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.JarTypeSolver;
 import org.apache.commons.io.FileDeleteStrategy;
 import org.java2uml.java2umlapi.lightWeight.*;
+import org.java2uml.java2umlapi.parsedComponent.SourceComponent;
 import org.java2uml.java2umlapi.parser.Parser;
-import org.java2uml.java2umlapi.umlComponenets.SourceComponent;
 import org.java2uml.java2umlapi.util.umlSymbols.RelationsSymbol;
 import org.java2uml.java2umlapi.util.unzipper.Unzipper;
 import org.junit.jupiter.api.AfterAll;
@@ -77,9 +77,6 @@ class LightWeightExtractorTest {
 
     }
 
-    //TODO: Add more tests.
-
-
     @Test
     @DisplayName("number of methods should be equal to total number of methods in all the classes and enums.")
     void numberOfMethods() {
@@ -88,12 +85,12 @@ class LightWeightExtractorTest {
         var actualNumberOfMethods = source
                 .getClassOrInterfaceList()
                 .stream()
-                .mapToInt(classOrInterface -> classOrInterface.getMethods().size())
+                .mapToInt(classOrInterface -> classOrInterface.getClassOrInterfaceMethods().size())
                 .sum();
         actualNumberOfMethods += source
                 .getEnumLWList()
                 .stream()
-                .mapToInt(enumLW -> enumLW.getMethods().size())
+                .mapToInt(enumLW -> enumLW.getEnumMethods().size())
                 .sum();
 
         assertEquals(11, actualNumberOfMethods, "actual number of methods does " +
@@ -108,12 +105,12 @@ class LightWeightExtractorTest {
         var actualNumberOfConstructors = source
                 .getClassOrInterfaceList()
                 .stream()
-                .mapToInt(classOrInterface -> classOrInterface.getConstructors().size())
+                .mapToInt(classOrInterface -> classOrInterface.getClassConstructors().size())
                 .sum();
         actualNumberOfConstructors += source
                 .getEnumLWList()
                 .stream()
-                .mapToInt(enumLW -> enumLW.getConstructors().size())
+                .mapToInt(enumLW -> enumLW.getEnumConstructors().size())
                 .sum();
 
         assertEquals(4, actualNumberOfConstructors, "actual number of constructors does not " +
@@ -128,12 +125,12 @@ class LightWeightExtractorTest {
         var actualNumberOfFields = source
                 .getClassOrInterfaceList()
                 .stream()
-                .mapToInt(classOrInterface -> classOrInterface.getFields().size())
+                .mapToInt(classOrInterface -> classOrInterface.getClassFields().size())
                 .sum();
         actualNumberOfFields += source
                 .getEnumLWList()
                 .stream()
-                .mapToInt(enumLW -> enumLW.getFields().size())
+                .mapToInt(enumLW -> enumLW.getEnumFields().size())
                 .sum();
 
         assertEquals(8, actualNumberOfFields, "actual number of fields does not " +
@@ -233,7 +230,7 @@ class LightWeightExtractorTest {
         var actualMethodNames = source
                 .getClassOrInterfaceList()
                 .stream()
-                .map(ClassOrInterface::getMethods)
+                .map(ClassOrInterface::getClassOrInterfaceMethods)
                 .flatMap(Collection::stream)
                 .map(Method::getName)
                 .collect(Collectors.toSet());
@@ -242,7 +239,7 @@ class LightWeightExtractorTest {
                 source
                         .getEnumLWList()
                         .stream()
-                        .map(EnumLW::getMethods)
+                        .map(EnumLW::getEnumMethods)
                         .flatMap(Collection::stream)
                         .map(Method::getName)
                         .collect(Collectors.toSet())
@@ -266,7 +263,7 @@ class LightWeightExtractorTest {
         var actualConstructorNames = source
                 .getClassOrInterfaceList()
                 .stream()
-                .map(ClassOrInterface::getConstructors)
+                .map(ClassOrInterface::getClassConstructors)
                 .flatMap(Collection::stream)
                 .map(Constructor::getName)
                 .collect(Collectors.toSet());
@@ -275,7 +272,7 @@ class LightWeightExtractorTest {
                 source
                         .getEnumLWList()
                         .stream()
-                        .map(EnumLW::getConstructors)
+                        .map(EnumLW::getEnumConstructors)
                         .flatMap(Collection::stream)
                         .map(Constructor::getName)
                         .collect(Collectors.toSet())
@@ -306,7 +303,7 @@ class LightWeightExtractorTest {
         var actualFieldNames = source
                 .getClassOrInterfaceList()
                 .stream()
-                .map(ClassOrInterface::getFields)
+                .map(ClassOrInterface::getClassFields)
                 .flatMap(Collection::stream)
                 .map(Field::getName)
                 .collect(Collectors.groupingBy(name -> name, Collectors.counting()));
@@ -315,7 +312,7 @@ class LightWeightExtractorTest {
                 source
                         .getEnumLWList()
                         .stream()
-                        .map(EnumLW::getFields)
+                        .map(EnumLW::getEnumFields)
                         .flatMap(Collection::stream)
                         .map(Field::getName)
                         .collect(Collectors.groupingBy(name -> name, Collectors.counting()))
@@ -404,7 +401,7 @@ class LightWeightExtractorTest {
         var actualBodies = source
                 .getClassOrInterfaceList()
                 .stream()
-                .map(ClassOrInterface::getMethods)
+                .map(ClassOrInterface::getClassOrInterfaceMethods)
                 .flatMap(Collection::stream)
                 .map(Method::getBody)
                 .map(Body::getContent)
@@ -418,7 +415,7 @@ class LightWeightExtractorTest {
                 source
                         .getEnumLWList()
                         .stream()
-                        .map(EnumLW::getMethods)
+                        .map(EnumLW::getEnumMethods)
                         .flatMap(Collection::stream)
                         .map(Method::getBody)
                         .map(Body::getContent)
@@ -451,7 +448,7 @@ class LightWeightExtractorTest {
         var actualBodies = source
                 .getClassOrInterfaceList()
                 .stream()
-                .map(ClassOrInterface::getConstructors)
+                .map(ClassOrInterface::getClassConstructors)
                 .flatMap(Collection::stream)
                 .map(Constructor::getBody)
                 .map(Body::getContent)
@@ -465,7 +462,7 @@ class LightWeightExtractorTest {
                 source
                         .getEnumLWList()
                         .stream()
-                        .map(EnumLW::getConstructors)
+                        .map(EnumLW::getEnumConstructors)
                         .flatMap(Collection::stream)
                         .map(Constructor::getBody)
                         .map(Body::getContent)
