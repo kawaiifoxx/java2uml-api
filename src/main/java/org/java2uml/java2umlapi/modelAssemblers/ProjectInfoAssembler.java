@@ -29,8 +29,8 @@ public class ProjectInfoAssembler implements RepresentationModelAssembler<Projec
                 entity,
                 linkTo(methodOn(ProjectInfoController.class).one(entity.getId())).withSelfRel(),
                 linkTo(methodOn(ProjectInfoController.class).delete(entity.getId())).withRel("delete"),
-                linkTo(methodOn(UMLController.class).getPUMLCode(entity.getId())).withRel("uml:text"),
-                linkTo(methodOn(UMLController.class).getSvg(entity.getId())).withRel("uml:svg"),
+                linkTo(methodOn(UMLController.class).getPUMLCode(entity.getId())).withRel("umlText"),
+                linkTo(methodOn(UMLController.class).getSvg(entity.getId())).withRel("umlSvg"),
                 linkTo(methodOn(SourceController.class).findByProjectId(entity.getId())).withRel("projectModel")
         );
     }

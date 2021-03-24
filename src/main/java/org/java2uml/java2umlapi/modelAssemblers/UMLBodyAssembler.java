@@ -29,7 +29,7 @@ public class UMLBodyAssembler implements RepresentationModelAssembler<UMLBody, E
         return EntityModel.of(
                 entity,
                 linkTo(methodOn(UMLController.class).getPUMLCode(projectInfo.getId())).withSelfRel(),
-                linkTo(methodOn(UMLController.class).getSvg(projectInfo.getId())).withRel("uml:svg"),
+                linkTo(methodOn(UMLController.class).getSvg(projectInfo.getId())).withRel("umlSvg"),
                 linkTo(methodOn(ProjectInfoController.class).one(projectInfo.getId())).withRel("projectInfo")
         );
     }
