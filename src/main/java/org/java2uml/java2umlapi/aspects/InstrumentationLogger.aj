@@ -1,6 +1,6 @@
 package org.java2uml.java2umlapi.aspects;
 
-import org.java2uml.java2umlapi.umlComponenets.SourceComponent;
+import org.java2uml.java2umlapi.parsedComponent.SourceComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
