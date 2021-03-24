@@ -1,4 +1,4 @@
-package org.java2uml.java2umlapi.umlComponenets;
+package org.java2uml.java2umlapi.parsedComponent;
 
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import org.java2uml.java2umlapi.visitors.Visitor;
@@ -19,6 +19,7 @@ public class ParsedClassOrInterfaceComponent implements ParsedCompositeComponent
     private final ResolvedDeclaration resolvedDeclaration;
     private final ParsedComponent parent;
     private final String name;
+    private final String packageName;
     private final boolean isClass;
     private final Map<String, ParsedComponent> children;
 
@@ -32,6 +33,7 @@ public class ParsedClassOrInterfaceComponent implements ParsedCompositeComponent
         this.resolvedDeclaration = resolvedDeclaration;
         this.parent = parent;
         this.name = resolvedDeclaration.asType().getQualifiedName();
+        this.packageName = resolvedDeclaration.asType().getPackageName();
         this.children = new HashMap<>();
         this.isClass = resolvedDeclaration.asType().isClass();
     }
@@ -69,6 +71,14 @@ public class ParsedClassOrInterfaceComponent implements ParsedCompositeComponent
     @Override
     public String getName() {
         return name;
+    }
+
+    /**
+     * @return package name of the type.
+     */
+    @Override
+    public String getPackageName() {
+        return packageName;
     }
 
     /**

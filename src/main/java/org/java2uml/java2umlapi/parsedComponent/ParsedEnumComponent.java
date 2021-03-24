@@ -1,4 +1,4 @@
-package org.java2uml.java2umlapi.umlComponenets;
+package org.java2uml.java2umlapi.parsedComponent;
 
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedEnumDeclaration;
@@ -13,6 +13,7 @@ public class ParsedEnumComponent implements ParsedCompositeComponent {
     private final ResolvedEnumDeclaration resolvedEnumDeclaration;
     private final ParsedComponent parent;
     private final String name;
+    private final String packageName;
     private final HashMap<String, ParsedComponent> children;
 
     public ParsedEnumComponent(ResolvedEnumDeclaration resolvedEnumDeclaration, ParsedComponent parent) {
@@ -20,6 +21,7 @@ public class ParsedEnumComponent implements ParsedCompositeComponent {
         this.parent = parent;
         this.name = resolvedEnumDeclaration.getQualifiedName();
         this.children = new HashMap<>();
+        this.packageName = resolvedEnumDeclaration.getPackageName();
     }
 
     /**
@@ -52,6 +54,14 @@ public class ParsedEnumComponent implements ParsedCompositeComponent {
     @Override
     public String getName() {
         return name;
+    }
+
+    /**
+     * @return package name of the type.
+     */
+    @Override
+    public String getPackageName() {
+        return packageName;
     }
 
     /**

@@ -1,4 +1,4 @@
-package org.java2uml.java2umlapi.umlComponenets;
+package org.java2uml.java2umlapi.parsedComponent;
 
 import java.util.Optional;
 
@@ -34,6 +34,11 @@ public interface ParsedCompositeComponent extends ParsedComponent {
     default Optional<ParsedCompositeComponent> asParsedCompositeComponent() {
         return Optional.of(this);
     }
+
+    /**
+     * @return package name of the type.
+     */
+    String getPackageName();
 
     /**
      * This method tries to find the component you are looking for in its children.

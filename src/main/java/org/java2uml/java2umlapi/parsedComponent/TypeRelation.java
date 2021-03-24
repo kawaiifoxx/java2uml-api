@@ -1,4 +1,4 @@
-package org.java2uml.java2umlapi.umlComponenets;
+package org.java2uml.java2umlapi.parsedComponent;
 
 
 import org.java2uml.java2umlapi.util.umlSymbols.RelationsSymbol;

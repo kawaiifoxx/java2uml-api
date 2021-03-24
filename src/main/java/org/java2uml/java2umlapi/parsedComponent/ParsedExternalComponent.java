@@ -1,4 +1,4 @@
-package org.java2uml.java2umlapi.umlComponenets;
+package org.java2uml.java2umlapi.parsedComponent;
 
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedTypeDeclaration;
@@ -21,6 +21,7 @@ public class ParsedExternalComponent implements ParsedCompositeComponent {
 
     private String typeDeclaration;
     private final String name;
+    private final String packageName;
 
     /**
      * Initializes ParsedExternalComponent with a resolvedTypeDeclaration.
@@ -30,6 +31,7 @@ public class ParsedExternalComponent implements ParsedCompositeComponent {
     public ParsedExternalComponent(ResolvedTypeDeclaration resolvedTypeDeclaration) {
         this.resolvedTypeDeclaration = resolvedTypeDeclaration;
         this.name = resolvedTypeDeclaration.getQualifiedName();
+        this.packageName = resolvedTypeDeclaration.getPackageName();
     }
 
     @Override
@@ -70,6 +72,14 @@ public class ParsedExternalComponent implements ParsedCompositeComponent {
     }
 
     /**
+     * @return package name of the type.
+     */
+    @Override
+    public String getPackageName() {
+        return packageName;
+    }
+
+    /**
      * Accepts a visitor and returns whatever is returned by the visitor.
      *
      * @param v v is the Visitor
@@ -86,4 +96,5 @@ public class ParsedExternalComponent implements ParsedCompositeComponent {
                 "name='" + name + '\'' +
                 '}';
     }
+
 }

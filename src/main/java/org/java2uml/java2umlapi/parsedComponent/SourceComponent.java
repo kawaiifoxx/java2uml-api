@@ -1,4 +1,4 @@
-package org.java2uml.java2umlapi.umlComponenets;
+package org.java2uml.java2umlapi.parsedComponent;
 
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedMethodDeclaration;
@@ -64,6 +64,14 @@ public class SourceComponent implements ParsedCompositeComponent {
     @Override
     public boolean isLeaf() {
         return false;
+    }
+
+    /**
+     * @return package name of the type.
+     */
+    @Override
+    public String getPackageName() {
+        return "";
     }
 
     @Override
