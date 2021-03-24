@@ -62,7 +62,8 @@ class EnumConstantRepositoryTest {
 
         var actual = enumConstantRepository.findEnumConstantByEnumLW(enumLW);
 
-        assertEquals(expected, new HashSet<>(actual), "stored enumConstants are not same as retrieved enumConstants.");
+        assertEquals(expected, new HashSet<>(actual), "stored enumConstants are not " +
+                "same as retrieved enumConstants.");
     }
 
     @Test

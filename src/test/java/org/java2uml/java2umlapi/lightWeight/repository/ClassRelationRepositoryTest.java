@@ -37,7 +37,7 @@ class ClassRelationRepositoryTest {
         var to = classOrInterfaceRepository.save(
                 new ClassOrInterface("TestClass1", true, false, new Body("{}")));
         var classRelation = classRelationRepository.save(
-                new ClassRelation(from, to, RelationsSymbol.AGGREGATION));
+                new ClassRelation(from, to, RelationsSymbol.AGGREGATION, null));
         var retrieved = classRelationRepository.findAllByFrom(from).get(0);
 
         assertEquals(classRelation, retrieved, "saved classRelation should be same as retrieved classRelation");
@@ -51,7 +51,7 @@ class ClassRelationRepositoryTest {
         var to = classOrInterfaceRepository.save(
                 new ClassOrInterface("TestClass1", true, false, new Body("{}")));
         var classRelation = classRelationRepository.save(
-                new ClassRelation(from, to, RelationsSymbol.AGGREGATION));
+                new ClassRelation(from, to, RelationsSymbol.AGGREGATION, null));
         var retrieved = classRelationRepository.findAllByTo(to).get(0);
 
         assertEquals(classRelation, retrieved, "saved classRelation should be same as retrieved classRelation");
@@ -65,7 +65,7 @@ class ClassRelationRepositoryTest {
                 new ClassOrInterface("TestClass", true, false, new Body("{}")));
         var to = classOrInterfaceRepository.save(
                 new ClassOrInterface("TestClass1", true, false, new Body("{}")));
-        classRelationRepository.save(new ClassRelation(from, to, RelationsSymbol.AGGREGATION));
+        classRelationRepository.save(new ClassRelation(from, to, RelationsSymbol.AGGREGATION, null));
         classRelationRepository.deleteAllByFrom(from);
 
         assertEquals(0, classRelationRepository.findAllByFrom(from).size(),
@@ -80,7 +80,7 @@ class ClassRelationRepositoryTest {
                 new ClassOrInterface("TestClass", true, false, new Body("{}")));
         var to = classOrInterfaceRepository.save(
                 new ClassOrInterface("TestClass1", true, false, new Body("{}")));
-        classRelationRepository.save(new ClassRelation(from, to, RelationsSymbol.AGGREGATION));
+        classRelationRepository.save(new ClassRelation(from, to, RelationsSymbol.AGGREGATION, null));
         classRelationRepository.deleteAllByTo(to);
 
         assertEquals(0, classRelationRepository.findAllByFrom(from).size(),
