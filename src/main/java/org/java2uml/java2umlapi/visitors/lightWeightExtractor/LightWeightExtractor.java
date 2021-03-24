@@ -1,8 +1,10 @@
 package org.java2uml.java2umlapi.visitors.lightWeightExtractor;
 
 import org.java2uml.java2umlapi.lightWeight.*;
-import org.java2uml.java2umlapi.umlComponenets.*;
+import org.java2uml.java2umlapi.parsedComponent.*;
 import org.java2uml.java2umlapi.visitors.Visitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 
@@ -18,6 +20,9 @@ import static org.java2uml.java2umlapi.visitors.lightWeightExtractor.LightWeight
  */
 public class LightWeightExtractor implements Visitor<LightWeight> {
 
+    Logger logger = LoggerFactory.getLogger(LightWeightExtractor.class);
+
+
     /**
      * Visits passed component and extracts lightWeight from it.
      *
@@ -27,15 +32,33 @@ public class LightWeightExtractor implements Visitor<LightWeight> {
     @Override
     public LightWeight visit(SourceComponent sourceComponent) {
         var children = sourceComponent.getChildren();
-        var classOrInterfaceMap = getClassOrInterface(children, this);
-        var externalClassOrInterfaceMap = getExternalClassOrInterfaceList(
-                sourceComponent.getExternalComponents(), this);
         var typeRelations = sourceComponent.getAllRelations();
-        var classRelationList = getClassRelations(
-                classOrInterfaceMap, externalClassOrInterfaceMap, typeRelations);
+
+        var source = new Source();
+        var externalClassOrInterfaceMap = getExternalClassOrInterfaceList(
+                sourceComponent.getExternalComponents(),
+                this,
+                source
+        );
+        var classOrInterfaceMap = getClassOrInterface(
+                children,
+                this,
+                source
+        );
         var classOrInterfaceList = new ArrayList<>(classOrInterfaceMap.values());
         classOrInterfaceList.addAll(externalClassOrInterfaceMap.values());
-        return new Source(classOrInterfaceList, getEnumLWList(children, this), classRelationList);
+        source.setClassOrInterfaceList(classOrInterfaceList);
+        source.setClassRelationList(
+                getClassRelations(
+                        classOrInterfaceMap,
+                        externalClassOrInterfaceMap,
+                        typeRelations,
+                        source
+                )
+        );
+        source.setEnumLWList(getEnumLWList(children, this, source));
+
+        return source;
     }
 
     /**
@@ -47,15 +70,29 @@ public class LightWeightExtractor implements Visitor<LightWeight> {
     @Override
     public LightWeight visit(ParsedClassOrInterfaceComponent parsedClassOrInterfaceComponent) {
         var children = parsedClassOrInterfaceComponent.getChildren();
-        return new ClassOrInterface(parsedClassOrInterfaceComponent.getName(),
+        var classOrInterface = new ClassOrInterface(
+                parsedClassOrInterfaceComponent.getName(),
+                parsedClassOrInterfaceComponent.getPackageName(),
                 parsedClassOrInterfaceComponent.isClass(),
-                false,
-                getConstructorList(children, this),
-                getMethodList(children, this),
-                getFieldList(children, this),
-                getTypeParamList(parsedClassOrInterfaceComponent),
-                getBody(parsedClassOrInterfaceComponent)
+                false
         );
+        classOrInterface.setPackageName(parsedClassOrInterfaceComponent.getPackageName());
+        classOrInterface.setClassConstructors(getConstructorList(children, this, classOrInterface));
+        classOrInterface.setClassOrInterfaceMethods(
+                getMethodList(
+                        children,
+                        this,
+                        classOrInterface,
+                        parsedClassOrInterfaceComponent.getPackageName()
+                )
+        );
+        classOrInterface.setClassFields(getFieldList(children, this, classOrInterface));
+        classOrInterface.setClassOrInterfaceTypeParameters(
+                getTypeParamList(parsedClassOrInterfaceComponent, classOrInterface)
+        );
+        classOrInterface.setBody(getBody(parsedClassOrInterfaceComponent, classOrInterface));
+
+        return classOrInterface;
     }
 
     /**
@@ -68,16 +105,20 @@ public class LightWeightExtractor implements Visitor<LightWeight> {
     public LightWeight visit(ParsedExternalComponent parsedExternalComponent) {
         var resolvedDeclaration = getResolvedDeclaration(parsedExternalComponent)
                 .asType().asReferenceType();
-        return new ClassOrInterface(
+        var classOrInterface = new ClassOrInterface(
                 parsedExternalComponent.getName(),
+                parsedExternalComponent.getPackageName(),
                 resolvedDeclaration.isClass(),
-                true,
-                new ArrayList<>(),
-                new ArrayList<>(),
-                new ArrayList<>(),
-                getTypeParametersFromRTPD(resolvedDeclaration.getTypeParameters()),
-                new Body(resolvedDeclaration.getQualifiedName() + " {\n}")
+                true
         );
+        classOrInterface.setClassConstructors(new ArrayList<>());
+        classOrInterface.setClassOrInterfaceMethods(new ArrayList<>());
+        classOrInterface.setClassFields(new ArrayList<>());
+        classOrInterface.setClassOrInterfaceTypeParameters(
+                getTypeParametersFromRTPD(resolvedDeclaration.getTypeParameters(), classOrInterface)
+        );
+        classOrInterface.setBody(new Body(resolvedDeclaration.getQualifiedName() + " {\n}"));
+        return classOrInterface;
     }
 
     /**
@@ -89,14 +130,15 @@ public class LightWeightExtractor implements Visitor<LightWeight> {
     @Override
     public LightWeight visit(ParsedEnumComponent parsedEnumComponent) {
         var children = parsedEnumComponent.getChildren();
-        return new EnumLW(
-                parsedEnumComponent.getName(),
-                getEnumConstantList(children, this),
-                getConstructorList(children, this),
-                getMethodList(children, this),
-                getFieldList(children, this),
-                new Body(parsedEnumComponent.getName() + " {}")
+        var enumLW = new EnumLW(parsedEnumComponent.getName());
+        enumLW.setEnumConstants(getEnumConstantList(children, this, enumLW));
+        enumLW.setEnumConstructors(getConstructorList(children, this, enumLW));
+        enumLW.setEnumMethods(
+                getMethodList(children, this, enumLW, parsedEnumComponent.getPackageName())
         );
+        enumLW.setEnumFields(getFieldList(children, this, enumLW));
+        enumLW.setBody(new Body(parsedEnumComponent.getName() + "{\n}", enumLW));
+        return enumLW;
     }
 
     /**
@@ -112,20 +154,37 @@ public class LightWeightExtractor implements Visitor<LightWeight> {
                         .getAsResolvedMethodDeclaration()
                         .orElseThrow(() -> new IllegalStateException("parsedMethodComponent should" +
                                 " contain resolvedMethodDeclaration."));
-
-        return new Method(
+        var method = new Method(
                 parsedMethodComponent.getName(),
+                resolvedMethodDeclaration.getQualifiedSignature(),
                 parsedMethodComponent.getReturnTypeName(),
-                resolvedMethodDeclaration.getSignature(),
                 resolvedMethodDeclaration.accessSpecifier().asString(),
-                resolvedMethodDeclaration.isStatic(),
-                getParamList(resolvedMethodDeclaration.getNumberOfParams(), resolvedMethodDeclaration::getParam),
-                getTypeParametersFromRTPD(resolvedMethodDeclaration.getTypeParameters()),
-                getSpecifiedExceptions(resolvedMethodDeclaration.getSpecifiedExceptions()),
-                new Body(resolvedMethodDeclaration.toAst()
-                        .orElseThrow(() -> new RuntimeException("unable to get ast of method," +
-                                " body cannot be generated")).toString())
+                resolvedMethodDeclaration.isStatic()
         );
+        method.setMethodParameters(
+                getParamList(resolvedMethodDeclaration.getNumberOfParams(), resolvedMethodDeclaration::getParam, method)
+        );
+        method.setMethodTypeParameters(
+                getTypeParametersFromRTPD(resolvedMethodDeclaration.getTypeParameters(), method)
+        );
+        method.setSpecifiedExceptions(
+                getSpecifiedExceptions(resolvedMethodDeclaration.getSpecifiedExceptions(), method)
+        );
+        try {
+            method.setBody(
+                    new Body(resolvedMethodDeclaration.toAst()
+                            .orElseThrow(
+                                    () -> new RuntimeException("unable to get ast of method," +
+                                            " body cannot be generated")
+                            ).toString(),
+                            method
+                    )
+            );
+        } catch (RuntimeException exception) {
+            logger.info("Unable to generate body for method", exception);
+        }
+
+        return method;
     }
 
     /**
@@ -139,15 +198,23 @@ public class LightWeightExtractor implements Visitor<LightWeight> {
         var resolvedDeclaration =
                 parsedConstructorComponent.getResolvedConstructorDeclaration();
 
-        return new Constructor(
+        var constructor = new Constructor(
                 parsedConstructorComponent.getName(),
                 resolvedDeclaration.getSignature(),
                 resolvedDeclaration.accessSpecifier().asString(),
-                getParamList(resolvedDeclaration.getNumberOfParams(), resolvedDeclaration::getParam),
-                getTypeParametersFromRTPD(resolvedDeclaration.getTypeParameters()),
-                getBody(resolvedDeclaration),
                 resolvedDeclaration.toAst().isEmpty()
         );
+        constructor.setConstructorParameters(
+                getParamList(resolvedDeclaration.getNumberOfParams(), resolvedDeclaration::getParam, constructor)
+        );
+        constructor.setConstructorTypeParameters(
+                getTypeParametersFromRTPD(resolvedDeclaration.getTypeParameters(), constructor)
+        );
+        constructor.setConstructorSpecifiedExceptions(
+                getSpecifiedExceptions(resolvedDeclaration.getSpecifiedExceptions(), constructor)
+        );
+        constructor.setBody(getBody(resolvedDeclaration, constructor));
+        return constructor;
     }
 
     /**
@@ -180,7 +247,7 @@ public class LightWeightExtractor implements Visitor<LightWeight> {
 
     /**
      * Visits passed TypeRelation and performs some operation on it.
-     *
+     * <br>
      * Please note that, this method always returns null because it has not been
      * implemented.
      *
