@@ -6,9 +6,9 @@ import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.SourceStringReader;
 import org.apache.commons.io.FileDeleteStrategy;
+import org.java2uml.java2umlapi.parsedComponent.ParsedMethodComponent;
+import org.java2uml.java2umlapi.parsedComponent.SourceComponent;
 import org.java2uml.java2umlapi.parser.Parser;
-import org.java2uml.java2umlapi.umlComponenets.ParsedMethodComponent;
-import org.java2uml.java2umlapi.umlComponenets.SourceComponent;
 import org.java2uml.java2umlapi.util.unzipper.Unzipper;
 import org.junit.jupiter.api.*;
 
@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -53,6 +54,7 @@ class MethodCallGraphImplTest {
         private Set<String> expectedMethodSet;
         private Map<String, List<String>> expectedCallGraphMap;
         String plantUMLMindMap;
+        private List<CallGraphRelation> expectedCallGraphRelations;
 
         @BeforeEach
         void setUp() {
@@ -79,6 +81,29 @@ class MethodCallGraphImplTest {
             expectedCallGraphMap.put("co.test.callGraphTest.normal.Test1_1.test1()", List.of());
             expectedCallGraphMap.put("co.test.callGraphTest.normal.Test1_2.test1()", List.of());
 
+            expectedCallGraphRelations =  List.of(
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.normal.Test5.test2()",
+                            "co.test.callGraphTest.normal.Test4.test4()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.normal.Test4.test4()",
+                            "co.test.callGraphTest.normal.Test3.test3()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.normal.Test3.test3()",
+                            "co.test.callGraphTest.normal.Test2.test2()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.normal.Test2.test2()",
+                            "co.test.callGraphTest.normal.Test1_1.test1()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.normal.Test2.test2()",
+                            "co.test.callGraphTest.normal.Test1_2.test1()"
+                    )
+            );
+
             plantUMLMindMap = "@startmindmap\n" +
                     "* co.test.callGraphTest.normal.Test5.test2()\n" +
                     "** co.test.callGraphTest.normal.Test4.test4()\n" +
@@ -87,6 +112,15 @@ class MethodCallGraphImplTest {
                     "***** co.test.callGraphTest.normal.Test1_1.test1()\n" +
                     "***** co.test.callGraphTest.normal.Test1_2.test1()\n" +
                     "@endmindmap";
+        }
+
+        @Test
+        @DisplayName("using getCallGraphRelations, should return all the relations of call graph.")
+        void testGetCallGraphRelations() {
+            var actualCallGraphRelations = methodCallGraph.getCallGraphRelations(new HashMap<>());
+            assertThat(new HashSet<>(actualCallGraphRelations))
+                    .describedAs("actual call graph relations should be same as expected call graph relations.")
+                    .isEqualTo(new HashSet<>(expectedCallGraphRelations));
         }
 
         @Test
@@ -152,6 +186,7 @@ class MethodCallGraphImplTest {
         private Set<String> expectedMethodSet;
         private Map<String, List<String>> expectedCallGraphMap;
         private String plantUMLMindMap;
+        private List<CallGraphRelation> expectedCallGraphRelations;
 
         @BeforeEach
         void setUp() {
@@ -166,9 +201,29 @@ class MethodCallGraphImplTest {
             expectedCallGraphMap = new HashMap<>();
             expectedCallGraphMap.put("co.test.callGraphTest.recursion.Recursion.recurse()", List.of("co.test.callGraphTest.recursion.Recursion.recurse()"));
 
+            expectedCallGraphRelations =  List.of(
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.recursion.Recursion.recurse()",
+                            "co.test.callGraphTest.recursion.Recursion.recurse()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.recursion.Recursion.recurse()",
+                            "co.test.callGraphTest.recursion.Recursion.recurse()"
+                    )
+            );
+
             plantUMLMindMap = "@startmindmap\n" +
                     "* <&reload> co.test.callGraphTest.recursion.Recursion.recurse()\n" +
                     "@endmindmap";
+        }
+
+        @Test
+        @DisplayName("using getCallGraphRelations, should return all the relations of call graph.")
+        void testGetCallGraphRelations() {
+            var actualCallGraphRelations = methodCallGraph.getCallGraphRelations(new HashMap<>());
+            assertThat(new HashSet<>(actualCallGraphRelations))
+                    .describedAs("actual call graph relations should be same as expected call graph relations.")
+                    .isEqualTo(new HashSet<>(expectedCallGraphRelations));
         }
 
         @Test
@@ -234,6 +289,7 @@ class MethodCallGraphImplTest {
         private Set<String> expectedMethodSet;
         private Map<String, List<String>> expectedCallGraphMap;
         private String plantUMLMindMap;
+        private List<CallGraphRelation> expectedCallGraphRelations;
 
         @BeforeEach
         void setUp() {
@@ -256,6 +312,29 @@ class MethodCallGraphImplTest {
             expectedCallGraphMap.put("co.test.callGraphTest.cyclicDep.ClassD.methodD()", List.of("co.test.callGraphTest.cyclicDep.ClassE.methodE()"));
             expectedCallGraphMap.put("co.test.callGraphTest.cyclicDep.ClassE.methodE()", List.of("co.test.callGraphTest.cyclicDep.ClassA.methodA()"));
 
+            expectedCallGraphRelations =  List.of(
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.cyclicDep.ClassA.methodA()",
+                            "co.test.callGraphTest.cyclicDep.ClassB.methodB()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.cyclicDep.ClassB.methodB()",
+                            "co.test.callGraphTest.cyclicDep.ClassC.methodC()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.cyclicDep.ClassC.methodC()",
+                            "co.test.callGraphTest.cyclicDep.ClassD.methodD()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.cyclicDep.ClassD.methodD()",
+                            "co.test.callGraphTest.cyclicDep.ClassE.methodE()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.cyclicDep.ClassE.methodE()",
+                            "co.test.callGraphTest.cyclicDep.ClassA.methodA()"
+                    )
+            );
+
             plantUMLMindMap = "@startmindmap\n" +
                     "* co.test.callGraphTest.cyclicDep.ClassA.methodA()\n" +
                     "** co.test.callGraphTest.cyclicDep.ClassB.methodB()\n" +
@@ -264,6 +343,15 @@ class MethodCallGraphImplTest {
                     "***** co.test.callGraphTest.cyclicDep.ClassE.methodE()\n" +
                     "****** co.test.callGraphTest.cyclicDep.ClassA.methodA()\n" +
                     "@endmindmap";
+        }
+
+        @Test
+        @DisplayName("using getCallGraphRelations, should return all the relations of call graph.")
+        void testGetCallGraphRelations() {
+            var actualCallGraphRelations = methodCallGraph.getCallGraphRelations(new HashMap<>());
+            assertThat(new HashSet<>(actualCallGraphRelations))
+                    .describedAs("actual call graph relations should be same as expected call graph relations.")
+                    .isEqualTo(new HashSet<>(expectedCallGraphRelations));
         }
 
         @Test
@@ -330,6 +418,7 @@ class MethodCallGraphImplTest {
         private Set<String> expectedMethodSet;
         private Map<String, List<String>> expectedCallGraphMap;
         private String plantUMLMindMap;
+        private List<CallGraphRelation> expectedCallGraphRelations;
 
         @BeforeEach
         void setUp() {
@@ -377,6 +466,109 @@ class MethodCallGraphImplTest {
                             "co.test.callGraphTest.completeG.ClassD.methodD()",
                             "co.test.callGraphTest.completeG.ClassE.methodE()"));
 
+            expectedCallGraphRelations =  List.of(
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.completeG.ClassA.methodA()",
+                            "co.test.callGraphTest.completeG.ClassA.methodA()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.completeG.ClassA.methodA()",
+                            "co.test.callGraphTest.completeG.ClassB.methodB()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.completeG.ClassA.methodA()",
+                            "co.test.callGraphTest.completeG.ClassC.methodC()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.completeG.ClassA.methodA()",
+                            "co.test.callGraphTest.completeG.ClassD.methodD()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.completeG.ClassA.methodA()",
+                            "co.test.callGraphTest.completeG.ClassE.methodE()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.completeG.ClassB.methodB()",
+                            "co.test.callGraphTest.completeG.ClassA.methodA()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.completeG.ClassB.methodB()",
+                            "co.test.callGraphTest.completeG.ClassB.methodB()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.completeG.ClassB.methodB()",
+                            "co.test.callGraphTest.completeG.ClassC.methodC()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.completeG.ClassB.methodB()",
+                            "co.test.callGraphTest.completeG.ClassD.methodD()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.completeG.ClassB.methodB()",
+                            "co.test.callGraphTest.completeG.ClassE.methodE()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.completeG.ClassC.methodC()",
+                            "co.test.callGraphTest.completeG.ClassA.methodA()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.completeG.ClassC.methodC()",
+                            "co.test.callGraphTest.completeG.ClassB.methodB()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.completeG.ClassC.methodC()",
+                            "co.test.callGraphTest.completeG.ClassC.methodC()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.completeG.ClassC.methodC()",
+                            "co.test.callGraphTest.completeG.ClassD.methodD()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.completeG.ClassC.methodC()",
+                            "co.test.callGraphTest.completeG.ClassE.methodE()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.completeG.ClassD.methodD()",
+                            "co.test.callGraphTest.completeG.ClassA.methodA()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.completeG.ClassD.methodD()",
+                            "co.test.callGraphTest.completeG.ClassB.methodB()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.completeG.ClassD.methodD()",
+                            "co.test.callGraphTest.completeG.ClassC.methodC()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.completeG.ClassD.methodD()",
+                            "co.test.callGraphTest.completeG.ClassD.methodD()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.completeG.ClassD.methodD()",
+                            "co.test.callGraphTest.completeG.ClassE.methodE()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.completeG.ClassE.methodE()",
+                            "co.test.callGraphTest.completeG.ClassA.methodA()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.completeG.ClassE.methodE()",
+                            "co.test.callGraphTest.completeG.ClassB.methodB()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.completeG.ClassE.methodE()",
+                            "co.test.callGraphTest.completeG.ClassC.methodC()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.completeG.ClassE.methodE()",
+                            "co.test.callGraphTest.completeG.ClassD.methodD()"
+                    ),
+                    new CallGraphRelation(
+                            "co.test.callGraphTest.completeG.ClassE.methodE()",
+                            "co.test.callGraphTest.completeG.ClassE.methodE()"
+                    )
+            );
+
             plantUMLMindMap = "@startmindmap\n" +
                     "* <&reload> co.test.callGraphTest.completeG.ClassA.methodA()\n" +
                     "** <&reload> co.test.callGraphTest.completeG.ClassB.methodB()\n" +
@@ -400,6 +592,15 @@ class MethodCallGraphImplTest {
                     "** <&reload> co.test.callGraphTest.completeG.ClassD.methodD()\n" +
                     "** <&reload> co.test.callGraphTest.completeG.ClassE.methodE()\n" +
                     "@endmindmap";
+        }
+
+        @Test
+        @DisplayName("using getCallGraphRelations, should return all the relations of call graph.")
+        void testGetCallGraphRelations() {
+            var actualCallGraphRelations = methodCallGraph.getCallGraphRelations(new HashMap<>());
+            assertThat(new HashSet<>(actualCallGraphRelations))
+                    .describedAs("actual call graph relations should be same as expected call graph relations.")
+                    .isEqualTo(new HashSet<>(expectedCallGraphRelations));
         }
 
         @Test
