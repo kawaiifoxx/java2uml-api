@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.util.Objects;
 
 /**
  * <p>
@@ -46,6 +45,7 @@ public class FileController {
 
     /**
      * Provides post mapping for "/api/files" endpoint
+     *
      * @param file Multipart file should be a zip file.
      * @return ProjectInfo containing meta data and useful links.
      * @throws UnrecognizedFileFormatException if file format is not "application/zip".
@@ -53,7 +53,7 @@ public class FileController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public EntityModel<ProjectInfo> upload(@RequestParam("file") MultipartFile file) {
-        if (!Objects.equals(file.getContentType(), "application/zip")) {
+        if (file.getContentType() == null || !file.getContentType().contains("application/zip")) {
             throw new UnrecognizedFileFormatException(
                     "please upload file with zip format."
             );
