@@ -1,4 +1,4 @@
-package org.java2uml.java2umlapi.umlComponenets;
+package org.java2uml.java2umlapi.parsedComponent;
 
 import com.github.javaparser.ast.AccessSpecifier;
 import com.github.javaparser.resolution.declarations.ResolvedFieldDeclaration;

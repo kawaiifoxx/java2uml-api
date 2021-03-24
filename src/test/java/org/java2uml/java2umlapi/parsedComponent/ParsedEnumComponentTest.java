@@ -1,4 +1,4 @@
-package org.java2uml.java2umlapi.umlComponenets;
+package org.java2uml.java2umlapi.parsedComponent;
 
 import com.github.javaparser.resolution.declarations.ResolvedEnumDeclaration;
 import org.java2uml.java2umlapi.visitors.umlExtractor.UMLExtractor;

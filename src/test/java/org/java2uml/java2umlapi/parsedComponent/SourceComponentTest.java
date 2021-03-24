@@ -1,4 +1,4 @@
-package org.java2uml.java2umlapi.umlComponenets;
+package org.java2uml.java2umlapi.parsedComponent;
 
 import com.github.javaparser.symbolsolver.resolution.typesolvers.JarTypeSolver;
 import net.sourceforge.plantuml.FileFormat;
