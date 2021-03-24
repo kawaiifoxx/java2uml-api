@@ -8,10 +8,8 @@ import org.java2uml.java2umlapi.modelAssemblers.ProjectInfoAssembler;
 import org.java2uml.java2umlapi.parsedComponent.service.SourceComponentService;
 import org.java2uml.java2umlapi.restControllers.exceptions.UnrecognizedFileFormatException;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -52,6 +50,7 @@ public class FileController {
      * @return ProjectInfo containing meta data and useful links.
      * @throws UnrecognizedFileFormatException if file format is not "application/zip".
      */
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public EntityModel<ProjectInfo> upload(@RequestParam("file") MultipartFile file) {
         if (!Objects.equals(file.getContentType(), "application/zip")) {
