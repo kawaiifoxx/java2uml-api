@@ -9,7 +9,7 @@ import com.github.javaparser.symbolsolver.utils.SymbolSolverCollectionStrategy;
 import com.github.javaparser.utils.ProjectRoot;
 import com.github.javaparser.utils.SourceRoot;
 import org.java2uml.java2umlapi.exceptions.EmptySourceDirectoryException;
-import org.java2uml.java2umlapi.umlComponenets.SourceComponent;
+import org.java2uml.java2umlapi.parsedComponent.SourceComponent;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -38,7 +38,9 @@ public class Parser {
         var sourceRoots = projectRoot.getSourceRoots();
 
         if (sourceRoots.isEmpty()) {
-            throw new EmptySourceDirectoryException("[Parser] Source directory is empty i.e it does not contain any .java or .jar files.");
+            throw new EmptySourceDirectoryException(
+                    "[Parser] Source directory is empty i.e it does not contain any .java or .jar files."
+            );
         }
 
         List<ResolvedDeclaration> resolvedDeclarations = getResolvedDeclarations(sourceRoots);
