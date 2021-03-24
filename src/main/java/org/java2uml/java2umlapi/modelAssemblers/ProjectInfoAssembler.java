@@ -8,7 +8,8 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * <p>
@@ -26,9 +27,8 @@ public class ProjectInfoAssembler implements RepresentationModelAssembler<Projec
     public EntityModel<ProjectInfo> toModel(ProjectInfo entity) {
         return EntityModel.of(
                 entity,
-                linkTo(methodOn(ProjectInfoController.class).one(entity.getId())).withSelfRel()
-                        .andAffordance(afford(methodOn(ProjectInfoController.class).delete(entity.getId())))
-                        .withRel("delete"),
+                linkTo(methodOn(ProjectInfoController.class).one(entity.getId())).withSelfRel(),
+                linkTo(methodOn(ProjectInfoController.class).delete(entity.getId())).withRel("delete"),
                 linkTo(methodOn(UMLController.class).getPUMLCode(entity.getId())).withRel("uml:text"),
                 linkTo(methodOn(UMLController.class).getSvg(entity.getId())).withRel("uml:svg"),
                 linkTo(methodOn(SourceController.class).findByProjectId(entity.getId())).withRel("projectModel")
