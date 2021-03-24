@@ -2,9 +2,9 @@ package org.java2uml.java2umlapi.visitors.umlExtractor;
 
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedFieldDeclaration;
-import org.java2uml.java2umlapi.umlComponenets.ParsedClassOrInterfaceComponent;
-import org.java2uml.java2umlapi.umlComponenets.ParsedComponent;
-import org.java2uml.java2umlapi.umlComponenets.TypeRelation;
+import org.java2uml.java2umlapi.parsedComponent.ParsedClassOrInterfaceComponent;
+import org.java2uml.java2umlapi.parsedComponent.ParsedComponent;
+import org.java2uml.java2umlapi.parsedComponent.TypeRelation;
 
 import java.util.Map;
 import java.util.Set;

@@ -1,6 +1,6 @@
 package org.java2uml.java2umlapi.visitors;
 
-import org.java2uml.java2umlapi.umlComponenets.*;
+import org.java2uml.java2umlapi.parsedComponent.*;
 
 /**
  * <p>

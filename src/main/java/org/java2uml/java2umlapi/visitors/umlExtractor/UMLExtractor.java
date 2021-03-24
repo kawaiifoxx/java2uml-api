@@ -1,6 +1,6 @@
 package org.java2uml.java2umlapi.visitors.umlExtractor;
 
-import org.java2uml.java2umlapi.umlComponenets.*;
+import org.java2uml.java2umlapi.parsedComponent.*;
 import org.java2uml.java2umlapi.util.umlSymbols.StartEnd;
 import org.java2uml.java2umlapi.util.umlSymbols.UMLModifier;
 import org.java2uml.java2umlapi.util.umlSymbols.VisibilityModifierSymbol;
