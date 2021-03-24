@@ -27,7 +27,7 @@ public abstract class Unzipper {
      */
     public static File unzipDir(Path srcZipPath, Path destDirPath) throws IOException {
         File zipFile = new File(srcZipPath.toAbsolutePath().toString());
-        File destDir = new File(destDirPath.toAbsolutePath().toString() + File.separator + "UnzipOutput");
+        File destDir = new File(destDirPath.toAbsolutePath().toString());
 
         byte[] buffer = new byte[1024];
         ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile));
