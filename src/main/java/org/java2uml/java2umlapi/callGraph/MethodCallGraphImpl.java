@@ -109,6 +109,24 @@ public class MethodCallGraphImpl implements MethodCallGraph {
         return rootNode;
     }
 
+    public List<CallGraphRelation> getCallGraphRelations(Map<String, Long> methodSigToIdMap) {
+        return getCallGraphMap().entrySet()
+                .stream()
+                .map(entry -> {
+                    var from = entry.getKey();
+                    return entry.getValue()
+                            .stream()
+                            .map(to -> new CallGraphRelation(from, to))
+                            .collect(Collectors.toList());
+                })
+                .flatMap(Collection::stream)
+                .peek(relation -> {
+                    relation.setFromId(methodSigToIdMap.getOrDefault(relation.getFrom(), null));
+                    relation.setToId(methodSigToIdMap.getOrDefault(relation.getTo(), null));
+                })
+                .collect(Collectors.toList());
+    }
+
     /**
      * Performs dfs and builds call graph.
      *
