@@ -29,7 +29,7 @@ public class SourceAssembler implements RepresentationModelAssembler<Source, Ent
         var projectInfoId = entity.getProjectInfo().getId();
         return EntityModel.of(
                 entity,
-                linkTo(methodOn(SourceController.class).one(projectInfoId)).withSelfRel(),
+                linkTo(methodOn(SourceController.class).one(entity.getId())).withSelfRel(),
                 linkTo(methodOn(ProjectInfoController.class).one(projectInfoId)).withRel("projectInfo"),
                 linkTo(methodOn(ClassOrInterfaceController.class).allBySource(entity.getId())).withRel("classes"),
                 linkTo(methodOn(EnumLWController.class).allBySource(entity.getId())).withRel("enums"),
