@@ -39,7 +39,7 @@ public class Parser {
 
         if (sourceRoots.isEmpty()) {
             throw new EmptySourceDirectoryException(
-                    "[Parser] Source directory is empty i.e it does not contain any .java or .jar files."
+                    "Source directory is empty i.e it does not contain any .java or .jar files."
             );
         }
 

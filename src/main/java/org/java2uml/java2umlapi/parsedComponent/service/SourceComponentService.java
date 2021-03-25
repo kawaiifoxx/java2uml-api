@@ -3,6 +3,7 @@ package org.java2uml.java2umlapi.parsedComponent.service;
 import org.java2uml.java2umlapi.exceptions.EmptySourceDirectoryException;
 import org.java2uml.java2umlapi.parsedComponent.SourceComponent;
 import org.java2uml.java2umlapi.parser.Parser;
+import org.java2uml.java2umlapi.restControllers.exceptions.BadRequest;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Path;
@@ -54,11 +55,15 @@ public class SourceComponentService {
      * tries to generate a source component by parsing files on the provided path.
      * @param path on which source files located for parsing
      * @return id of the saved source component.
-     * @throws EmptySourceDirectoryException if source directory does not contain any .java files.
+     * @throws BadRequest if source directory does not contain any .java files.
      */
     public int save(Path path) {
         int size = sourceComponents.size();
-        sourceComponents.add(Parser.parse(path));
+        try {
+            sourceComponents.add(Parser.parse(path));
+        } catch (EmptySourceDirectoryException exception) {
+            throw new BadRequest(exception.getMessage(), exception);
+        }
         return size;
     }
 
