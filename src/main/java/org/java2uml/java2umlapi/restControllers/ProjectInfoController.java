@@ -75,7 +75,7 @@ public class ProjectInfoController {
         );
 
         sourceComponentService.delete(projectInfo.getSourceComponentId());
-        unzippedFileStorageService.delete(projectInfo.getProjectName());
+        unzippedFileStorageService.delete(projectInfo.getUnzippedFileName());
         methodSignatureToMethodIdMapService.delete(projectId);
         projectInfoRepository.delete(projectInfo);
         return null;
