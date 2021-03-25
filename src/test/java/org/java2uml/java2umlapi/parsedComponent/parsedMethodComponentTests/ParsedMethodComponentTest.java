@@ -1,13 +1,16 @@
-package org.java2uml.java2umlapi.parsedComponent;
+package org.java2uml.java2umlapi.parsedComponent.parsedMethodComponentTests;
 
 import com.github.javaparser.ast.AccessSpecifier;
 import com.github.javaparser.resolution.declarations.ResolvedMethodDeclaration;
 import com.github.javaparser.resolution.types.ResolvedReferenceType;
 import com.github.javaparser.resolution.types.ResolvedType;
+import org.java2uml.java2umlapi.parsedComponent.ParsedClassOrInterfaceComponent;
+import org.java2uml.java2umlapi.parsedComponent.ParsedMethodComponent;
 import org.java2uml.java2umlapi.util.umlSymbols.VisibilityModifierSymbol;
 import org.java2uml.java2umlapi.visitors.umlExtractor.UMLExtractor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -18,6 +21,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("When using ParsedMethodComponent,")
+@Tag("ParsedComponent")
 class ParsedMethodComponentTest {
 
     private ParsedMethodComponent parsedComponent;
