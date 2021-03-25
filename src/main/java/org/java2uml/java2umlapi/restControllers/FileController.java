@@ -6,6 +6,7 @@ import org.java2uml.java2umlapi.fileStorage.service.FileStorageService;
 import org.java2uml.java2umlapi.fileStorage.service.UnzippedFileStorageService;
 import org.java2uml.java2umlapi.modelAssemblers.ProjectInfoAssembler;
 import org.java2uml.java2umlapi.parsedComponent.service.SourceComponentService;
+import org.java2uml.java2umlapi.restControllers.exceptions.BadRequest;
 import org.java2uml.java2umlapi.restControllers.exceptions.UnrecognizedFileFormatException;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
@@ -63,15 +64,21 @@ public class FileController {
         File unzippedFile = unzippedFileStorageService.unzipAndStore(fileName);
         fileStorageService.delete(fileName);
 
-        var projectInfo = projectInfoRepository.save(
-                new ProjectInfo(
-                        unzippedFile.getName(),
-                        fileName,
-                        file.getSize(),
-                        file.getContentType(),
-                        sourceComponentService.save(unzippedFile.toPath())
-                )
-        );
+        ProjectInfo projectInfo;
+        try {
+            projectInfo = projectInfoRepository.save(
+                    new ProjectInfo(
+                            unzippedFile.getName(),
+                            fileName,
+                            file.getSize(),
+                            file.getContentType(),
+                            sourceComponentService.save(unzippedFile.toPath())
+                    )
+            );
+        } catch (BadRequest e) {
+            unzippedFileStorageService.delete(unzippedFile.getName());
+            throw e;
+        }
 
         return assembler.toModel(projectInfo);
     }
