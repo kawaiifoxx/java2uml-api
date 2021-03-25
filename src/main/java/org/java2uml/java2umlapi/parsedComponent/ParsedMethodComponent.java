@@ -50,6 +50,10 @@ public class ParsedMethodComponent implements ParsedComponent {
             return qualifiedReturnType[qualifiedReturnType.length - 1];
         }
 
+        if (resolvedType.isArray()) {
+            return resolvedType.asArrayType().describe();
+        }
+
         return resolvedType.asPrimitive().name().toLowerCase();
     }
 
