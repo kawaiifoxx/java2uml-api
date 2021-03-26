@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
- * The ProjectInfo controller is a spring mvc rest controller for project info entity.<br>
+ * The {@link ProjectInfoController} is a spring mvc rest controller for {@link ProjectInfo} entity.<br>
  * All  the requests at "/api/project-info" endpoint will be routed to this controller.
  * </p>
  *
@@ -43,10 +43,10 @@ public class ProjectInfoController {
     }
 
     /**
-     * Defines a get mapping for "/api/project-info" endpoint, this method retrieves project info
+     * Defines a get mapping for "/api/project-info" endpoint, this method retrieves {@link ProjectInfo}
      * instances for provided id.
-     * @param projectId id of the projectInfo that you want to retrieve.
-     * @return projectInfo with some useful links.
+     * @param projectId id of the {@link ProjectInfo} that you want to retrieve.
+     * @return {@link EntityModel<ProjectInfo>} with some useful links.
      */
     @GetMapping("/{projectId}")
     public EntityModel<ProjectInfo> one(@PathVariable("projectId") Long projectId) {
@@ -59,9 +59,9 @@ public class ProjectInfoController {
     }
 
     /**
-     * Defines a delete mapping for "/api/project-info" endpoint, this method deletes the project info instance
+     * Defines a delete mapping for "/api/project-info" endpoint, this method deletes the {@link ProjectInfo} instance
      * as well as files related to the project, sourceComponent, methodSignatureToMethodIdMap.
-     * @param projectId id of the project you want to delete.
+     * @param projectId id of the {@link ProjectInfo} you want to delete.
      * @return Http no content response.
      */
     @DeleteMapping("/{projectId}")
