@@ -47,6 +47,7 @@ public class ProjectInfoController {
      * instances for provided id.
      * @param projectId id of the {@link ProjectInfo} that you want to retrieve.
      * @return {@link EntityModel<ProjectInfo>} with some useful links.
+     * @throws ProjectInfoNotFoundException if {@link ProjectInfo} has not been found.
      */
     @GetMapping("/{projectId}")
     public EntityModel<ProjectInfo> one(@PathVariable("projectId") Long projectId) {
