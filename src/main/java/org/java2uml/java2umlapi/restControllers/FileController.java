@@ -7,9 +7,9 @@ import org.java2uml.java2umlapi.fileStorage.service.UnzippedFileStorageService;
 import org.java2uml.java2umlapi.modelAssemblers.ProjectInfoAssembler;
 import org.java2uml.java2umlapi.parsedComponent.service.SourceComponentService;
 import org.java2uml.java2umlapi.restControllers.exceptions.BadRequest;
-import org.java2uml.java2umlapi.restControllers.exceptions.UnrecognizedFileFormatException;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,15 +49,14 @@ public class FileController {
      *
      * @param file Multipart file should be a zip file.
      * @return ProjectInfo containing meta data and useful links.
-     * @throws UnrecognizedFileFormatException if file format is not "application/zip".
+     * @throws HttpMediaTypeNotSupportedException if file format is not "application/zip".
      */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public EntityModel<ProjectInfo> upload(@RequestParam("file") MultipartFile file) {
+    public EntityModel<ProjectInfo> upload(@RequestParam("file") MultipartFile file)
+            throws HttpMediaTypeNotSupportedException {
         if (file.getContentType() == null || !file.getContentType().contains("application/zip")) {
-            throw new UnrecognizedFileFormatException(
-                    "please upload file with zip format."
-            );
+            throw new HttpMediaTypeNotSupportedException("please upload file with zip format.");
         }
 
         String fileName = fileStorageService.store(file);

@@ -9,8 +9,8 @@ import org.java2uml.java2umlapi.lightWeight.UMLBody;
 import org.java2uml.java2umlapi.modelAssemblers.UMLBodyAssembler;
 import org.java2uml.java2umlapi.parsedComponent.service.SourceComponentService;
 import org.java2uml.java2umlapi.restControllers.exceptions.CannotGenerateSVGException;
+import org.java2uml.java2umlapi.restControllers.exceptions.ParsedComponentNotFoundException;
 import org.java2uml.java2umlapi.restControllers.exceptions.ProjectInfoNotFoundException;
-import org.java2uml.java2umlapi.restControllers.exceptions.SourceComponentNotFoundException;
 import org.java2uml.java2umlapi.visitors.umlExtractor.UMLExtractor;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpHeaders;
@@ -52,10 +52,10 @@ public class UMLController {
 
     /**
      * This method defines get mapping for "/api/uml/plant-uml-code/{projectInfoId}"<br>
-     * uml code is generated and then entity model containing uml code and useful links is returned.
+     * uml code is generated and then {@link EntityModel} containing uml code and useful links is returned.
      *
-     * @param projectInfoId id of ProjectInfo
-     * @return EntityModel of UMLBody
+     * @param projectInfoId id of {@link ProjectInfo}
+     * @return {@link EntityModel} of {@link UMLBody}
      */
     @GetMapping("/plant-uml-code/{projectInfoId}")
     public EntityModel<UMLBody> getPUMLCode(@PathVariable Long projectInfoId) {
@@ -65,7 +65,7 @@ public class UMLController {
 
         var sourceComponent = sourceComponentService.get(projectInfo.getSourceComponentId()).
                 orElseThrow(
-                        () -> new SourceComponentNotFoundException("Please, upload your file again.")
+                        () -> new ParsedComponentNotFoundException("Please, upload your file again.")
                 );
 
         return umlBodyAssembler.toModel(new UMLBody(sourceComponent.accept(new UMLExtractor()), projectInfo));
@@ -73,9 +73,9 @@ public class UMLController {
 
     /**
      * This method defines get mapping for "/api/uml/svg/{projectInfoId}"<br>
-     * Svg is generated from plant uml code and ResponseEntity containing this svg is returned
+     * Svg is generated from plant uml code and {@link ResponseEntity} containing this svg is returned
      * content type "image/svg+xml"
-     * @param projectInfoId id of the projectInfo
+     * @param projectInfoId id of the {@link ProjectInfo}
      * @return UML in form of SVG
      */
     @GetMapping("/svg/{projectInfoId}")
@@ -86,7 +86,7 @@ public class UMLController {
 
         var sourceComponent = sourceComponentService.get(projectInfo.getSourceComponentId()).
                 orElseThrow(
-                        () -> new SourceComponentNotFoundException("Please, upload your file again.")
+                        () -> new ParsedComponentNotFoundException("Please, upload your file again.")
                 );
 
         return ResponseEntity.ok().contentType(MediaType.parseMediaType("image/svg+xml"))
@@ -124,7 +124,7 @@ public class UMLController {
      * Checks if .zip is present in project name if it is present then this method replaces it with .svg.
      * otherwise appends .svg to the project name.
      *
-     * @param projectInfo project information for which svg is being generated.
+     * @param projectInfo {@link ProjectInfo} for which svg is being generated.
      * @return file name for generated svg.
      */
     private String getFileName(ProjectInfo projectInfo) {

@@ -11,8 +11,8 @@ import org.java2uml.java2umlapi.parsedComponent.SourceComponent;
 import org.java2uml.java2umlapi.parsedComponent.service.SourceComponentService;
 import org.java2uml.java2umlapi.restControllers.exceptions.CannotGenerateSourceException;
 import org.java2uml.java2umlapi.restControllers.exceptions.LightWeightNotFoundException;
+import org.java2uml.java2umlapi.restControllers.exceptions.ParsedComponentNotFoundException;
 import org.java2uml.java2umlapi.restControllers.exceptions.ProjectInfoNotFoundException;
-import org.java2uml.java2umlapi.restControllers.exceptions.SourceComponentNotFoundException;
 import org.java2uml.java2umlapi.visitors.lightWeightExtractor.specialized.LightWeightExtractorWithMethodSignatureCache;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
- * Rest Controller for source entities.
+ * Rest Controller for {@link Source} entities.
  * </p>
  *
  * @author kawaiifox.
@@ -54,10 +54,11 @@ public class SourceController {
     }
 
     /**
-     * Retrieves source with provided id.
-     * @param sourceId id of source to be retrieved.
-     * @return EntityModel of source with useful links.
-     * @throws LightWeightNotFoundException if source is not found.
+     * Retrieves {@link Source} with provided id.
+     *
+     * @param sourceId id of {@link Source} to be retrieved.
+     * @return {@link EntityModel} of {@link Source} with useful links.
+     * @throws LightWeightNotFoundException if {@link Source} is not found.
      */
     @GetMapping("/{sourceId}")
     public EntityModel<Source> one(@PathVariable("sourceId") Long sourceId) {
@@ -72,12 +73,13 @@ public class SourceController {
     }
 
     /**
-     * Retrieves source by project info id if present, else this method tries to generate source.
-     * @param projectInfoId id of project info
-     * @return EntityModel of source with useful links.
-     * @throws ProjectInfoNotFoundException if project info is not found.
-     * @throws CannotGenerateSourceException if source cannot be generated.
-     * @throws SourceComponentNotFoundException if source component is not found.
+     * Retrieves {@link Source} by {@link ProjectInfo} id if present, else this method tries to generate {@link Source}.
+     *
+     * @param projectInfoId id of {@link ProjectInfo}
+     * @return {@link EntityModel} of {@link Source} with useful links.
+     * @throws ProjectInfoNotFoundException     if {@link ProjectInfo} is not found.
+     * @throws CannotGenerateSourceException    if {@link Source} cannot be generated.
+     * @throws ParsedComponentNotFoundException if {@link SourceComponent} is not found.
      */
     @GetMapping("/by-project-info/{projectInfoId}")
     public EntityModel<Source> findByProjectId(@PathVariable("projectInfoId") Long projectInfoId) {
@@ -88,11 +90,12 @@ public class SourceController {
     }
 
     /**
-     * if source has not been generated then this method generates source and returns it.
-     * This method also updates projectInfo with the generated source, if originally source was not present.
+     * if {@link Source} has not been generated then this method generates {@link Source} and returns it.
+     * This method also updates {@link ProjectInfo} with the generated {@link Source},
+     * if originally {@link Source} was not present.
      *
-     * @param projectInfo for which source is needed.
-     * @return source
+     * @param projectInfo for which {@link Source} is needed.
+     * @return {@link Source}
      */
     private Source getSource(ProjectInfo projectInfo) {
         //Extract source if not present.
@@ -103,12 +106,12 @@ public class SourceController {
     }
 
     /**
-     * Extracts source from source component and if source is successfully extracted.<br>
-     * Sets source in projectInfo.<br>
-     * Saves projectInfo.<br>
-     * Saves methodIdMap in methodIdMapService.
+     * Extracts {@link Source} from {@link SourceComponent} and if {@link Source} is successfully extracted.<br>
+     * Sets {@link Source} in {@link ProjectInfo}.<br>
+     * Saves {@link ProjectInfo}.<br>
+     * Saves methodNameToMethodIdMap in {@link MethodSignatureToMethodIdMapService}.
      *
-     * @param projectInfo in which source will be set.
+     * @param projectInfo in which {@link Source} will be set.
      */
     private void extractSource(ProjectInfo projectInfo) {
         SourceComponent sourceComponent = getSourceComponent(projectInfo);
@@ -131,13 +134,13 @@ public class SourceController {
     }
 
     /**
-     * @param projectInfo for which source component needs to be fetched.
-     * @return source component
-     * @throws SourceComponentNotFoundException if source component is not found.
+     * @param projectInfo for which {@link SourceComponent} needs to be fetched.
+     * @return {@link SourceComponent}
+     * @throws ParsedComponentNotFoundException if {@link SourceComponent} is not found.
      */
-    private SourceComponent getSourceComponent(ProjectInfo projectInfo) throws SourceComponentNotFoundException {
+    private SourceComponent getSourceComponent(ProjectInfo projectInfo) {
         return sourceComponentService.get(projectInfo.getSourceComponentId())
-                .orElseThrow(() -> new SourceComponentNotFoundException("Unable to fetch source component," +
+                .orElseThrow(() -> new ParsedComponentNotFoundException("Unable to fetch source component," +
                         " uploading files again should fix this."));
     }
 }
