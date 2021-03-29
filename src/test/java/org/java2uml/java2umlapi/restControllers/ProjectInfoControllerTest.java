@@ -1,6 +1,8 @@
 package org.java2uml.java2umlapi.restControllers;
 
+import com.github.javaparser.symbolsolver.resolution.typesolvers.JarTypeSolver;
 import com.jayway.jsonpath.JsonPath;
+import org.apache.commons.io.FileDeleteStrategy;
 import org.java2uml.java2umlapi.fileStorage.entity.ProjectInfo;
 import org.java2uml.java2umlapi.fileStorage.exceptions.MyFileNotFoundException;
 import org.java2uml.java2umlapi.fileStorage.repository.ProjectInfoRepository;
@@ -8,6 +10,7 @@ import org.java2uml.java2umlapi.fileStorage.service.UnzippedFileStorageService;
 import org.java2uml.java2umlapi.parsedComponent.SourceComponent;
 import org.java2uml.java2umlapi.parsedComponent.service.SourceComponentService;
 import org.java2uml.java2umlapi.restControllers.exceptions.ProjectInfoNotFoundException;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -17,11 +20,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import java.io.IOException;
+
 import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
-import static org.java2uml.java2umlapi.restControllers.ControllerTestUtils.CONTENT_TYPE;
-import static org.java2uml.java2umlapi.restControllers.ControllerTestUtils.TEST_FILE_1;
+import static org.java2uml.java2umlapi.restControllers.ControllerTestUtils.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -142,5 +146,13 @@ class ProjectInfoControllerTest {
         return repository.findById(Long.parseLong(projectInfoId)).orElseThrow(
                 () -> new ProjectInfoNotFoundException("Unable to fetch project info with id " + projectInfoId)
         );
+    }
+
+    @AfterAll
+    public static void tearDown() throws IOException {
+        //Release all resources first.
+        JarTypeSolver.ResourceRegistry.getRegistry().cleanUp();
+        //Then delete directory.
+        FileDeleteStrategy.FORCE.delete(TMP_DIR.toFile());
     }
 }
