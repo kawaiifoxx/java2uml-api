@@ -1,8 +1,5 @@
 package org.java2uml.java2umlapi.restControllers.exceptions;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
 /**
  * <p>
  * This exception can be thrown when the requested LightWeight or it's subtype has not been found.
@@ -10,7 +7,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *
  * @author kawaiifox
  */
-@ResponseStatus(HttpStatus.NOT_FOUND)
 public class LightWeightNotFoundException extends RuntimeException {
     /**
      * Constructs a new runtime exception with the specified detail message.

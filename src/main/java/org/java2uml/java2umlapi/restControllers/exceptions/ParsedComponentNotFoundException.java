@@ -1,8 +1,5 @@
 package org.java2uml.java2umlapi.restControllers.exceptions;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
 /**
  * <p>
  * This exception can be thrown when if ParsedComponent you are looking for is not present.
@@ -10,7 +7,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *
  * @author kawaiifox
  */
-@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 public class ParsedComponentNotFoundException extends RuntimeException {
     /**
      * Constructs a new runtime exception with the specified detail message.
