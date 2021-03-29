@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -72,6 +73,32 @@ class ProjectInfoControllerTest {
     }
 
     @Test
+    @DisplayName("when project info does not exist with associated id then method ProjectInfoController.one() should" +
+            "throw ProjectInfoNotFoundException")
+    void whenProjectInfoDoesNotExist_thenOneShouldThrowProjectInfoNotFoundException() throws Exception {
+        testProjectInfoNotFound(get("/api/project-info/" + Long.MAX_VALUE));
+    }
+
+    @Test
+    @DisplayName("when project info does not exist with associated id then method ProjectInfoController.delete() should" +
+            "throw ProjectInfoNotFoundException")
+    void whenProjectInfoDoesNotExist_thenDeleteShouldThrowProjectInfoNotFoundException() throws Exception {
+        testProjectInfoNotFound(delete("/api/project-info/" + Long.MAX_VALUE));
+    }
+
+    /**
+     * Checks if {@link ProjectInfo} is not found. If {@link ProjectInfo} is found then fails.
+     *
+     * @param requestBuilder {@link MockHttpServletRequestBuilder} for passing request to {@link MockMvc}
+     */
+    private void testProjectInfoNotFound(MockHttpServletRequestBuilder requestBuilder) throws Exception {
+        mvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.errors[0]", containsString("ProjectInfo not found")));
+    }
+
+    @Test
     @DisplayName("sending delete request at /api/project-info/{projectInfoId} should delete all the related resources.")
     void testDelete() throws Exception {
         var response = ControllerTestUtils.doMultipartRequest(mvc, TEST_FILE_1).andReturn().getResponse().getContentAsString();
@@ -84,6 +111,7 @@ class ProjectInfoControllerTest {
 
     /**
      * Checks that if unzipped file is deleted from {@link UnzippedFileStorageService}, if not then fails.
+     *
      * @param projectInfo {@link ProjectInfo} from which unzipped file name will be fetched.
      */
     private void assertThatUnzippedFileIsDeleted(ProjectInfo projectInfo) {
@@ -93,7 +121,8 @@ class ProjectInfoControllerTest {
     }
 
     /**
-     * checks whether the {@link SourceComponent} is present, if not present then fail the test.
+     * Checks whether the {@link SourceComponent} is present, if not present then fail the test.
+     *
      * @param projectInfo {@link ProjectInfo} from which {@link SourceComponent} id is fetched.
      */
     private void assertThatSourceComponentIsNotPresent(ProjectInfo projectInfo) {
