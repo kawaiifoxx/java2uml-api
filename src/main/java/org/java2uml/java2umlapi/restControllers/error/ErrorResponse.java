@@ -20,13 +20,19 @@ public class ErrorResponse {
     private List<String> errors;
 
     /**
+     * Should not be instantiated from outside.
+     */
+    private ErrorResponse() {
+    }
+
+    /**
      * <p>
      * This is a builder for {@link ErrorResponse}.
      * </p>
      *
      * @author kawaiifox
      */
-    static class Builder {
+    public static class Builder {
         private final ErrorResponse errorResponse = new ErrorResponse();
 
         /**
