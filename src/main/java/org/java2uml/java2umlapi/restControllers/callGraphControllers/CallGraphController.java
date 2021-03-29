@@ -16,7 +16,6 @@ import org.java2uml.java2umlapi.restControllers.LWControllers.MethodController;
 import org.java2uml.java2umlapi.restControllers.exceptions.LightWeightNotFoundException;
 import org.java2uml.java2umlapi.restControllers.exceptions.MethodNameToMethodIdNotFoundException;
 import org.java2uml.java2umlapi.restControllers.exceptions.ParsedComponentNotFoundException;
-import org.java2uml.java2umlapi.restControllers.exceptions.SourceComponentNotFoundException;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.*;
@@ -56,12 +55,12 @@ public class CallGraphController {
 
     /**
      * Defines /api/call-graph/{methodId} get mapping.<br>
-     * generates a call graph for given method and then wraps it with collection model
+     * generates a call graph for given method and then wraps it with {@link CollectionModel}
      * which has some useful navigational links.
      *
-     * @param methodId    id of method for which callGraphRelations is needed.
+     * @param methodId    id of {@link Method} for which list of {@link CallGraphRelation} is needed.
      * @param packageName name of the package to which you want to limit the call graph relations to.
-     * @return CollectionModel of List of CallGraphRelations.
+     * @return {@link CollectionModel} of List of {@link CallGraphRelation}.
      */
     @GetMapping("/{methodId}")
     public CollectionModel<EntityModel<CallGraphRelation>> getCallGraph(
@@ -80,11 +79,11 @@ public class CallGraphController {
     }
 
     /**
-     * Generates CallGraphRelations from methodCallGraph.
+     * Generates {@link CallGraphRelation} list  from {@link MethodCallGraph}.
      *
-     * @param method      method for which the call graph relations are needed.
+     * @param method      {@link Method} for which the {@link CallGraphRelation}s  are needed.
      * @param packageName name of the package to limit the search.
-     * @return CallGraphRelations for provided method.
+     * @return {@link CallGraphRelation}s for provided {@link Method}.
      */
     private List<CallGraphRelation> getCallGraphRelations(Method method, String packageName) {
         var source = getSource(method);
@@ -95,10 +94,10 @@ public class CallGraphController {
     }
 
     /**
-     * Fetches methodNameToMethodIdMap from methodIdMapService.
+     * Fetches methodNameToMethodIdMap from {@link MethodSignatureToMethodIdMapService}.
      *
-     * @param methodId id of method for which methodNameToMethodIdMap is needed.
-     * @param source   source
+     * @param methodId id of {@link Method} for which methodNameToMethodIdMap is needed.
+     * @param source   {@link Source}
      * @return methodNameToMethodIdMap
      * @throws MethodNameToMethodIdNotFoundException if methodNameToMethodIdMap has not been found.
      */
@@ -112,12 +111,12 @@ public class CallGraphController {
     }
 
     /**
-     * ResolvedMethodDeclaration for provided method and source component.
+     * {@link ResolvedMethodDeclaration} for provided method and source component.
      *
-     * @param method          for which resolvedMethodDeclaration is needed.
-     * @param sourceComponent from which resolvedMethodDeclaration will be fetched.
-     * @return ResolvedMethodDeclaration
-     * @throws ParsedComponentNotFoundException if ParsedMethodComponent for given method is  not available.
+     * @param method          for which {@link ResolvedMethodDeclaration} is needed.
+     * @param sourceComponent from which {@link ResolvedMethodDeclaration} will be fetched.
+     * @return {@link ResolvedMethodDeclaration}
+     * @throws ParsedComponentNotFoundException if {@link ParsedMethodComponent} for given method is  not available.
      */
     private ResolvedMethodDeclaration getResolvedMethodDeclaration(Method method, SourceComponent sourceComponent) {
         return sourceComponent.
@@ -128,26 +127,27 @@ public class CallGraphController {
     }
 
     /**
-     * Fetches sourceComponent for provided method id and source.
+     * Fetches {@link SourceComponent} for provided {@link Method} id and {@link Source}.
      *
-     * @param methodId id associated with method
-     * @param source   source
-     * @return SourceComponent
-     * @throws SourceComponentNotFoundException if sourceComponent was not found for given method id and source.
+     * @param methodId id associated with {@link Method}
+     * @param source   {@link Source}
+     * @return {@link SourceComponent}
+     * @throws ParsedComponentNotFoundException if {@link SourceComponent} was not found
+     * for given {@link Method} id and {@link Source}.
      */
     private SourceComponent getSourceComponent(Long methodId, Source source) {
         var projectInfo = source.getProjectInfo();
         return sourceComponentService.get(projectInfo.getSourceComponentId())
-                .orElseThrow(() -> new SourceComponentNotFoundException(
+                .orElseThrow(() -> new ParsedComponentNotFoundException(
                         "Unable to fetch source component for method id: " + methodId));
     }
 
     /**
-     * Retrieves source for provided method.
+     * Retrieves {@link Source} for provided {@link Method}.
      *
-     * @param method method for which source needs to be fetched.
+     * @param method {@link Method} for which {@link Source} needs to be fetched.
      * @return source
-     * @throws LightWeightNotFoundException if unable to fetch source for provided method.
+     * @throws LightWeightNotFoundException if unable to fetch {@link Source} for provided {@link Method}.
      */
     private Source getSource(Method method) {
         return method.getParent().getParent().asSource().orElseThrow(() -> new LightWeightNotFoundException(
@@ -156,9 +156,9 @@ public class CallGraphController {
     }
 
     /**
-     * @param methodId id of method to be retrieved.
-     * @return method for provided method id.
-     * @throws LightWeightNotFoundException if method is not present for provided method id.
+     * @param methodId id of {@link Method} to be retrieved.
+     * @return {@link Method}
+     * @throws LightWeightNotFoundException if {@link Method} is not present for provided methodId.
      */
     private Method getMethod(Long methodId) {
         return methodRepository.findById(methodId)
