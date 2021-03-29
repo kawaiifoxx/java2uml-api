@@ -25,6 +25,22 @@ public class ErrorResponse {
     private ErrorResponse() {
     }
 
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public HttpStatus getHttpStatus() {
+        return httpStatus;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public List<String> getErrors() {
+        return errors;
+    }
+
     /**
      * <p>
      * This is a builder for {@link ErrorResponse}.
