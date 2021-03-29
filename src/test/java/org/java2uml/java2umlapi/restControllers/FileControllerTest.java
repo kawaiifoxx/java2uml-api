@@ -66,7 +66,7 @@ class FileControllerTest {
 
     @Test
     @DisplayName("when file type is not application/zip," +
-            " upload should return http status 400")
+            " upload should return http status 415")
     void uploadWithInvalidFile() throws Exception {
         mvc.perform(
                 multipart(URI).file(
@@ -76,7 +76,7 @@ class FileControllerTest {
                                 "text/plain",
                                 "This file is an invalid file.".getBytes())
                 )
-        ).andExpect(status().isBadRequest());
+        ).andExpect(status().isUnsupportedMediaType());
     }
 
     @Test
