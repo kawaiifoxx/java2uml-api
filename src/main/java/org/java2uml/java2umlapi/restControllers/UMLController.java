@@ -7,6 +7,7 @@ import org.java2uml.java2umlapi.fileStorage.entity.ProjectInfo;
 import org.java2uml.java2umlapi.fileStorage.repository.ProjectInfoRepository;
 import org.java2uml.java2umlapi.lightWeight.UMLBody;
 import org.java2uml.java2umlapi.modelAssemblers.UMLBodyAssembler;
+import org.java2uml.java2umlapi.parsedComponent.SourceComponent;
 import org.java2uml.java2umlapi.parsedComponent.service.SourceComponentService;
 import org.java2uml.java2umlapi.restControllers.exceptions.CannotGenerateSVGException;
 import org.java2uml.java2umlapi.restControllers.exceptions.ParsedComponentNotFoundException;
@@ -56,6 +57,8 @@ public class UMLController {
      *
      * @param projectInfoId id of {@link ProjectInfo}
      * @return {@link EntityModel} of {@link UMLBody}
+     * @throws ProjectInfoNotFoundException     if {@link ProjectInfo} is not found.
+     * @throws ParsedComponentNotFoundException if {@link SourceComponent} is not found.
      */
     @GetMapping("/plant-uml-code/{projectInfoId}")
     public EntityModel<UMLBody> getPUMLCode(@PathVariable Long projectInfoId) {
@@ -75,8 +78,11 @@ public class UMLController {
      * This method defines get mapping for "/api/uml/svg/{projectInfoId}"<br>
      * Svg is generated from plant uml code and {@link ResponseEntity} containing this svg is returned
      * content type "image/svg+xml"
+     *
      * @param projectInfoId id of the {@link ProjectInfo}
      * @return UML in form of SVG
+     * @throws ParsedComponentNotFoundException if {@link SourceComponent} is not found.
+     * @throws CannotGenerateSVGException if Svg cannot be generated.
      */
     @GetMapping("/svg/{projectInfoId}")
     public ResponseEntity<String> getSvg(@PathVariable Long projectInfoId) {
@@ -101,6 +107,7 @@ public class UMLController {
      *
      * @param uml String of plant uml code.
      * @return Generated svg
+     * @throws CannotGenerateSVGException if svg cannot be generated.
      */
     private String generateSVG(String uml) {
         final ByteArrayOutputStream os;
