@@ -40,4 +40,10 @@ public abstract class ControllerTestUtils {
         return mvc.perform(multipart(URI).file(multiPartFile))
                 .andDo(print());
     }
+
+    public static String getMultipartResponse(ResultActions resultActions) throws Exception {
+        return resultActions.andReturn()
+                .getResponse()
+                .getContentAsString();
+    }
 }

@@ -51,11 +51,7 @@ class ProjectInfoControllerTest {
     @DisplayName("provided that request is valid, response status should be 200 OK," +
             " and response should have valid details.")
     void testOne() throws Exception {
-        var responseFromFileController = ControllerTestUtils
-                .doMultipartRequest(mvc, TEST_FILE_1)
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
+        String responseFromFileController = getMultipartResponse(doMultipartRequest(mvc, TEST_FILE_1));
 
         String projectInfoURI = JsonPath.read(responseFromFileController, "$._links.self.href");
 
@@ -105,7 +101,7 @@ class ProjectInfoControllerTest {
     @Test
     @DisplayName("sending delete request at /api/project-info/{projectInfoId} should delete all the related resources.")
     void testDelete() throws Exception {
-        var response = ControllerTestUtils.doMultipartRequest(mvc, TEST_FILE_1).andReturn().getResponse().getContentAsString();
+        String response = getMultipartResponse(doMultipartRequest(mvc, TEST_FILE_1));
         String projectInfoUri = JsonPath.read(response, "$._links.delete.href");
         ProjectInfo projectInfo = getProjectInfo(projectInfoUri);
         mvc.perform(delete(projectInfoUri)).andDo(print()).andExpect(status().isNoContent());
