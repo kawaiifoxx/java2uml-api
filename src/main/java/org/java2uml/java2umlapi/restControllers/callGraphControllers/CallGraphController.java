@@ -28,7 +28,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * <p>
- * RestController for generating call graphs for methods.
+ * RestController for generating {@link CallGraphRelation}s for {@link Method}.
  * </p>
  *
  * @author kawaiifox
@@ -55,7 +55,7 @@ public class CallGraphController {
 
     /**
      * Defines /api/call-graph/{methodId} get mapping.<br>
-     * generates a call graph for given method and then wraps it with {@link CollectionModel}
+     * generates {@link CallGraphRelation}s for given {@link Method} and then wraps it with {@link CollectionModel}
      * which has some useful navigational links.
      *
      * @param methodId    id of {@link Method} for which list of {@link CallGraphRelation} is needed.
@@ -65,7 +65,7 @@ public class CallGraphController {
     @GetMapping("/{methodId}")
     public CollectionModel<EntityModel<CallGraphRelation>> getCallGraph(
             @PathVariable("methodId") Long methodId,
-            @RequestParam("package") String packageName
+            @RequestParam(value = "package", required = false) String packageName
     ) {
         var method = getMethod(methodId);
         if (packageName == null || packageName.replaceAll(" ", "").isEmpty()) {

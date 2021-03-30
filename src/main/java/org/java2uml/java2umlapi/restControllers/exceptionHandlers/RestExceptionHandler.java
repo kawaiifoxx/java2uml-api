@@ -278,7 +278,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({MethodNameToMethodIdNotFoundException.class})
     public ResponseEntity<Object> handleMNTMNotFound(MethodNameToMethodIdNotFoundException ex) {
         ErrorResponse errorResponse = getErrorResponse("Unable to find requested map.",
-                HttpStatus.NOT_FOUND, ex.getLocalizedMessage());
+                HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage());
         return new ResponseEntity<>(errorResponse, new HttpHeaders(), errorResponse.getHttpStatus());
     }
 
