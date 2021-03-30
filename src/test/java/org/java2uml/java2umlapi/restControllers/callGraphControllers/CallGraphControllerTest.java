@@ -63,8 +63,9 @@ class CallGraphControllerTest {
     void setUp() throws Exception {
         var parsedJson = Configuration.defaultConfiguration().jsonProvider()
                 .parse(getMultipartResponse(doMultipartRequest(mvc, TEST_FILE_4)));
-        String projectInfoUri = JsonPath.read(parsedJson, "$._links.projectModel.href");
-        mvc.perform(get(projectInfoUri))
+        String sourceUri = JsonPath.read(parsedJson, "$._links.projectModel.href");
+        //Generate Source.
+        mvc.perform(get(sourceUri))
                 .andDo(print())
                 .andExpect(status().isOk());
         this.projectInfo = getProjectInfo(parsedJson, projectInfoRepository);

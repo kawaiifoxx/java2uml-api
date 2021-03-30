@@ -91,8 +91,8 @@ public class SourceController {
 
     /**
      * if {@link Source} has not been generated then this method generates {@link Source} and returns it.
-     * This method also updates {@link ProjectInfo} with the generated {@link Source},
-     * if originally {@link Source} was not present.
+     * This method also updates {@link ProjectInfo} with the generated {@link Source}, if originally
+     * {@link Source} was not present.
      *
      * @param projectInfo for which {@link Source} is needed.
      * @return {@link Source}
@@ -112,6 +112,7 @@ public class SourceController {
      * Saves methodNameToMethodIdMap in {@link MethodSignatureToMethodIdMapService}.
      *
      * @param projectInfo in which {@link Source} will be set.
+     * @throws CannotGenerateSourceException if source cannot be generated for some reason.
      */
     private void extractSource(ProjectInfo projectInfo) {
         SourceComponent sourceComponent = getSourceComponent(projectInfo);
