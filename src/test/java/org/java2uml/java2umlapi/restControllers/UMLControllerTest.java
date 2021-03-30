@@ -1,13 +1,16 @@
 package org.java2uml.java2umlapi.restControllers;
 
+import com.github.javaparser.symbolsolver.resolution.typesolvers.JarTypeSolver;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
+import org.apache.commons.io.FileDeleteStrategy;
 import org.java2uml.java2umlapi.fileStorage.entity.ProjectInfo;
 import org.java2uml.java2umlapi.fileStorage.repository.ProjectInfoRepository;
 import org.java2uml.java2umlapi.fileStorage.service.UnzippedFileStorageService;
 import org.java2uml.java2umlapi.parsedComponent.SourceComponent;
 import org.java2uml.java2umlapi.parsedComponent.service.SourceComponentService;
 import org.java2uml.java2umlapi.restControllers.exceptions.ParsedComponentNotFoundException;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -16,6 +19,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.io.IOException;
 
 import static com.jayway.jsonpath.JsonPath.read;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -123,7 +128,7 @@ class UMLControllerTest {
                 .parse(getMultipartResponse(doMultipartRequest(mvc, TEST_FILE_4)));
         String requestURI = JsonPath.read(parsedJson, s);
 
-        ProjectInfo projectInfo = getProjectInfo(parsedJson);
+        ProjectInfo projectInfo = getProjectInfo(parsedJson, projectInfoRepository);
         sourceComponentService.delete(projectInfo.getSourceComponentId());
 
         var e = mvc.perform(get(requestURI))
@@ -137,16 +142,11 @@ class UMLControllerTest {
         assertThatThrownBy(() -> { throw e;}).isInstanceOf(ParsedComponentNotFoundException.class);
     }
 
-    /**
-     * @param parsedJson takes in response in form of parsed Json.
-     * @return {@link ProjectInfo} from {@link ProjectInfoRepository}
-     * @throws NumberFormatException if URI cannot be parsed for getting id.
-     */
-    private ProjectInfo getProjectInfo(Object parsedJson) {
-        String projectInfoURI = JsonPath.read(parsedJson, "$._links.self.href");
-        var projectInfoURIInSplit = projectInfoURI.split("/");
-        var projectInfoId = Long.parseLong(projectInfoURIInSplit[projectInfoURIInSplit.length - 1]);
-        return projectInfoRepository.findById(projectInfoId)
-                .orElseThrow(() -> new RuntimeException("ProjectInfo not found."));
+    @AfterAll
+    public static void tearDown() throws IOException {
+        //Release all resources first.
+        JarTypeSolver.ResourceRegistry.getRegistry().cleanUp();
+        //Then delete directory.
+        FileDeleteStrategy.FORCE.delete(TMP_DIR.toFile());
     }
 }
