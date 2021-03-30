@@ -16,13 +16,13 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.containsString;
 import static org.java2uml.java2umlapi.restControllers.ControllerTestUtils.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -34,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Tag("WebApiTest")
 @DisplayName("When using SourceController,")
+@DirtiesContext
 class SourceControllerTest {
     @Autowired
     MockMvc mvc;
@@ -109,10 +110,8 @@ class SourceControllerTest {
         projectInfoRepository.delete(projectInfo);
         var e = performGetRequestOnSourceByProjectInfoId()
                 .andExpect(status().isNotFound()).andReturn().getResolvedException();
-        assertThat(e).isNotNull();
-        assertThatThrownBy(() -> {
-            throw e;
-        }).isInstanceOf(ProjectInfoNotFoundException.class);
+
+        assertThat(e).isNotNull().isInstanceOf(ProjectInfoNotFoundException.class);
     }
 
     @Test
@@ -121,10 +120,8 @@ class SourceControllerTest {
         sourceComponentService.delete(projectInfo.getSourceComponentId());
         var e = performGetRequestOnSourceByProjectInfoId()
                 .andExpect(status().isInternalServerError()).andReturn().getResolvedException();
-        assertThat(e).isNotNull();
-        assertThatThrownBy(() -> {
-            throw e;
-        }).isInstanceOf(ParsedComponentNotFoundException.class);
+
+        assertThat(e).isNotNull().isInstanceOf(ParsedComponentNotFoundException.class);
     }
 
     @Test
@@ -135,10 +132,7 @@ class SourceControllerTest {
                 .andExpect(status().isNotFound())
                 .andReturn().getResolvedException();
 
-        assertThat(e).isNotNull();
-        assertThatThrownBy(() -> {
-            throw e;
-        }).isInstanceOf(LightWeightNotFoundException.class);
+        assertThat(e).isNotNull().isInstanceOf(LightWeightNotFoundException.class);
     }
 
     @AfterAll
