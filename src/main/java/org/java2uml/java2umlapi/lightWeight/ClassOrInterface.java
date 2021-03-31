@@ -173,12 +173,7 @@ public class ClassOrInterface extends LightWeight {
                 isExternal() == that.isExternal() &&
                 Objects.equals(getId(), that.getId()) &&
                 getName().equals(that.getName()) &&
-                Objects.equals(getClassConstructors(), that.getClassConstructors()) &&
-                Objects.equals(getClassOrInterfaceMethods(), that.getClassOrInterfaceMethods()) &&
-                Objects.equals(getClassFields(), that.getClassFields()) &&
-                Objects.equals(getClassOrInterfaceTypeParameters(), that.getClassOrInterfaceTypeParameters()) &&
-                Objects.equals(getBody(), that.getBody()) &&
-                Objects.equals(getParent(), that.getParent());
+                Objects.equals(getClassOrInterfaceTypeParameters(), that.getClassOrInterfaceTypeParameters());
     }
 
     @Override
