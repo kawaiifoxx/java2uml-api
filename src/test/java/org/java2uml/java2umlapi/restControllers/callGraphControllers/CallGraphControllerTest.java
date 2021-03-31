@@ -1,7 +1,6 @@
 package org.java2uml.java2umlapi.restControllers.callGraphControllers;
 
 import com.github.javaparser.symbolsolver.resolution.typesolvers.JarTypeSolver;
-import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import org.apache.commons.io.FileDeleteStrategy;
 import org.java2uml.java2umlapi.fileStorage.entity.ProjectInfo;
@@ -27,7 +26,6 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.containsString;
 import static org.java2uml.java2umlapi.restControllers.ControllerTestUtils.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -63,14 +61,13 @@ class CallGraphControllerTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        var parsedJson = Configuration.defaultConfiguration().jsonProvider()
-                .parse(getMultipartResponse(doMultipartRequest(mvc, TEST_FILE_4)));
+        var parsedJson = parseJson(getMultipartResponse(doMultipartRequest(mvc, TEST_FILE_4)));
         String sourceUri = JsonPath.read(parsedJson, "$._links.projectModel.href");
         //Generate Source.
         mvc.perform(get(sourceUri))
                 .andDo(print())
                 .andExpect(status().isOk());
-        this.projectInfo = getProjectInfo(parsedJson, projectInfoRepository);
+        this.projectInfo = getEntityFromJson(parsedJson, projectInfoRepository);
         this.source = projectInfo.getSource();
         this.method = getMethod();
     }
@@ -91,7 +88,7 @@ class CallGraphControllerTest {
     void whenMethodNameToMethodIdIsNotPresent_thenReturn500InternalServerError() throws Exception {
         methodIdMapService.delete(source.getId());
         Exception e = getException(status().isInternalServerError());
-        assertThatThrownBy(() -> {throw e;}).isInstanceOf(MethodNameToMethodIdNotFoundException.class);
+        assertThat(e).isInstanceOf(MethodNameToMethodIdNotFoundException.class);
     }
 
     @Test
@@ -99,7 +96,7 @@ class CallGraphControllerTest {
     void whenSourceComponentIsNotPresent_thenReturn500InternalServerError() throws Exception {
         sourceComponentService.delete(projectInfo.getSourceComponentId());
         Exception e = getException(status().isInternalServerError());
-        assertThatThrownBy(() -> {throw e;}).isInstanceOf(ParsedComponentNotFoundException.class);
+        assertThat(e).isInstanceOf(ParsedComponentNotFoundException.class);
     }
 
     @Test
@@ -108,11 +105,12 @@ class CallGraphControllerTest {
         // This delete cascades to Source
         projectInfoRepository.delete(projectInfo);
         Exception e = getException(status().isNotFound());
-        assertThatThrownBy(() -> {throw e;}).isInstanceOf(LightWeightNotFoundException.class);
+        assertThat(e).isInstanceOf(LightWeightNotFoundException.class);
     }
 
     /**
      * Performs given test and before returning exception checks whether it is null or not.
+     *
      * @param matcher test you want to perform.
      * @return {@link Exception} thrown by method being tested.
      */
