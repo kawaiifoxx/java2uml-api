@@ -1,7 +1,8 @@
 package org.java2uml.java2umlapi.restControllers.LWControllers;
 
+import com.github.javaparser.symbolsolver.resolution.typesolvers.JarTypeSolver;
 import com.jayway.jsonpath.JsonPath;
-import org.java2uml.java2umlapi.fileStorage.entity.ProjectInfo;
+import org.apache.commons.io.FileDeleteStrategy;
 import org.java2uml.java2umlapi.fileStorage.repository.ProjectInfoRepository;
 import org.java2uml.java2umlapi.lightWeight.ClassOrInterface;
 import org.java2uml.java2umlapi.lightWeight.Constructor;
@@ -10,10 +11,7 @@ import org.java2uml.java2umlapi.lightWeight.Source;
 import org.java2uml.java2umlapi.lightWeight.repository.*;
 import org.java2uml.java2umlapi.parsedComponent.service.SourceComponentService;
 import org.java2uml.java2umlapi.restControllers.exceptions.LightWeightNotFoundException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +19,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -38,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Tag("WebApiTest")
-@DisplayName("When using ClassOrInterfaceController,")
+@DisplayName("When using ConstructorController,")
 @DirtiesContext
 class ConstructorControllerTest {
     @Autowired
@@ -65,16 +64,7 @@ class ConstructorControllerTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        var parsedProjectInfo = parseJson(getMultipartResponse(doMultipartRequest(mvc, TEST_FILE_1)));
-        ProjectInfo projectInfo = getEntityFromJson(parsedProjectInfo, projectInfoRepository);
-        var parsedSourceJson = parseJson(
-                mvc.perform(get("" + JsonPath.read(parsedProjectInfo, "$._links.projectModel.href")))
-                        .andDo(print())
-                        .andExpect(status().isOk())
-                        .andReturn().getResponse().getContentAsString()
-        );
-        Source source = getEntityFromJson(parsedSourceJson, sourceRepository);
-        projectInfo.setSource(source);
+        Source source = getSource(mvc, sourceRepository, TEST_FILE_1);
         classOrInterface = classOrInterfaceRepository.findAllByParent(source).stream()
                 .filter(classOrInterface1 -> !constructorRepository.findConstructorByParent(classOrInterface1).isEmpty())
                 .findFirst().orElseThrow(() -> new RuntimeException("Unable to get classOrInterface with constructors."));
@@ -195,5 +185,13 @@ class ConstructorControllerTest {
                                 containsString(parentLink)))
                         .andReturn().getResponse().getContentAsString()
         );
+    }
+
+    @AfterAll
+    public static void tearDown() throws IOException {
+        //Release all resources first.
+        JarTypeSolver.ResourceRegistry.getRegistry().cleanUp();
+        //Then delete directory.
+        FileDeleteStrategy.FORCE.delete(TMP_DIR.toFile());
     }
 }

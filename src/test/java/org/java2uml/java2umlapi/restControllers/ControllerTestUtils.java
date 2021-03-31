@@ -4,6 +4,8 @@ import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import org.java2uml.java2umlapi.fileStorage.entity.ProjectInfo;
 import org.java2uml.java2umlapi.fileStorage.repository.ProjectInfoRepository;
+import org.java2uml.java2umlapi.lightWeight.Source;
+import org.java2uml.java2umlapi.lightWeight.repository.SourceRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
@@ -13,8 +15,10 @@ import java.io.FileInputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * <p>
@@ -94,5 +98,23 @@ public abstract class ControllerTestUtils {
      */
     public static Object parseJson(String unparsed) {
         return Configuration.defaultConfiguration().jsonProvider().parse(unparsed);
+    }
+
+    /**
+     * Fetches {@link Source} from the {@link SourceRepository}.
+     * @param mvc to perform get requests.
+     * @param repository from which {@link Source} will be fetched.
+     * @param file to be sent in the multipart request.
+     * @return {@link Source}
+     */
+    public static Source getSource(MockMvc mvc, SourceRepository repository, Path file) throws Exception {
+        var parsedProjectInfo = parseJson(getMultipartResponse(doMultipartRequest(mvc, file)));
+        var parsedSourceJson = parseJson(
+                mvc.perform(get("" + JsonPath.read(parsedProjectInfo, "$._links.projectModel.href")))
+                        .andDo(print())
+                        .andExpect(status().isOk())
+                        .andReturn().getResponse().getContentAsString()
+        );
+        return getEntityFromJson(parsedSourceJson, repository);
     }
 }
