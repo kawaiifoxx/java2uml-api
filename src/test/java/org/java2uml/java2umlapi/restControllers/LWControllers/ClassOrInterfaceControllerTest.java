@@ -1,7 +1,9 @@
 package org.java2uml.java2umlapi.restControllers.LWControllers;
 
+import com.github.javaparser.symbolsolver.resolution.typesolvers.JarTypeSolver;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
+import org.apache.commons.io.FileDeleteStrategy;
 import org.java2uml.java2umlapi.fileStorage.entity.ProjectInfo;
 import org.java2uml.java2umlapi.fileStorage.repository.ProjectInfoRepository;
 import org.java2uml.java2umlapi.lightWeight.ClassOrInterface;
@@ -10,16 +12,14 @@ import org.java2uml.java2umlapi.lightWeight.repository.ClassOrInterfaceRepositor
 import org.java2uml.java2umlapi.lightWeight.repository.SourceRepository;
 import org.java2uml.java2umlapi.parsedComponent.service.SourceComponentService;
 import org.java2uml.java2umlapi.restControllers.exceptions.LightWeightNotFoundException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -137,5 +137,13 @@ class ClassOrInterfaceControllerTest {
         List<String> classNames = JsonPath.read(parsedResponse, "$._embedded.classOrInterfaceList[*].name");
         assertThat(new HashSet<>(classNames))
                 .isEqualTo(classOrInterfaceList.stream().map(ClassOrInterface::getName).collect(Collectors.toSet()));
+    }
+
+    @AfterAll
+    public static void tearDown() throws IOException {
+        //Release all resources first.
+        JarTypeSolver.ResourceRegistry.getRegistry().cleanUp();
+        //Then delete directory.
+        FileDeleteStrategy.FORCE.delete(TMP_DIR.toFile());
     }
 }
