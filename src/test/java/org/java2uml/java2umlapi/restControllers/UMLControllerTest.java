@@ -1,7 +1,6 @@
 package org.java2uml.java2umlapi.restControllers;
 
 import com.github.javaparser.symbolsolver.resolution.typesolvers.JarTypeSolver;
-import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import org.apache.commons.io.FileDeleteStrategy;
 import org.java2uml.java2umlapi.fileStorage.entity.ProjectInfo;
@@ -25,7 +24,6 @@ import java.io.IOException;
 
 import static com.jayway.jsonpath.JsonPath.read;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.java2uml.java2umlapi.restControllers.ControllerTestUtils.*;
@@ -51,8 +49,7 @@ class UMLControllerTest {
     @Test
     @DisplayName("given that request is valid then response should be UML code with response 200 OK.")
     void getPUMLCode() throws Exception {
-        var parsedJson = Configuration.defaultConfiguration().jsonProvider()
-                .parse(getMultipartResponse(doMultipartRequest(mvc, TEST_FILE_4)));
+        var parsedJson = parseJson(getMultipartResponse(doMultipartRequest(mvc, TEST_FILE_4)));
         String requestURI = read(parsedJson, "$._links.umlText.href");
         String svgURI = read(parsedJson, "$._links.umlSvg.href");
         String projectInfoURI = read(parsedJson, "$._links.self.href");
@@ -90,8 +87,7 @@ class UMLControllerTest {
     @Test
     @DisplayName("given that request is valid then response should be UML svg with response 200 OK.")
     void getSvg() throws Exception {
-        var parsedJson = Configuration.defaultConfiguration().jsonProvider()
-                .parse(getMultipartResponse(doMultipartRequest(mvc, TEST_FILE_4)));
+        var parsedJson = parseJson(getMultipartResponse(doMultipartRequest(mvc, TEST_FILE_4)));
         String requestURI = read(parsedJson, "$._links.umlSvg.href");
         var response = mvc.perform(get(requestURI))
                 .andDo(print())
@@ -126,11 +122,10 @@ class UMLControllerTest {
      * @param s query for {@link JsonPath}
      */
     private void assertThatSourceComponentIsNotPresentOn(String s) throws Exception {
-        var parsedJson = Configuration.defaultConfiguration().jsonProvider()
-                .parse(getMultipartResponse(doMultipartRequest(mvc, TEST_FILE_4)));
+        var parsedJson = parseJson(getMultipartResponse(doMultipartRequest(mvc, TEST_FILE_4)));
         String requestURI = JsonPath.read(parsedJson, s);
 
-        ProjectInfo projectInfo = getProjectInfo(parsedJson, projectInfoRepository);
+        ProjectInfo projectInfo = getEntityFromJson(parsedJson, projectInfoRepository);
         sourceComponentService.delete(projectInfo.getSourceComponentId());
 
         var e = mvc.perform(get(requestURI))
@@ -140,8 +135,7 @@ class UMLControllerTest {
                         containsString("Unable to find requested ParsedComponent.")))
                 .andReturn().getResolvedException();
 
-        assertThat(e).isNotNull();
-        assertThatThrownBy(() -> { throw e;}).isInstanceOf(ParsedComponentNotFoundException.class);
+        assertThat(e).isNotNull().isInstanceOf(ParsedComponentNotFoundException.class);
     }
 
     @AfterAll

@@ -1,7 +1,6 @@
 package org.java2uml.java2umlapi.restControllers.LWControllers;
 
 import com.github.javaparser.symbolsolver.resolution.typesolvers.JarTypeSolver;
-import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import org.apache.commons.io.FileDeleteStrategy;
 import org.java2uml.java2umlapi.fileStorage.entity.ProjectInfo;
@@ -57,21 +56,21 @@ class ClassOrInterfaceControllerTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        var parsedJsonForProjectInfo = Configuration.defaultConfiguration().jsonProvider()
-                .parse(getMultipartResponse(doMultipartRequest(mvc, TEST_FILE_4)));
-        projectInfo = getProjectInfo(parsedJsonForProjectInfo, projectInfoRepository);
+        var parsedJsonForProjectInfo = parseJson(getMultipartResponse(doMultipartRequest(mvc, TEST_FILE_4)));
+        projectInfo = getEntityFromJson(parsedJsonForProjectInfo, projectInfoRepository);
         String sourceURI = JsonPath.read(parsedJsonForProjectInfo, "$._links.projectModel.href");
         var sourceUnparsed = mvc.perform(get(sourceURI))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
-        var parsedSource = Configuration.defaultConfiguration().jsonProvider().parse(sourceUnparsed);
+        var parsedSource = parseJson(sourceUnparsed);
         classesURI = JsonPath.read(parsedSource, "$._links.classes.href");
         //noinspection OptionalGetWithoutIsPresent
         projectInfo = projectInfoRepository.findById(projectInfo.getId()).get();
         source = projectInfo.getSource();
         classOrInterfaceList = classOrInterfaceRepository.findAllByParent(source);
     }
+
 
     @Test
     @DisplayName("on valid request, response should be valid and should have status code 200 OK")
@@ -133,7 +132,7 @@ class ClassOrInterfaceControllerTest {
                 .andExpect(jsonPath("$._links.self.href", is(classesURI)))
                 .andExpect(jsonPath("$._links.parent.href", containsString("/source")))
                 .andReturn().getResponse().getContentAsString();
-        var parsedResponse = Configuration.defaultConfiguration().jsonProvider().parse(unparsedResponse);
+        var parsedResponse = parseJson(unparsedResponse);
         List<String> classNames = JsonPath.read(parsedResponse, "$._embedded.classOrInterfaceList[*].name");
         assertThat(new HashSet<>(classNames))
                 .isEqualTo(classOrInterfaceList.stream().map(ClassOrInterface::getName).collect(Collectors.toSet()));

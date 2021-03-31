@@ -53,7 +53,7 @@ class SourceControllerTest {
     void setUp() throws Exception {
         var parsedJson = Configuration.defaultConfiguration().jsonProvider()
                 .parse(getMultipartResponse(doMultipartRequest(mvc, TEST_FILE_4)));
-        projectInfo = getProjectInfo(parsedJson, projectInfoRepository);
+        projectInfo = getEntityFromJson(parsedJson, projectInfoRepository);
         sourceURIByProjectInfo = JsonPath.read(parsedJson, "$._links.projectModel.href");
     }
 

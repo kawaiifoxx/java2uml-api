@@ -1,8 +1,10 @@
 package org.java2uml.java2umlapi.restControllers;
 
+import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import org.java2uml.java2umlapi.fileStorage.entity.ProjectInfo;
 import org.java2uml.java2umlapi.fileStorage.repository.ProjectInfoRepository;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -31,6 +33,9 @@ public abstract class ControllerTestUtils {
             "src/test/testSources/WebApiTest/FileControllerTest/java_code_with_syntax_errors.zip");
     public static final Path TEST_FILE_4 = Path.of(
             "src/test/testSources/WebApiTest/FileControllerTest/code_without_included_dependencies.zip"
+    );
+    public static final Path ENUM_LW_CONTROLLER_TEST_FILE = Path.of(
+            "src/test/testSources/WebApiTest/EnumLWControllerTest/ForEnumControllerTest.zip"
     );
     public static final String CONTENT_TYPE = "application/zip";
 
@@ -63,14 +68,31 @@ public abstract class ControllerTestUtils {
     /**
      * @param parsedJson takes in response in form of parsed Json.
      * @param repository {@link ProjectInfoRepository} from which {@link ProjectInfo} will be retrieved.
-     * @return {@link ProjectInfo} from {@link ProjectInfoRepository}
+     * @param <T> Type of entity.
+     * @return Entity of type T from {@link CrudRepository}{@code <T, Long>} with {@code <T>} and  {@link Long}.
+     */
+    public static <T> T getEntityFromJson(Object parsedJson, CrudRepository<T, Long> repository) {
+        return repository.findById(getIdFromSelfLink(parsedJson))
+                .orElseThrow(() -> new RuntimeException("Entity not found."));
+    }
+
+    /**
+     * @param parsedJson from which id will be retrieved.
+     * @return id from the self link.
      * @throws NumberFormatException if URI cannot be parsed for getting id.
      */
-    public static ProjectInfo getProjectInfo(Object parsedJson, ProjectInfoRepository repository) {
+    private static long getIdFromSelfLink(Object parsedJson) {
         String projectInfoURI = JsonPath.read(parsedJson, "$._links.self.href");
         var projectInfoURIInSplit = projectInfoURI.split("/");
-        var projectInfoId = Long.parseLong(projectInfoURIInSplit[projectInfoURIInSplit.length - 1]);
-        return repository.findById(projectInfoId)
-                .orElseThrow(() -> new RuntimeException("ProjectInfo not found."));
+        return Long.parseLong(projectInfoURIInSplit[projectInfoURIInSplit.length - 1]);
+    }
+
+    /**
+     * Parses given string and returns an linked hash map with key value pairs.
+     * @param unparsed Json you want to parse.
+     * @return parsed json.
+     */
+    public static Object parseJson(String unparsed) {
+        return Configuration.defaultConfiguration().jsonProvider().parse(unparsed);
     }
 }

@@ -44,7 +44,7 @@ class ProjectInfoControllerTest {
     @Autowired
     UnzippedFileStorageService fileStorageService;
     @Autowired
-    ProjectInfoRepository repository;
+    ProjectInfoRepository projectInfoRepository;
     @Autowired
     SourceComponentService sourceComponentService;
 
@@ -109,6 +109,7 @@ class ProjectInfoControllerTest {
         mvc.perform(delete(projectInfoUri)).andDo(print()).andExpect(status().isNoContent());
         assertThatSourceComponentIsNotPresent(projectInfo);
         assertThatUnzippedFileIsDeleted(projectInfo);
+        assertThat(projectInfoRepository.existsById(projectInfo.getId())).isFalse();
     }
 
     /**
@@ -141,7 +142,7 @@ class ProjectInfoControllerTest {
     private ProjectInfo getProjectInfo(String projectInfoUri) {
         var splitUrl = projectInfoUri.split("/");
         var projectInfoId = splitUrl[splitUrl.length - 1];
-        return repository.findById(Long.parseLong(projectInfoId)).orElseThrow(
+        return projectInfoRepository.findById(Long.parseLong(projectInfoId)).orElseThrow(
                 () -> new ProjectInfoNotFoundException("Unable to fetch project info with id " + projectInfoId)
         );
     }
