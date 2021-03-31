@@ -131,6 +131,7 @@ public class LightWeightExtractor implements Visitor<LightWeight> {
     public LightWeight visit(ParsedEnumComponent parsedEnumComponent) {
         var children = parsedEnumComponent.getChildren();
         var enumLW = new EnumLW(parsedEnumComponent.getName());
+        enumLW.setPackageName(parsedEnumComponent.getPackageName());
         enumLW.setEnumConstants(getEnumConstantList(children, this, enumLW));
         enumLW.setEnumConstructors(getConstructorList(children, this, enumLW));
         enumLW.setEnumMethods(
