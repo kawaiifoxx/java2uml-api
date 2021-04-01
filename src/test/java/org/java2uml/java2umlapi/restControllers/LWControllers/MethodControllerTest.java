@@ -3,7 +3,6 @@ package org.java2uml.java2umlapi.restControllers.LWControllers;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.JarTypeSolver;
 import com.jayway.jsonpath.JsonPath;
 import org.apache.commons.io.FileDeleteStrategy;
-import org.java2uml.java2umlapi.fileStorage.repository.ProjectInfoRepository;
 import org.java2uml.java2umlapi.lightWeight.ClassOrInterface;
 import org.java2uml.java2umlapi.lightWeight.EnumLW;
 import org.java2uml.java2umlapi.lightWeight.Method;
@@ -39,8 +38,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class MethodControllerTest {
     @Autowired
     MockMvc mvc;
-    @Autowired
-    ProjectInfoRepository projectInfoRepository;
     @Autowired
     SourceRepository sourceRepository;
     @Autowired

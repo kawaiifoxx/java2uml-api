@@ -3,13 +3,11 @@ package org.java2uml.java2umlapi.restControllers.LWControllers;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.JarTypeSolver;
 import com.jayway.jsonpath.JsonPath;
 import org.apache.commons.io.FileDeleteStrategy;
-import org.java2uml.java2umlapi.fileStorage.repository.ProjectInfoRepository;
 import org.java2uml.java2umlapi.lightWeight.ClassOrInterface;
 import org.java2uml.java2umlapi.lightWeight.Constructor;
 import org.java2uml.java2umlapi.lightWeight.EnumLW;
 import org.java2uml.java2umlapi.lightWeight.Source;
 import org.java2uml.java2umlapi.lightWeight.repository.*;
-import org.java2uml.java2umlapi.parsedComponent.service.SourceComponentService;
 import org.java2uml.java2umlapi.restControllers.exceptions.LightWeightNotFoundException;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +41,6 @@ class ConstructorControllerTest {
     @Autowired
     MockMvc mvc;
     @Autowired
-    ProjectInfoRepository projectInfoRepository;
-    @Autowired
     SourceRepository sourceRepository;
     @Autowired
     ClassOrInterfaceRepository classOrInterfaceRepository;
@@ -54,8 +50,6 @@ class ConstructorControllerTest {
     EnumLWRepository enumLWRepository;
     @Autowired
     ClassRelationRepository classRelationRepository;
-    @Autowired
-    SourceComponentService sourceComponentService;
 
     private ClassOrInterface classOrInterface;
     private EnumLW enumLW;
