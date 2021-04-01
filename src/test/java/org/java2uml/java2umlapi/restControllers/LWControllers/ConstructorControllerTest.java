@@ -1,7 +1,6 @@
 package org.java2uml.java2umlapi.restControllers.LWControllers;
 
 import com.github.javaparser.symbolsolver.resolution.typesolvers.JarTypeSolver;
-import com.jayway.jsonpath.JsonPath;
 import org.apache.commons.io.FileDeleteStrategy;
 import org.java2uml.java2umlapi.lightWeight.ClassOrInterface;
 import org.java2uml.java2umlapi.lightWeight.Constructor;
@@ -19,11 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.java2uml.java2umlapi.restControllers.ControllerTestUtils.*;
@@ -98,16 +94,17 @@ class ConstructorControllerTest {
     @DisplayName("on valid request to allByParent with classOrInterface as parent," +
             " response should be valid and should have status code 200 OK")
     void allByClassOrInterface() throws Exception {
-        Object parsedResponse = performGetOn(classOrInterface.getId(), "/class-or-interface");
-        assertThatAllConstructorNamesMatch(parsedResponse, classConstructorList);
+        Object parsedResponse = performGetOn(
+                mvc, "/api/constructor/by-parent/" + classOrInterface.getId(), "/class-or-interface");
+        assertThatAllNamesMatch(parsedResponse, "$._embedded.constructorList[*].name", classConstructorList);
     }
 
     @Test
     @DisplayName("on valid request to allByParent with EnumLW as parent," +
             " response should be valid and should have status code 200 OK")
     void allByEnumLW() throws Exception {
-        Object parsedResponse = performGetOn(enumLW.getId(), "/enum");
-        assertThatAllConstructorNamesMatch(parsedResponse, enumConstructorList);
+        Object parsedResponse = performGetOn(mvc, "/api/constructor/by-parent/" + enumLW.getId(), "/enum");
+        assertThatAllNamesMatch(parsedResponse, "$._embedded.constructorList[*].name", enumConstructorList);
     }
 
     @Test
@@ -146,38 +143,6 @@ class ConstructorControllerTest {
         classOrInterface.setClassConstructors(classConstructorList);
         classOrInterface.getClassConstructors().remove(constructor);
         classOrInterfaceRepository.save(classOrInterface);
-    }
-
-    /**
-     * Asserts that all the constructor names match up with the names of provided constructors.
-     *
-     * @param parsedJson           Json, from this json all the names will be extracted.
-     * @param classConstructorList {@link List} of {@link Constructor}
-     */
-    private void assertThatAllConstructorNamesMatch(Object parsedJson, List<Constructor> classConstructorList) {
-        List<String> constructorNames = JsonPath.read(parsedJson, "$._embedded.constructorList[*].name");
-        assertThat(new HashSet<>(constructorNames))
-                .isEqualTo(classConstructorList.stream().map(Constructor::getName).collect(Collectors.toSet()));
-    }
-
-    /**
-     * Performs a get request on "/api/constructor/by-parent/{parentId}"
-     *
-     * @param parentId   id of parent
-     * @param parentLink to test.
-     * @return Parsed Json
-     */
-    private Object performGetOn(Long parentId, String parentLink) throws Exception {
-        var uri = "/api/constructor/by-parent/" + parentId;
-        return parseJson(
-                mvc.perform(get(uri))
-                        .andDo(print())
-                        .andExpect(status().isOk())
-                        .andExpect(jsonPath("$._links.self.href", containsString(uri)))
-                        .andExpect(jsonPath("$._links.parent.href",
-                                containsString(parentLink)))
-                        .andReturn().getResponse().getContentAsString()
-        );
     }
 
     @AfterAll

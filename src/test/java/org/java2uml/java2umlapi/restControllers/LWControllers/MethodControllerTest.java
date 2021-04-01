@@ -1,7 +1,6 @@
 package org.java2uml.java2umlapi.restControllers.LWControllers;
 
 import com.github.javaparser.symbolsolver.resolution.typesolvers.JarTypeSolver;
-import com.jayway.jsonpath.JsonPath;
 import org.apache.commons.io.FileDeleteStrategy;
 import org.java2uml.java2umlapi.lightWeight.ClassOrInterface;
 import org.java2uml.java2umlapi.lightWeight.EnumLW;
@@ -17,11 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.java2uml.java2umlapi.restControllers.ControllerTestUtils.*;
@@ -99,15 +95,16 @@ class MethodControllerTest {
     @Test
     @DisplayName("on valid request to allByParent, response should be valid and should have status code 200 OK")
     void allByClassOrInterface() throws Exception {
-        Object parsedResponse = performGetOn(classOrInterface.getId(), "/class-or-interface");
-        assertThatMethodNamesMatchesTheActualMethodNames(parsedResponse, classMethodList);
+        Object parsedResponse = performGetOn(
+                mvc, "/api/method/by-parent/" + classOrInterface.getId(), "/class-or-interface");
+        assertThatAllNamesMatch(parsedResponse, "$._embedded.methodList[*].name", classMethodList);
     }
 
     @Test
     @DisplayName("on valid request to allByParent, response should be valid and should have status code 200 OK")
     void allByEnum() throws Exception {
-        Object parsedResponse = performGetOn(enumLW.getId(), "/enum/");
-        assertThatMethodNamesMatchesTheActualMethodNames(parsedResponse, enumMethodList);
+        Object parsedResponse = performGetOn(mvc, "/api/method/by-parent/" + enumLW.getId(), "/enum/");
+        assertThatAllNamesMatch(parsedResponse, "$._embedded.methodList[*].name", enumMethodList);
     }
 
     @Test
@@ -146,37 +143,6 @@ class MethodControllerTest {
                 mvc, "/api/method/by-parent/" + classOrInterface.getId(),
                 LightWeightNotFoundException.class
         ).andExpect(status().isNotFound());
-    }
-
-    /**
-     * Asserts that all the {@link Method} names match up with the names of provided {@link Method}s.
-     *
-     * @param parsedJson Json, from this json all the names will be extracted.
-     * @param methodList {@link List} of {@link Method}
-     */
-    private void assertThatMethodNamesMatchesTheActualMethodNames(Object parsedJson, List<Method> methodList) {
-        List<String> methodNames = JsonPath.read(parsedJson, "$._embedded.methodList[*].name");
-        assertThat(new HashSet<>(methodNames))
-                .isEqualTo(methodList.stream().map(Method::getName).collect(Collectors.toSet()));
-    }
-
-    /**
-     * Performs a get request on "/api/method/by-parent/{parentId}"
-     *
-     * @param parentId   id of parent
-     * @param parentLink to test.
-     * @return Parsed Json
-     */
-    private Object performGetOn(Long parentId, String parentLink) throws Exception {
-        String uri = "/api/method/by-parent/" + parentId;
-        return parseJson(
-                mvc.perform(get(uri))
-                        .andDo(print())
-                        .andExpect(status().isOk())
-                        .andExpect(jsonPath("$._links.self.href", containsString(uri)))
-                        .andExpect(jsonPath("$._links.parent.href", containsString(parentLink)))
-                        .andReturn().getResponse().getContentAsString()
-        );
     }
 
     @AfterAll
