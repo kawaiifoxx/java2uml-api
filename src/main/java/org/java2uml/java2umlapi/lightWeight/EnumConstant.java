@@ -3,7 +3,10 @@ package org.java2uml.java2umlapi.lightWeight;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import java.util.Optional;
 
 /**
@@ -18,8 +21,6 @@ import java.util.Optional;
 public class EnumConstant extends LightWeight {
     @Column(columnDefinition = "varchar(500)")
     private String name;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
-    private EnumLW enumLW;
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private LightWeight parent;
@@ -35,17 +36,9 @@ public class EnumConstant extends LightWeight {
         this.name = name;
     }
 
-    public void setEnumLW(EnumLW enumLW) {
-        this.enumLW = enumLW;
-    }
-
     @Override
     public String getName() {
         return name;
-    }
-
-    public EnumLW getEnumLW() {
-        return enumLW;
     }
 
     /**

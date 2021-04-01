@@ -42,6 +42,7 @@ public class EnumConstantController {
 
     /**
      * Retrieves EnumConstant with provided id.
+     *
      * @param enumConstantId id of enum constant to be retrieved.
      * @return Entity model of enum constant with useful links.
      * @throws LightWeightNotFoundException if enum constant is not found.
@@ -59,6 +60,7 @@ public class EnumConstantController {
     /**
      * Retrieves all the EnumConstants associated with the given parent,
      * whose parent id has been provided.
+     *
      * @param parentId id of the parent of enum constants.
      * @return Collection model of EnumConstant with useful links.
      */
@@ -66,7 +68,7 @@ public class EnumConstantController {
     public CollectionModel<EntityModel<EnumConstant>> allByParent(@PathVariable("parentId") Long parentId) {
         var parent = enumLWRepository.findById(parentId)
                 .orElseThrow(() -> new LightWeightNotFoundException("Unable to fetch parent by id: " + parentId));
-        return assembler.toCollectionModel(enumConstantRepository.findEnumConstantByEnumLW(parent))
+        return assembler.toCollectionModel(enumConstantRepository.findAllByParent(parent))
                 .add(linkTo(methodOn(EnumLWController.class).one(parentId)).withRel("parent"));
     }
 }

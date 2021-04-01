@@ -36,18 +36,18 @@ class EnumConstantRepositoryTest {
     }
 
     @Test
-    @DisplayName("using findEnumConstantByEnumLW should return all enum constants contained in EnumLW")
-    void findEnumConstantByEnumLW() {
+    @DisplayName("using findAllByParent() should return all enum constants contained in EnumLW")
+    void findAllByParent() {
         EnumLW enumLW = new EnumLW("EnumTest");
         var enumConstant1 = new EnumConstant("TEST1");
         var enumConstant2 = new EnumConstant("TEST2");
         var enumConstant3 = new EnumConstant("TEST3");
         var enumConstant4 = new EnumConstant("TEST4");
 
-        enumConstant1.setEnumLW(enumLW);
-        enumConstant2.setEnumLW(enumLW);
-        enumConstant3.setEnumLW(enumLW);
-        enumConstant4.setEnumLW(enumLW);
+        enumConstant1.setParent(enumLW);
+        enumConstant2.setParent(enumLW);
+        enumConstant3.setParent(enumLW);
+        enumConstant4.setParent(enumLW);
 
         var expected = Set.of(
                 enumConstant1,
@@ -60,7 +60,7 @@ class EnumConstantRepositoryTest {
 
         enumLWRepository.save(enumLW);
 
-        var actual = enumConstantRepository.findEnumConstantByEnumLW(enumLW);
+        var actual = enumConstantRepository.findAllByParent(enumLW);
 
         assertEquals(expected, new HashSet<>(actual), "stored enumConstants are not " +
                 "same as retrieved enumConstants.");

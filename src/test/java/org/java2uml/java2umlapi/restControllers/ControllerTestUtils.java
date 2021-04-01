@@ -148,7 +148,7 @@ public abstract class ControllerTestUtils {
     }
 
     /**
-     * Performs a get request on "/api/constructor/by-parent/{parentId}"
+     * Performs a get request on provided uri
      *
      * @param mvc        through which get request will be performed.
      * @param uri        on which get will be performed.
