@@ -8,7 +8,6 @@ import org.java2uml.java2umlapi.lightWeight.ClassOrInterface;
 import org.java2uml.java2umlapi.lightWeight.EnumLW;
 import org.java2uml.java2umlapi.lightWeight.Method;
 import org.java2uml.java2umlapi.lightWeight.repository.*;
-import org.java2uml.java2umlapi.parsedComponent.service.SourceComponentService;
 import org.java2uml.java2umlapi.restControllers.exceptions.LightWeightNotFoundException;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,8 +51,6 @@ class MethodControllerTest {
     EnumLWRepository enumLWRepository;
     @Autowired
     ClassRelationRepository classRelationRepository;
-    @Autowired
-    SourceComponentService sourceComponentService;
 
     private ClassOrInterface classOrInterface;
     private EnumLW enumLW;
