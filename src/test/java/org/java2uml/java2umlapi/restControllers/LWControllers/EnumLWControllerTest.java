@@ -125,11 +125,10 @@ class EnumLWControllerTest {
     void whenEnumLWIsNotPresentOnPerformingGetRequest_ShouldGet404NotFound() throws Exception {
         var enumLW = enumLWList.get(0);
         removeEnumLW(enumLW);
-        var e = mvc.perform(get("/api/enum/" + enumLW.getId()))
-                .andDo(print())
-                .andExpect(status().isNotFound())
-                .andReturn().getResolvedException();
-        assertThat(e).isNotNull().isInstanceOf(LightWeightNotFoundException.class);
+
+        assertThatOnPerformingGetProvidedExceptionIsThrown(
+                mvc, "/api/enum/" + enumLW.getId(), LightWeightNotFoundException.class
+        ).andExpect(status().isNotFound());
     }
 
     @Test
@@ -137,15 +136,15 @@ class EnumLWControllerTest {
             " get on /api/enum/by-source/{sourceID} should get 404 not found.")
     void whenSourceIsNotPresentOnPerformingGetRequest_ShouldGet404NotFound() throws Exception {
         projectInfoRepository.delete(projectInfo);
-        var e = mvc.perform(get("/api/enum/by-source/" + source.getId()))
-                .andDo(print())
-                .andExpect(status().isNotFound())
-                .andReturn().getResolvedException();
-        assertThat(e).isNotNull().isInstanceOf(LightWeightNotFoundException.class);
+
+        assertThatOnPerformingGetProvidedExceptionIsThrown(
+                mvc, "/api/enum/by-source/" + source.getId(), LightWeightNotFoundException.class
+        ).andExpect(status().isNotFound());
     }
 
     /**
      * Removes {@link EnumLW} from database.
+     *
      * @param enumLW to be removed.
      */
     private void removeEnumLW(EnumLW enumLW) {

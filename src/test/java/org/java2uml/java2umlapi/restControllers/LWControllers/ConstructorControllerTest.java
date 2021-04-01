@@ -122,11 +122,10 @@ class ConstructorControllerTest {
     void whenConstructorCannotBeFound_callToOneShouldReturn404NotFound() throws Exception {
         var constructor = classConstructorList.get(0);
         removeConstructorFromClassOrInterface(constructor);
-        var e = mvc.perform(get("/api/constructor/" + constructor.getId()))
-                .andDo(print())
-                .andExpect(status().isNotFound())
-                .andReturn().getResolvedException();
-        assertThat(e).isNotNull().isInstanceOf(LightWeightNotFoundException.class);
+
+        assertThatOnPerformingGetProvidedExceptionIsThrown(
+                mvc, "/api/constructor/" + constructor.getId(), LightWeightNotFoundException.class
+        ).andExpect(status().isNotFound());
     }
 
     @Test
@@ -137,11 +136,11 @@ class ConstructorControllerTest {
         classRelationRepository.deleteAllByFrom(classOrInterface);
         classRelationRepository.deleteAllByTo(classOrInterface);
         classOrInterfaceRepository.delete(classOrInterface);
-        var e = mvc.perform(get("/api/constructor/by-parent/" + classOrInterface.getId()))
-                .andDo(print())
-                .andExpect(status().isNotFound())
-                .andReturn().getResolvedException();
-        assertThat(e).isNotNull().isInstanceOf(LightWeightNotFoundException.class);
+
+        assertThatOnPerformingGetProvidedExceptionIsThrown(
+                mvc, "/api/constructor/by-parent/" + classOrInterface.getId(), LightWeightNotFoundException.class
+        ).andExpect(status().isNotFound());
+
     }
 
     /**

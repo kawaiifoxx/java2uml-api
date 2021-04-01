@@ -15,6 +15,7 @@ import java.io.FileInputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -116,5 +117,23 @@ public abstract class ControllerTestUtils {
                         .andReturn().getResponse().getContentAsString()
         );
         return getEntityFromJson(parsedSourceJson, repository);
+    }
+
+    /**
+     * Asserts that on performing a get request on given uri the provided exception is thrown.
+     * @param mvc {@link MockMvc} through which request will be performed.
+     * @param uri on which get request will be performed.
+     * @param exceptionToTest {@link Class} of the exception you want to check whether it is thrown.
+     * @throws Exception If unable to perform get request.
+     * @return ResultAction in case you want to perform more checks.
+     */
+    public static ResultActions assertThatOnPerformingGetProvidedExceptionIsThrown(
+            MockMvc mvc, String uri, Class<? extends Exception> exceptionToTest
+    ) throws Exception {
+        var resultAction = mvc.perform(get(uri))
+                .andDo(print());
+        var e = resultAction.andReturn().getResolvedException();
+        assertThat(e).isNotNull().isInstanceOf(exceptionToTest);
+        return resultAction;
     }
 }

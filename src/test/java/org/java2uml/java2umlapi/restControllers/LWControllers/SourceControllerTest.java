@@ -108,20 +108,20 @@ class SourceControllerTest {
     @DisplayName("given that project info is not present, response should be 404 not found.")
     void whenProjectInfoIsNotPresent_thenShouldRespondWith404NotFound() throws Exception {
         projectInfoRepository.delete(projectInfo);
-        var e = performGetRequestOnSourceByProjectInfoId()
-                .andExpect(status().isNotFound()).andReturn().getResolvedException();
 
-        assertThat(e).isNotNull().isInstanceOf(ProjectInfoNotFoundException.class);
+        assertThatOnPerformingGetProvidedExceptionIsThrown(
+                mvc, sourceURIByProjectInfo, ProjectInfoNotFoundException.class
+        ).andExpect(status().isNotFound());
     }
 
     @Test
     @DisplayName("given that source component is not present, respond with 500 internal server error.")
     void whenSourceComponentIsNotPresent_thenShouldRespondWith500InternalServerError() throws Exception {
         sourceComponentService.delete(projectInfo.getSourceComponentId());
-        var e = performGetRequestOnSourceByProjectInfoId()
-                .andExpect(status().isInternalServerError()).andReturn().getResolvedException();
 
-        assertThat(e).isNotNull().isInstanceOf(ParsedComponentNotFoundException.class);
+        assertThatOnPerformingGetProvidedExceptionIsThrown(
+                mvc, sourceURIByProjectInfo, ParsedComponentNotFoundException.class
+        ).andExpect(status().isInternalServerError());
     }
 
     @Test

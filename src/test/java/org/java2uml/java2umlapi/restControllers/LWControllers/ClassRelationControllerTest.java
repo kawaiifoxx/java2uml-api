@@ -37,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Tag("WebApiTest")
-@DisplayName("When using ClassOrInterfaceController,")
+@DisplayName("When using ClassRelationController,")
 @DirtiesContext
 class ClassRelationControllerTest {
     @Autowired
@@ -120,11 +120,10 @@ class ClassRelationControllerTest {
     @DisplayName("given that source is not present sending get request to allBySource should result in 404 Not found.")
     void whenSourceIsNotPresent_thenShouldResponseShouldBe404NotFound() throws Exception {
         projectInfoRepository.delete(projectInfo);
-        var e = mvc.perform(get(classRelationURI))
-                .andDo(print())
-                .andExpect(status().isNotFound())
-                .andReturn().getResolvedException();
-        assertThat(e).isNotNull().isInstanceOf(LightWeightNotFoundException.class);
+
+        assertThatOnPerformingGetProvidedExceptionIsThrown(
+                mvc, classRelationURI, LightWeightNotFoundException.class
+        ).andExpect(status().isNotFound());
     }
 
     @Test
@@ -132,11 +131,10 @@ class ClassRelationControllerTest {
     void whenClassRelationIsNotPresent_thenShouldResponseShouldBe404NotFound() throws Exception {
         var classRelation = classRelationList.get(0);
         removeClassRelation(classRelation);
-        var e = mvc.perform(get("/api/relation/" + classRelation.getId()))
-                .andDo(print())
-                .andExpect(status().isNotFound())
-                .andReturn().getResolvedException();
-        assertThat(e).isNotNull().isInstanceOf(ClassRelationNotFoundException.class);
+
+        assertThatOnPerformingGetProvidedExceptionIsThrown(
+                mvc, "/api/relation/" + classRelation.getId(), ClassRelationNotFoundException.class
+        ).andExpect(status().isNotFound());
     }
 
     private void removeClassRelation(ClassRelation classRelation) {

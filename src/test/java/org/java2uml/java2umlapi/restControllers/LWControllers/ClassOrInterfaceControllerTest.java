@@ -107,20 +107,19 @@ class ClassOrInterfaceControllerTest {
     void whenClassOrInterfaceIsNotPresent_thenResponseCodeShouldBe404() throws Exception {
         var classOrInterface = classOrInterfaceList.get(0);
         projectInfoRepository.delete(projectInfo);
-        var e = mvc.perform(get("/api/class-or-interface/" + classOrInterface.getId())).andDo(print())
-                .andExpect(status().isNotFound())
-                .andReturn().getResolvedException();
-        assertThat(e).isNotNull().isInstanceOf(LightWeightNotFoundException.class);
+
+        assertThatOnPerformingGetProvidedExceptionIsThrown(
+                mvc, "/api/class-or-interface/" + classOrInterface.getId(), LightWeightNotFoundException.class
+        ).andExpect(status().isNotFound());
     }
 
     @Test
     void whenSourceIsNotPresent_thenResponseCodeShouldBe404() throws Exception {
         projectInfoRepository.delete(projectInfo);
-        var e = mvc.perform(get("/api/class-or-interface/by-source/" + source.getId()))
-                .andDo(print())
-                .andExpect(status().isNotFound())
-                .andReturn().getResolvedException();
-        assertThat(e).isNotNull().isInstanceOf(LightWeightNotFoundException.class);
+
+        assertThatOnPerformingGetProvidedExceptionIsThrown(
+                mvc, "/api/class-or-interface/by-source/" + source.getId(), LightWeightNotFoundException.class
+        ).andExpect(status().isNotFound());
     }
 
     @Test
