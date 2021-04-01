@@ -40,6 +40,7 @@ public class Field extends LightWeight {
         this.isStatic = isStatic;
     }
 
+    @Override
     public String getName() {
         return name;
     }

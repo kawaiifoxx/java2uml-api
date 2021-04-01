@@ -30,6 +30,12 @@ public abstract class LightWeight {
     }
 
     /**
+     * @return Name of this lightWeight.
+     * @throws UnsupportedOperationException if called on {@link Body} or {@link Source}
+     */
+    abstract public String getName();
+
+    /**
      * if this light weight is source then a source is returned.
      *
      * @return source

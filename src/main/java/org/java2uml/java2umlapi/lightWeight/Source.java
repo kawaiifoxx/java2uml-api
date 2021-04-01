@@ -63,6 +63,15 @@ public class Source extends LightWeight {
         return super.getParent();
     }
 
+    /**
+     * @return Name of this lightWeight.
+     */
+    @Override
+    @JsonIgnore
+    public String getName() {
+        throw  new UnsupportedOperationException("Source does not have a name.");
+    }
+
     public void setClassOrInterfaceList(List<ClassOrInterface> classOrInterfaceList) {
         this.classOrInterfaceList = classOrInterfaceList;
     }

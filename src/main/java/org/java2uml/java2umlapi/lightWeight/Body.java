@@ -52,6 +52,15 @@ public class Body extends LightWeight{
         return parent;
     }
 
+    /**
+     * @return Name of this lightWeight.
+     */
+    @Override
+    @JsonIgnore
+    public String getName() {
+        throw  new UnsupportedOperationException("Body does not have a name.");
+    }
+
     public void setParent(LightWeight parent) {
         this.parent = parent;
     }

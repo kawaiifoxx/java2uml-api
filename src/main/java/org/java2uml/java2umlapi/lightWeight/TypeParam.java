@@ -32,6 +32,7 @@ public class TypeParam extends LightWeight {
         this.name = name;
     }
 
+    @Override
     public String getName() {
         return name;
     }

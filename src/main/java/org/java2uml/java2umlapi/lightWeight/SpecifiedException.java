@@ -30,6 +30,7 @@ public class SpecifiedException extends LightWeight {
         this.parent = parent;
     }
 
+    @Override
     public String getName() {
         return name;
     }

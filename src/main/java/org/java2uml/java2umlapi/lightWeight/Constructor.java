@@ -78,6 +78,7 @@ public class Constructor extends LightWeight {
         this.compilerGenerated = compilerGenerated;
     }
 
+    @Override
     public String getName() {
         return name;
     }

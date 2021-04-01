@@ -91,6 +91,7 @@ public class ClassOrInterface extends LightWeight {
         this.body = body;
     }
 
+    @Override
     public String getName() {
         return name;
     }

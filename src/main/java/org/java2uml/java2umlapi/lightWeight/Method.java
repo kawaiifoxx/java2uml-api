@@ -79,6 +79,7 @@ public class Method extends LightWeight {
         this.body = body;
     }
 
+    @Override
     public String getName() {
         return name;
     }

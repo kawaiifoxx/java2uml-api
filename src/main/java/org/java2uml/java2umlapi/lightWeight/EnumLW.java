@@ -81,6 +81,7 @@ public class EnumLW extends LightWeight {
         enumMethods.add(method);
     }
 
+    @Override
     public String getName() {
         return name;
     }

@@ -39,6 +39,7 @@ public class EnumConstant extends LightWeight {
         this.enumLW = enumLW;
     }
 
+    @Override
     public String getName() {
         return name;
     }
