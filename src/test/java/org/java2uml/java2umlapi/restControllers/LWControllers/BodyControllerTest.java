@@ -1,18 +1,19 @@
 package org.java2uml.java2umlapi.restControllers.LWControllers;
 
+import com.github.javaparser.symbolsolver.resolution.typesolvers.JarTypeSolver;
+import org.apache.commons.io.FileDeleteStrategy;
 import org.java2uml.java2umlapi.lightWeight.*;
 import org.java2uml.java2umlapi.lightWeight.repository.*;
 import org.java2uml.java2umlapi.restControllers.exceptions.LightWeightNotFoundException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
@@ -137,5 +138,13 @@ class BodyControllerTest {
                 .andExpect(jsonPath("$._links.parent.href", containsString(parentLink)))
                 .andExpect(jsonPath("$.id", is(body.getId().intValue())))
                 .andExpect(jsonPath("$.content", is(body.getContent())));
+    }
+
+    @AfterAll
+    public static void tearDown() throws IOException {
+        //Release all resources first.
+        JarTypeSolver.ResourceRegistry.getRegistry().cleanUp();
+        //Then delete directory.
+        FileDeleteStrategy.FORCE.delete(TMP_DIR.toFile());
     }
 }
