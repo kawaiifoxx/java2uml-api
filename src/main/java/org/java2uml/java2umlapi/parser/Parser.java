@@ -4,13 +4,12 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import com.github.javaparser.resolution.SymbolResolver;
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import com.github.javaparser.symbolsolver.utils.SymbolSolverCollectionStrategy;
 import com.github.javaparser.utils.ProjectRoot;
 import com.github.javaparser.utils.SourceRoot;
 import org.java2uml.java2umlapi.exceptions.EmptySourceDirectoryException;
-import org.java2uml.java2umlapi.umlComponenets.SourceComponent;
+import org.java2uml.java2umlapi.parsedComponent.SourceComponent;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -24,9 +23,6 @@ import java.util.List;
  * @author kawaiifox.
  */
 public class Parser {
-
-    private static SymbolResolver symbolResolver = null;
-
     /**
      * <p>
      * resolves all reference types in given java source directory and returns a SourceComponent.
@@ -42,12 +38,14 @@ public class Parser {
         var sourceRoots = projectRoot.getSourceRoots();
 
         if (sourceRoots.isEmpty()) {
-            throw new EmptySourceDirectoryException("[Parser] Source directory is empty i.e it does not contain any .java or .jar files.");
+            throw new EmptySourceDirectoryException(
+                    "Source directory is empty i.e it does not contain any .java or .jar files."
+            );
         }
 
         List<ResolvedDeclaration> resolvedDeclarations = getResolvedDeclarations(sourceRoots);
 
-        return new SourceComponent(resolvedDeclarations, symbolResolver);
+        return new SourceComponent(resolvedDeclarations);
     }
 
     /**
@@ -59,12 +57,9 @@ public class Parser {
         var compilationUnits = getAllCompilationUnits(sourceRoots);
         var classOrInterfaceDeclarations = getClassOrInterfaceDeclarations(compilationUnits);
         var enumDecl = getEnumDeclaration(compilationUnits);
+        var symbolResolver = sourceRoots.get(0).getParserConfiguration().getSymbolResolver()
+                .orElseThrow(() -> new RuntimeException("[Parser] Unable to get symbolResolver."));
 
-        if (sourceRoots.get(0).getParserConfiguration().getSymbolResolver().isEmpty()) {
-            throw new RuntimeException("[Parser] Unable to get symbolResolver.");
-        }
-
-        symbolResolver = sourceRoots.get(0).getParserConfiguration().getSymbolResolver().get();
         List<ResolvedDeclaration> resolvedDeclarations = new ArrayList<>();
         classOrInterfaceDeclarations
                 .forEach(classOrInterfaceDeclaration -> resolvedDeclarations

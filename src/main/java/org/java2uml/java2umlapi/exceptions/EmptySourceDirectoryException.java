@@ -1,5 +1,8 @@
 package org.java2uml.java2umlapi.exceptions;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 /**
  * <p>
  * This exception can be thrown when parser encounters that source directory being parsed is empty.
@@ -7,6 +10,7 @@ package org.java2uml.java2umlapi.exceptions;
  *
  * @author kawaiifox
  */
+@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 public class EmptySourceDirectoryException extends RuntimeException {
     /**
      * Constructs a new runtime exception with the specified detail message.
