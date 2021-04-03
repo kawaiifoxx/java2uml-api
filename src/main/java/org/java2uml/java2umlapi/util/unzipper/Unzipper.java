@@ -10,7 +10,7 @@ import java.util.zip.ZipInputStream;
 
 /**
  * <p>
- *     Utility class to unzip files from a given folder to a given folder.
+ * Utility class to unzip files from a given folder to a given folder.
  * </p>
  *
  * @author kawaiifox
@@ -18,12 +18,12 @@ import java.util.zip.ZipInputStream;
 public abstract class Unzipper {
 
     /**
-     * unzip a given file from srcZipPath and generate unzipped files in UnzipOutput directory in destDirPath.
+     * unzip a given file from srcZipPath and generate unzipped files in destDirPath.
      *
-     * @param srcZipPath path of source zip file.
+     * @param srcZipPath  path of source zip file.
      * @param destDirPath path of destination where output needs to be generated.
-     * @return path of "UnzipOutput" directory.
-     * @throws IOException if unable to create directory then throws IOException.
+     * @return {@link File} directory containing unzipped files.
+     * @throws IOException if unable to create directory.
      */
     public static File unzipDir(Path srcZipPath, Path destDirPath) throws IOException {
         File zipFile = new File(srcZipPath.toAbsolutePath().toString());
@@ -69,7 +69,7 @@ public abstract class Unzipper {
     /**
      * Generates new file in given destination directory according to zipEntry.
      *
-     * @param destDir Directory where file needs to be created.
+     * @param destDir  Directory where file needs to be created.
      * @param zipEntry ZipEntry for file being created.
      * @return Returns newly created file.
      * @throws IOException exception is thrown in case of zip slip.
