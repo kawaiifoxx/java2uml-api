@@ -24,14 +24,14 @@ public aspect EntryExitLogger {
      * Logs entry into a method.
      */
     before(): everyMethodInJava2umlapi() {
-        if (logger.isDebugEnabled()) {
+        if (logger.isTraceEnabled()) {
             var fileName = thisJoinPointStaticPart.getSourceLocation().getFileName();
             var line = thisJoinPointStaticPart.getSourceLocation().getLine();
             var signature = thisJoinPointStaticPart.getSignature().getDeclaringTypeName() + "."
                     + thisJoinPointStaticPart.getSignature().getName() + "(..)";
 
             Object[] loggingList = {signature, depth, fileName, line};
-            logger.debug("Entering {} at depth {} at {}:{}", loggingList);
+            logger.trace("Entering {} at depth {} at {}:{}", loggingList);
         }
         depth++;
     }
@@ -40,14 +40,14 @@ public aspect EntryExitLogger {
      * Logs exit after successful return.
      */
     after() returning(Object retValue): everyMethodInJava2umlapi() {
-        if (logger.isDebugEnabled()) {
+        if (logger.isTraceEnabled()) {
             var fileName = thisJoinPointStaticPart.getSourceLocation().getFileName();
             var line = thisJoinPointStaticPart.getSourceLocation().getLine();
             var signature = thisJoinPointStaticPart.getSignature().getDeclaringTypeName() + "."
                     + thisJoinPointStaticPart.getSignature().getName() + "(..)";
 
             Object[] loggingList = {signature, depth, fileName, line, retValue};
-            logger.debug("Exiting {} at depth {} at {}:{}, returned {}", loggingList);
+            logger.trace("Exiting {} at depth {} at {}:{}, returned {}", loggingList);
         }
         depth--;
     }
@@ -56,14 +56,14 @@ public aspect EntryExitLogger {
      * Logs exit after a exception is thrown.
      */
     after() throwing(Throwable throwable): everyMethodInJava2umlapi() {
-        if (logger.isDebugEnabled()) {
+        if (logger.isTraceEnabled()) {
             var fileName = thisJoinPointStaticPart.getSourceLocation().getFileName();
             var line = thisJoinPointStaticPart.getSourceLocation().getLine();
             var signature = thisJoinPointStaticPart.getSignature().getDeclaringTypeName() + "."
                     + thisJoinPointStaticPart.getSignature().getName() + "(..)";
 
             Object[] loggingList = {signature, depth, fileName, line};
-            logger.debug("Exiting {} at depth {} at {}:{}, threw "
+            logger.trace("Exiting {} at depth {} at {}:{}, threw "
                             + throwable.getMessage() + "\n Stack Trace: \n"
                             + Arrays.toString(throwable.getStackTrace())
                     , loggingList);
