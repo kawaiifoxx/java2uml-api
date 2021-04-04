@@ -10,7 +10,7 @@
     </parent>
     <groupId>org.java2uml</groupId>
     <artifactId>java2uml-api</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0</version>
     <name>java2uml-api</name>
     <description>Discover unknown java code base through uml diagrams.</description>
     <properties>
@@ -138,8 +138,8 @@
                     <complianceLevel>11</complianceLevel>
                     <source>11</source>
                     <target>11</target>
-                    <showWeaveInfo>true</showWeaveInfo>
-                    <verbose>true</verbose>
+                    <showWeaveInfo>false</showWeaveInfo>
+                    <verbose>false</verbose>
                     <Xlint>ignore</Xlint>
                     <encoding>UTF-8</encoding>
                 </configuration>
@@ -155,6 +155,7 @@
                 </executions>
             </plugin>
         </plugins>
+        <finalName>java2uml-${version}</finalName>
     </build>
 
 </project>
