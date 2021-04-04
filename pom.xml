@@ -155,7 +155,7 @@
                 </executions>
             </plugin>
         </plugins>
-        <finalName>java2uml-${version}</finalName>
+        <finalName>java2uml-${project.version}</finalName>
     </build>
 
 </project>
