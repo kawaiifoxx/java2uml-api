@@ -15,27 +15,27 @@ app-prop:
 
 # Add 'aspect-logging' label to any file changes in aspects package.
 aspect-logging:
-	- ./src/main/java/org/java2uml/java2umlapi/aspects/**
+	- ./src/main/java/org/java2uml/java2umlapi/aspects/**/*
 
 # Add 'call-graph-core' label to any file changes in callGraph package.
 call-graph-core:
-	- ./src/main/java/org/java2uml/java2umlapi/callGraph/**
+	- ./src/main/java/org/java2uml/java2umlapi/callGraph/**/*
 
 # Add 'parsed-component-core' label to any file changes in parsedComponent package.
 parsed-component-core:
-	- ./src/main/java/org/java2uml/java2umlapi/parsedComponent/**
+	- ./src/main/java/org/java2uml/java2umlapi/parsedComponent/**/*
 
 # Add 'parser' label to any file changes in parser package.
 parser:
-	- ./src/main/java/org/java2uml/java2umlapi/parser/**
+	- ./src/main/java/org/java2uml/java2umlapi/parser/**/*
 
 # Add 'rest-controller' label to any file changes in  restController package.
 rest-controller:
-	- ./src/main/java/org/java2uml/java2umlapi/restControllers/**
+	- ./src/main/java/org/java2uml/java2umlapi/restControllers/**/*
 	
 # Add 'util' label to any file changes in  util package.
 util:
-	- ./src/main/java/org/java2uml/java2umlapi/util
+	- ./src/main/java/org/java2uml/java2umlapi/util/**/*
 	
 # Add 'app-config' label to any file change in AppConfig.java.
 app-config:
@@ -43,8 +43,11 @@ app-config:
 
 # Add 'test' label to any file change in test directory.
 test:
-	- ./src/test/java/**
+	- ./src/test/java/**/*
 	
 # Add 'test-sources' label to any file change in testSources directory.
 test-sources:
-	- ./src/test/testSources/**
+	- ./src/test/testSources/**/*
+# Add '.github' label to any file change in .github directory.
+.github:
+  - .github/**/*
