@@ -21,6 +21,6 @@ jobs:
       with:
         java-version: 11
     - name: Install GraphViz
-      run: apt install graphviz -y
+      run: sudo apt install graphviz -y
     - name: Build with Maven
       run: mvn -B package --file pom.xml
