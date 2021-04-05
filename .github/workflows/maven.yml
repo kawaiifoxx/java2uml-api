@@ -14,7 +14,6 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-      OS: ${{ runner.os }}
       JAVA: '11'
     steps:
       - uses: actions/checkout@v2
@@ -40,7 +39,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./target/site/jacoco-aggregate
           flags: unittests
-          env_vars: OS,JAVA
+          env_vars: JAVA
           fail_ci_if_error: true
           verbose: true
       - name: Upload Artifact.
