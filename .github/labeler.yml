@@ -1,0 +1,50 @@
+# Add 'readme' to README changes.
+readme:
+	- ./README.md
+
+# Add 'pom' label to any pom changes.
+pom:
+	- ./pom.xml
+
+# Add 'root' label to any root file changes.
+root:
+	- ./*
+# Add 'app-prop' label to any application.properties file change.
+app-prop:
+	- ./src/main/resources/application.properties
+
+# Add 'aspect-logging' label to any file changes in aspects package.
+aspect-logging:
+	- ./src/main/java/org/java2uml/java2umlapi/aspects/**
+
+# Add 'call-graph-core' label to any file changes in callGraph package.
+call-graph-core:
+	- ./src/main/java/org/java2uml/java2umlapi/callGraph/**
+
+# Add 'parsed-component-core' label to any file changes in parsedComponent package.
+parsed-component-core:
+	- ./src/main/java/org/java2uml/java2umlapi/parsedComponent/**
+
+# Add 'parser' label to any file changes in parser package.
+parser:
+	- ./src/main/java/org/java2uml/java2umlapi/parser/**
+
+# Add 'rest-controller' label to any file changes in  restController package.
+rest-controller:
+	- ./src/main/java/org/java2uml/java2umlapi/restControllers/**
+	
+# Add 'util' label to any file changes in  util package.
+util:
+	- ./src/main/java/org/java2uml/java2umlapi/util
+	
+# Add 'app-config' label to any file change in AppConfig.java.
+app-config:
+	- ./src/main/java/org/java2uml/java2umlapi/AppConfig.java
+
+# Add 'test' label to any file change in test directory.
+test:
+	- ./src/test/java/**
+	
+# Add 'test-sources' label to any file change in testSources directory.
+test-sources:
+	- ./src/test/testSources/**
