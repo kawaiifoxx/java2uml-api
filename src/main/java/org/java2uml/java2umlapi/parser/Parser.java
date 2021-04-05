@@ -11,13 +11,20 @@ import com.github.javaparser.utils.SourceRoot;
 import org.java2uml.java2umlapi.exceptions.EmptySourceDirectoryException;
 import org.java2uml.java2umlapi.parsedComponent.SourceComponent;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * <p>
  * Facade for java parser library and java symbol solver, used for parsing java source files.
+ * </p>
+ *
+ * <p>
+ *     Parser will not parse files in hidden directory or any files in folders starting with <code>'.'</code>
+ *     For eg <code>.hidden</code>
  * </p>
  *
  * @author kawaiifox.
@@ -122,14 +129,16 @@ public class Parser {
      * @param sourceRoots List of SourceRoot.
      * @return Returns all the compilation units from the source directory.
      */
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     private static List<CompilationUnit> getAllCompilationUnits(List<SourceRoot> sourceRoots) {
         List<CompilationUnit> compilationUnits = new ArrayList<>();
 
         sourceRoots.forEach(sourceRoot -> {
             var parseResults = sourceRoot.tryToParseParallelized();
             parseResults.forEach(parseResult -> {
-                if (parseResult.isSuccessful()) {
-                    //noinspection OptionalGetWithoutIsPresent
+                if (parseResult.isSuccessful() &&
+                                parseResult.getResult().get().getStorage().isPresent() &&
+                                shouldAddCU(parseResult.getResult().get().getStorage().get().getDirectory())) {
                     compilationUnits.add(parseResult.getResult().get());
                 }
             });
@@ -137,4 +146,27 @@ public class Parser {
 
         return compilationUnits;
     }
+
+    /**
+     * Checks whether the {@link CompilationUnit} should be added to the list of {@link CompilationUnit}
+     * @param path directory where file is located.
+     * @return true if all checks have passed.
+     */
+    private static boolean shouldAddCU(Path path) {
+        var directory = path.normalize();
+        var dirNameList = Arrays.asList(directory.toString().split(getFileSeparatorForSplit()));
+        return dirNameList.stream()
+                .map(name -> !name.startsWith("."))
+                .reduce(true, (x, y) -> x && y);
+    }
+
+    /**
+     * @return File separator for splitting.
+     */
+    private static String getFileSeparatorForSplit() {
+        if (File.separator.equals("\\")) return "\\\\";
+        return File.separator;
+    }
+
+
 }
