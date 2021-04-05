@@ -13,8 +13,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    env:
-      JAVA: '11'
+    
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 11
@@ -37,11 +36,8 @@ jobs:
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./target/site/jacoco-aggregate
           flags: unittests
-          env_vars: JAVA
           fail_ci_if_error: true
-          verbose: true
       - name: Upload Artifact.
         uses: actions/upload-artifact@v2
         with:
