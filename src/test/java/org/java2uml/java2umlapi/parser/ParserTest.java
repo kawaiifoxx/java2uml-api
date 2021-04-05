@@ -38,7 +38,6 @@ class ParserTest {
         expectedClassNames.add("com.shreyansh.springboot.thymeleafdemo.EnumTest");
         expectedClassNames.add("com.shreyansh.springboot.thymeleafdemo.service.EmployeeService");
         expectedClassNames.add("com.shreyansh.springboot.thymeleafdemo.service.EmployeeServiceImpl");
-        expectedClassNames.add("MavenWrapperDownloader");
         expectedClassNames.add("com.shreyansh.springboot.thymeleafdemo.ThymeleafDemoApplicationTests");
 
 
