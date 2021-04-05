@@ -13,7 +13,9 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    env:
+      OS: ${{ runner.os }}
+      JAVA: '11'
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 11
@@ -30,6 +32,17 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Build with Maven
         run: mvn -B package --file pom.xml
+      - name: Generate Coverage Report
+        run: mvn jacoco:report-aggregate
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./target/site/jacoco-aggregate
+          flags: unittests
+          env_vars: OS,JAVA
+          fail_ci_if_error: true
+          verbose: true
       - name: Upload Artifact.
         uses: actions/upload-artifact@v2
         with:
