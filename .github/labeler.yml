@@ -1,6 +1,6 @@
 # Add 'readme' to README changes.
 readme:
-  - ./README.md
+  - README.md
 
 # Add 'pom' label to any pom changes.
 pom:
