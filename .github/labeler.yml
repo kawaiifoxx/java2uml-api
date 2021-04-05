@@ -8,7 +8,7 @@ pom:
 
 # Add 'root' label to any root file changes.
 root:
-  - *
+  - ./*
 # Add 'app-prop' label to any application.properties file change.
 app-prop:
   - src/main/resources/application.properties
