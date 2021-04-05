@@ -59,9 +59,16 @@
     </logger>
     <!--  EntryExitLogger logs every entry and exit of method call in org.java2uml.*. with depth fileName:lineNo -->
     <!--   to disable change level to "OFF".  -->
-    <!--  to enable change level to "DEBUG".  -->
+    <!--  to enable change level to "TRACE".  -->
     <logger name="org.java2uml.java2umlapi.aspects.EntryExitLogger" level="OFF" additivity="false">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="RollingFileDebug"/>
+    </logger>
+    <!--  InstrumentationLogger performs instrumentation of various procedures.  -->
+    <!--   to disable change level to "OFF".  -->
+    <!--  to enable change level to "INFO".  -->
+    <logger name="org.java2uml.java2umlapi.aspects.InstrumentationLogger" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
     </logger>
 </configuration>
