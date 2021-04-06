@@ -11,5 +11,4 @@ import org.springframework.data.repository.CrudRepository;
  * @author kawaiifox
  */
 public interface ProjectInfoRepository extends CrudRepository<ProjectInfo, Long> {
-    ProjectInfo findByProjectName(String projectName);
 }
