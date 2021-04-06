@@ -85,7 +85,12 @@ class ParamRepositoryTest {
     @DisplayName("removing method should cascade to it's parameters.")
     void deletingMethodShouldDeleteAllAssociatedParameters() {
         var method = methodRepository.save(
-                new Method("Test", "Test()", "int","public")
+                new Method.Builder()
+                        .withName("Test")
+                        .withSignature("Test()")
+                        .withReturnType("int")
+                        .withVisibility("public")
+                        .build()
         );
         var saved = paramRepository.save(new Param("int", "test"));
         saved.setParent(method);

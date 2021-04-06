@@ -155,13 +155,14 @@ public class LightWeightExtractor implements Visitor<LightWeight> {
                         .getAsResolvedMethodDeclaration()
                         .orElseThrow(() -> new IllegalStateException("parsedMethodComponent should" +
                                 " contain resolvedMethodDeclaration."));
-        var method = new Method(
-                parsedMethodComponent.getName(),
-                resolvedMethodDeclaration.getQualifiedSignature(),
-                parsedMethodComponent.getReturnTypeName(),
-                resolvedMethodDeclaration.accessSpecifier().asString(),
-                resolvedMethodDeclaration.isStatic()
-        );
+        var method = new Method.Builder()
+                .withName(parsedMethodComponent.getName())
+                .withSignature(resolvedMethodDeclaration.getQualifiedSignature())
+                .withReturnType(parsedMethodComponent.getReturnTypeName())
+                .withVisibility(resolvedMethodDeclaration.accessSpecifier().asString())
+                .withStatic(resolvedMethodDeclaration.isStatic())
+                .build();
+
         method.setMethodParameters(
                 getParamList(resolvedMethodDeclaration.getNumberOfParams(), resolvedMethodDeclaration::getParam, method)
         );

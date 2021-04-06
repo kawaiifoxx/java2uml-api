@@ -37,7 +37,14 @@ class MethodRepositoryTest {
     @DisplayName("using findAllByName, should return a list containing" +
             " all the instances of method which contain passed name.")
     void findAllByName() {
-        var saved = methodRepository.save(new Method("test", "Test.test()", "int","private"));
+        var saved = methodRepository.save(
+                new Method.Builder()
+                        .withName("test")
+                        .withSignature("Test.test()")
+                        .withReturnType("int")
+                        .withVisibility("private")
+                        .build()
+        );
         var retrieved = methodRepository.findAllByName("test").get(0);
         assertEquals(saved, retrieved, "saved instanced should be same as retrieved instance.");
     }
@@ -47,7 +54,12 @@ class MethodRepositoryTest {
             " all the instances of method which contain reference of passed parent.")
     void findAllByParent() {
         var saved = methodRepository.save(
-                new Method("test", "Test.test()", "int","private")
+                new Method.Builder()
+                        .withName("test")
+                        .withSignature("Test.test()")
+                        .withReturnType("int")
+                        .withVisibility("private")
+                        .build()
         );
         ClassOrInterface classOrInterface = classOrInterfaceRepository.save(
                 new ClassOrInterface("Test", true, false)
@@ -64,7 +76,12 @@ class MethodRepositoryTest {
             " all the instances of method which contain passed returnType.")
     void findAllByReturnType() {
         var saved = methodRepository.save(
-                new Method("test", "Test.test()", "int","private")
+                new Method.Builder()
+                        .withName("test")
+                        .withSignature("Test.test()")
+                        .withReturnType("int")
+                        .withVisibility("private")
+                        .build()
         );
         var retrieved = methodRepository.findAllByReturnType("int").get(0);
         assertEquals(saved, retrieved, "saved instanced should be same as retrieved instance.");
@@ -75,7 +92,12 @@ class MethodRepositoryTest {
     @DisplayName("deleting classOrInterface should to cascade to all of it's methods.")
     void deletingClassOrInterfaceShouldDeleteAllAssociatedMethods() {
         var saved = methodRepository.save(
-                new Method("test", "Test.test()", "int", "private")
+                new Method.Builder()
+                        .withName("test")
+                        .withSignature("Test.test()")
+                        .withReturnType("int")
+                        .withVisibility("private")
+                        .build()
         );
         ClassOrInterface classOrInterface = classOrInterfaceRepository.save(
                 new ClassOrInterface("Test", true, false)
@@ -93,7 +115,12 @@ class MethodRepositoryTest {
     @DisplayName("deleting enumLW should to cascade to all of it's methods.")
     void deletingEnumLWShouldDeleteAllAssociatedMethods() {
         var saved = methodRepository.save(
-                new Method("test", "Test.test()", "int", "private")
+                new Method.Builder()
+                        .withName("test")
+                        .withSignature("Test.test()")
+                        .withReturnType("int")
+                        .withVisibility("private")
+                        .build()
         );
         EnumLW enumLW = enumLWRepository.save(
                 new EnumLW("Test")

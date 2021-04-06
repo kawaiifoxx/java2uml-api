@@ -46,37 +46,153 @@ public class Method extends LightWeight {
     protected Method() {
     }
 
-    public Method(String name, String signature, String returnType, String visibility) {
-        this.name = name;
-        this.signature = signature;
-        this.visibility = visibility;
-        this.returnType = returnType;
-        this.isStatic = false;
-    }
+    /**
+     * <p>
+     * A Builder for constructing {@link Method}s with all of it's attributes.
+     * </p>
+     *
+     * @author kawaiifox
+     */
+    public static class Builder {
+        private final Method method;
 
-    public Method(String name, String signature, String returnType, String visibility, boolean isStatic) {
-        this.name = name;
-        this.returnType = returnType;
-        this.signature = signature;
-        this.visibility = visibility;
-        this.isStatic = isStatic;
-    }
+        public Builder() {
+            this.method = new Method();
+        }
 
-    public Method(
-            String name, String returnType, String signature,
-            String visibility, boolean isStatic,
-            List<Param> params, List<TypeParam> typeParams,
-            List<SpecifiedException> specifiedExceptions, Body body
-    ) {
-        this.name = name;
-        this.returnType = returnType;
-        this.signature = signature;
-        this.visibility = visibility;
-        this.isStatic = isStatic;
-        this.methodParameters = params;
-        this.methodTypeParameters = typeParams;
-        this.specifiedExceptions = specifiedExceptions;
-        this.body = body;
+        /**
+         * Add name.
+         *
+         * @param name {@link Method} name
+         * @return {@link Builder}
+         */
+        public Builder withName(String name) {
+            method.name = name;
+            return this;
+        }
+
+        /**
+         * Add  Package Name.
+         *
+         * @param packageName {@link Method} package name
+         * @return {@link Builder}
+         */
+        public Builder withPackageName(String packageName) {
+            method.packageName = packageName;
+            return this;
+        }
+
+        /**
+         * Add visibility.
+         *
+         * @param visibility {@link Method}'s visibility
+         * @return {@link Builder}
+         */
+        public Builder withVisibility(String visibility) {
+            method.visibility = visibility;
+            return this;
+        }
+
+        /**
+         * Add return type of the method.
+         *
+         * @param returnType {@link Method}'s return type.
+         * @return {@link Builder}
+         */
+        public Builder withReturnType(String returnType) {
+            method.returnType = returnType;
+            return this;
+        }
+
+        /**
+         * Add signature of method.
+         *
+         * @param signature {@link Method} signature.
+         * @return Builder
+         */
+        public Builder withSignature(String signature) {
+            method.signature = signature;
+            return this;
+        }
+
+        /**
+         * Add whether the method is static.
+         *
+         * @param isStatic true if static else false.
+         * @return {@link Builder}
+         */
+        public Builder withStatic(boolean isStatic) {
+            method.isStatic = isStatic;
+            return this;
+        }
+
+        /**
+         * Add parameters of the method.
+         *
+         * @param params {@link List} of {@link Param}
+         * @return {@link Builder}
+         */
+        public Builder withParameters(List<Param> params) {
+            method.methodParameters = params;
+            return this;
+        }
+
+        /**
+         * Add type parameters of the {@link Method}
+         *
+         * @param typeParams {@link List} of {@link TypeParam}
+         * @return {@link Builder}
+         */
+        public Builder withTypeParameters(List<TypeParam> typeParams) {
+            method.methodTypeParameters = typeParams;
+            return this;
+        }
+
+        /**
+         * Add specified exceptions for the {@link Method}
+         *
+         * @param specifiedExceptions {@link List} of {@link SpecifiedException}
+         * @return {@link Builder}
+         */
+        public Builder withSpecifiedExceptions(List<SpecifiedException> specifiedExceptions) {
+            method.specifiedExceptions = specifiedExceptions;
+            return this;
+        }
+
+        /**
+         * Add body of the {@link Method}
+         *
+         * @param body {@link Body} of belonging to the {@link Method}
+         * @return {@link Builder}
+         */
+        public Builder withBody(Body body) {
+            method.body = body;
+            return this;
+        }
+
+        /**
+         * Add parent of the {@link Method}
+         *
+         * @param parent Parent of this {@link Method}
+         * @return {@link Builder}
+         */
+        public Builder withParent(LightWeight parent) {
+            method.parent = parent;
+            return this;
+        }
+
+        /**
+         * Constructs the method and returns it.
+         * @return {@link Method} with all the added fields.
+         * @throws IllegalStateException if name, signature or return type is not added.
+         */
+        public Method build() {
+            if (method.name == null || method.signature == null || method.returnType == null) {
+                throw new IllegalStateException("A method should have name, return type and signature for building it.");
+            }
+
+            return method;
+        }
     }
 
     @Override
@@ -92,14 +208,11 @@ public class Method extends LightWeight {
         return visibility;
     }
 
-    public void addParam(Param param) {
-        methodParameters.add(param);
-    }
-
     public List<Param> getMethodParameters() {
         return methodParameters;
     }
 
+    @SuppressWarnings("unused")
     public List<TypeParam> getMethodTypeParameters() {
         return methodTypeParameters;
     }
@@ -112,10 +225,12 @@ public class Method extends LightWeight {
         this.signature = signature;
     }
 
+    @SuppressWarnings("unused")
     public void setReturnType(String returnType) {
         this.returnType = returnType;
     }
 
+    @SuppressWarnings("unused")
     public void setVisibility(String visibility) {
         this.visibility = visibility;
     }
@@ -155,6 +270,7 @@ public class Method extends LightWeight {
         return Optional.of(this);
     }
 
+    @SuppressWarnings("unused")
     public List<SpecifiedException> getSpecifiedExceptions() {
         return specifiedExceptions;
     }
