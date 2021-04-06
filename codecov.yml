@@ -1,6 +1,6 @@
 codecov:
   branch: main
-  require_ci_to_pass: yes
+  require_ci_to_pass: true
 
 coverage:
   precision: 2
@@ -18,12 +18,12 @@ parsers:
 comment:
   layout: "reach,diff,flags,files,footer"
   behavior: default
-  require_changes: no
+  require_changes: false
 
 ignore:
-  - "src/main/java/org/java2uml/java2umlapi/aspects/**/*"
-  - "src/main/java/org/java2uml/java2umlapi/exceptions/**/*"
-  - "src/main/java/org/java2uml/java2umlapi/fileStorage/exceptions/**/*"
-  - "src/main/java/org/java2uml/java2umlapi/restControllers/exceptions/**/*"
+  - "src/main/java/org/java2uml/java2umlapi/aspects"
+  - "src/main/java/org/java2uml/java2umlapi/exceptions"
+  - "src/main/java/org/java2uml/java2umlapi/fileStorage/exceptions"
+  - "src/main/java/org/java2uml/java2umlapi/restControllers/exceptions"
   - "src/main/java/org/java2uml/java2umlapi/AppConfig.java"
   - "src/main/java/org/java2uml/java2umlapi/Java2umlApiApplication.java"
