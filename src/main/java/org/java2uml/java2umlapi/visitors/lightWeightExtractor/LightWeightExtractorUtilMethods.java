@@ -5,6 +5,7 @@ import com.github.javaparser.resolution.types.ResolvedType;
 import org.java2uml.java2umlapi.lightWeight.*;
 import org.java2uml.java2umlapi.parsedComponent.ParsedClassOrInterfaceComponent;
 import org.java2uml.java2umlapi.parsedComponent.ParsedComponent;
+import org.java2uml.java2umlapi.parsedComponent.ParsedCompositeComponent;
 import org.java2uml.java2umlapi.parsedComponent.TypeRelation;
 
 import java.util.*;
@@ -37,24 +38,34 @@ public abstract class LightWeightExtractorUtilMethods {
                 .stream()
                 .map(typeRelation -> {
                     var from = typeRelation.getFrom();
-                    ClassOrInterface fromLW;
-                    if (classOrInterfaceMap.containsKey(from.getName())) {
-                        fromLW = classOrInterfaceMap.get(from.getName());
-                    } else {
-                        fromLW = externalClassOrInterfaceMap.get(from.getName());
-                    }
+                    ClassOrInterface fromLW = getClassOrInterface(classOrInterfaceMap, externalClassOrInterfaceMap, from);
 
                     var to = typeRelation.getTo();
-                    ClassOrInterface toLW;
-                    if (classOrInterfaceMap.containsKey(to.getName())) {
-                        toLW = classOrInterfaceMap.get(to.getName());
-                    } else {
-                        toLW = externalClassOrInterfaceMap.get(to.getName());
-                    }
+                    ClassOrInterface toLW = getClassOrInterface(classOrInterfaceMap, externalClassOrInterfaceMap, to);
 
                     return new ClassRelation(fromLW, toLW, typeRelation.getRelationsSymbol(), source);
-                })
-                .collect(Collectors.toList());
+                }).collect(Collectors.toList());
+    }
+
+    /**
+     * Fetches {@link ClassOrInterface} from provided maps.
+     * @param classOrInterfaceMap a {@link Map} of {@link ClassOrInterface} name to {@link ClassOrInterface}
+     * @param externalClassOrInterfaceMap a {@link Map} of {@link ClassOrInterface} name to {@link ClassOrInterface}
+     * @param pcc {@link ParsedCompositeComponent} from which name will be fetched.
+     * @return {@link ClassOrInterface} or <b>null</b> if ClassOrInterface not present in provided maps.
+     */
+    private static ClassOrInterface getClassOrInterface(
+            Map<String, ClassOrInterface> classOrInterfaceMap,
+            Map<String, ClassOrInterface> externalClassOrInterfaceMap,
+            ParsedCompositeComponent pcc
+    ) {
+        ClassOrInterface classOrInterface;
+        if (classOrInterfaceMap.containsKey(pcc.getName())) {
+            classOrInterface = classOrInterfaceMap.get(pcc.getName());
+        } else {
+            classOrInterface = externalClassOrInterfaceMap.get(pcc.getName());
+        }
+        return classOrInterface;
     }
 
     /**
