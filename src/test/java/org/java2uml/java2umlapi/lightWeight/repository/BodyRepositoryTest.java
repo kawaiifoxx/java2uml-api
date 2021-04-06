@@ -113,7 +113,12 @@ class BodyRepositoryTest {
     @DisplayName("deleting parent of body should delete the body.")
     void deletingMethodShouldDeleteItsBody() {
         var method = methodRepository.save(
-                new Method("test", "Test.test()", "int", "public")
+                new Method.Builder()
+                        .withName("test")
+                        .withSignature("Test.test()")
+                        .withReturnType("int")
+                        .withVisibility("public")
+                        .build()
         );
         var body = bodyRepository.save(new Body("test{\n}"));
         body.setParent(method);

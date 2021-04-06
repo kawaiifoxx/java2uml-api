@@ -41,7 +41,13 @@ class TypeParamRepositoryTest {
     @DisplayName("using findAllByParent should return list containing " +
             "instances of typeParam which have same parent as passed parent.")
     void findAllByParent() {
-        var method = new Method("test", "test()", "int", "public");
+        var method = new Method.Builder()
+                .withName("test")
+                .withSignature("test()")
+                .withReturnType("int")
+                .withVisibility("public")
+                .build();
+
         var saved = new TypeParam("test");
         method.setMethodTypeParameters(List.of(saved));
         saved.setParent(method);
@@ -79,7 +85,7 @@ class TypeParamRepositoryTest {
     @DisplayName("removing parent should remove all the typeParameters which belong to this parent.")
     void deletingConstructorsShouldDeleteAllRelatedTypeParameters() {
         var constructor = constructorRepository.save(
-                new Constructor("Test", "Test()", "public",false)
+                new Constructor("Test", "Test()", "public", false)
         );
         var saved = typeParamRepository.save(new TypeParam("test"));
         saved.setParent(constructor);
@@ -95,7 +101,12 @@ class TypeParamRepositoryTest {
     @DisplayName("removing parent should remove all the typeParameters which belong to this parent.")
     void deletingMethodShouldDeleteAllRelatedTypeParameters() {
         var method = methodRepository.save(
-                new Method("test", "Test.test()","int", "public")
+                new Method.Builder()
+                        .withName("test")
+                        .withSignature("Test.test()")
+                        .withReturnType("int")
+                        .withVisibility("public")
+                        .build()
         );
         var saved = typeParamRepository.save(new TypeParam("test"));
         saved.setParent(method);
