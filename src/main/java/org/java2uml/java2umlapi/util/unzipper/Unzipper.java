@@ -20,16 +20,14 @@ public abstract class Unzipper {
     /**
      * unzip a given file from srcZipPath and generate unzipped files in destDirPath.
      *
-     * @param srcZipPath  path of source zip file.
-     * @param destDirPath path of destination where output needs to be generated.
+     * @param srcZipPath  {@link Path} of source zip file.
+     * @param destDirPath {@link Path} of destination where output needs to be generated.
      * @return {@link File} directory containing unzipped files.
      * @throws IOException if unable to create directory.
      */
     public static File unzipDir(Path srcZipPath, Path destDirPath) throws IOException {
         File zipFile = new File(srcZipPath.toAbsolutePath().toString());
         File destDir = new File(destDirPath.toAbsolutePath().toString());
-
-        byte[] buffer = new byte[1024];
         ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile));
         ZipEntry zipEntry = zis.getNextEntry();
 
@@ -41,20 +39,7 @@ public abstract class Unzipper {
                     throw new IOException("Failed to create directory " + newFile);
                 }
             } else {
-                File parent = newFile.getParentFile();
-
-                if (!parent.isDirectory() && !parent.mkdirs()) {
-                    throw new IOException("Failed to create directory " + parent);
-                }
-
-                FileOutputStream fos = new FileOutputStream(newFile);
-
-                int len;
-                while ((len = zis.read(buffer)) > 0) {
-                    fos.write(buffer, 0, len);
-                }
-
-                fos.close();
+                writeData(zis, newFile);
             }
 
             zipEntry = zis.getNextEntry();
@@ -62,8 +47,33 @@ public abstract class Unzipper {
 
         zis.closeEntry();
         zis.close();
-
         return destDir;
+    }
+
+    /**
+     * Writes the data from {@link ZipInputStream} in to the specified {@link File} newFile until
+     * the end of stream is reached.
+     *
+     * @param zis     {@link ZipInputStream} from which the data will be read.
+     * @param newFile {@link File} in which data will be written.
+     * @throws IOException if unable to create directory.
+     */
+    private static void writeData(ZipInputStream zis, File newFile) throws IOException {
+        byte[] buffer = new byte[1024];
+        File parent = newFile.getParentFile();
+
+        if (!parent.isDirectory() && !parent.mkdirs()) {
+            throw new IOException("Failed to create directory " + parent);
+        }
+
+        FileOutputStream fos = new FileOutputStream(newFile);
+
+        int len;
+        while ((len = zis.read(buffer)) > 0) {
+            fos.write(buffer, 0, len);
+        }
+
+        fos.close();
     }
 
     /**
