@@ -12,8 +12,6 @@ import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -53,10 +51,7 @@ public class ConstructorAssembler implements RepresentationModelAssembler<Constr
 
     @Override
     public CollectionModel<EntityModel<Constructor>> toCollectionModel(Iterable<? extends Constructor> entities) {
-        var collectionModel = StreamSupport
-                .stream(entities.spliterator(), false)
-                .map(this::toModel)
-                .collect(Collectors.collectingAndThen(Collectors.toList(), CollectionModel::of));
+        var collectionModel = RepresentationModelAssembler.super.toCollectionModel(entities);
 
         collectionModel.addAllIf(
                 entities.iterator().hasNext(),
