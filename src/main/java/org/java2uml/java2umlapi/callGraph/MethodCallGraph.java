@@ -46,11 +46,11 @@ public interface MethodCallGraph {
      *
      * you should get relations below in the list.
      *
-     * ClassRelation{From -> to}
+     * CallGraphRelation{From -> to}
      * List {
-     *      ClassRelation{methodA() -> methodB()},
-     *      ClassRelation{methodA() -> methodC()},
-     *      ClassRelation{methodA() -> methodA()}
+     *      CallGraphRelation{methodA() -> methodB()},
+     *      CallGraphRelation{methodA() -> methodC()},
+     *      CallGraphRelation{methodA() -> methodA()}
      * }
      * </pre>
      *
