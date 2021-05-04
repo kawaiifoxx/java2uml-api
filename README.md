@@ -9,13 +9,11 @@
 
 ## Description 📚
 
-***
 Yet another tool for generating and viewing UML diagrams.
 <br>
 
 ## Features 📦
 
-***
 ✅ Generate plant uml code from maven/gradle project.
 <br>✅ Generate plant uml diagram from maven/gradle project.
 <br>✅ Comprehensive web api for exploring projects.
@@ -24,6 +22,5 @@ Yet another tool for generating and viewing UML diagrams.
 
 ## Getting Started
 
-***
 Work in progress 👷
 
