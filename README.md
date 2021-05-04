@@ -20,7 +20,7 @@ Yet another tool for generating and viewing UML diagrams.
 <br>✅ View call graphs for method calls.
 <br>✅ more features coming soon. 😉
 
-## Getting Started
+## Getting Started 🛫
 
 Work in progress 👷
 
