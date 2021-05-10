@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -53,42 +52,140 @@ public class ClassOrInterface extends LightWeight {
     protected ClassOrInterface() {
     }
 
-    public ClassOrInterface(String name,boolean isClass, boolean isExternal, Body body) {
-        this.name = name;
-        this.isClass = isClass;
-        this.isExternal = isExternal;
-        this.classOrInterfaceTypeParameters = new ArrayList<>();
-        this.classConstructors = new ArrayList<>();
-        this.classOrInterfaceMethods = new ArrayList<>();
-        this.classFields = new ArrayList<>();
-        this.body = body;
-    }
+    /**
+     * <p>
+     * Builder for building a new instance of {@link ClassOrInterface}. This builder provides methods for,
+     * customizing {@link ClassOrInterface} instance to your needs.
+     * </p>
+     *
+     * @author kawaiifox
+     */
+    public static class Builder {
+        private final ClassOrInterface classOrInterface;
+        /* Initially Object has not been built. */
+        private boolean built = false;
 
-    public ClassOrInterface(String name, boolean isClass, boolean isExternal) {
-        this.name = name;
-        this.isClass = isClass;
-        this.isExternal = isExternal;
-    }
+        /**
+         * Initializes Builder with a new instance of {@link ClassOrInterface}
+         */
+        public Builder() {
+            classOrInterface = new ClassOrInterface();
+        }
 
-    public ClassOrInterface(String name, String packageName, boolean isClass, boolean isExternal) {
-        this.name = name;
-        this.isClass = isClass;
-        this.packageName = packageName;
-        this.isExternal = isExternal;
-    }
+        /**
+         * Adds a class name to {@link ClassOrInterface} instance.
+         *
+         * @param name Fully qualified class name.
+         * @return this {@link Builder}
+         */
+        public Builder withName(String name) {
+            classOrInterface.name = name;
+            return this;
+        }
 
-    public ClassOrInterface(String name, boolean isClass, boolean isExternal,
-                            List<Constructor> classConstructors, List<Method> methods,
-                            List<Field> fields, List<TypeParam> typeParameters,
-                            Body body) {
-        this.name = name;
-        this.isClass = isClass;
-        this.isExternal = isExternal;
-        this.classConstructors = classConstructors;
-        this.classOrInterfaceMethods = methods;
-        this.classFields = fields;
-        this.classOrInterfaceTypeParameters = typeParameters;
-        this.body = body;
+        /**
+         * Adds a package name to {@link ClassOrInterface} instance.
+         *
+         * @param pkgName name of the package to which this {@link ClassOrInterface} instance belongs to.
+         * @return this {@link Builder}
+         */
+        public Builder withPackageName(String pkgName) {
+            classOrInterface.packageName = pkgName;
+            return this;
+        }
+
+        /**
+         * Adds all the {@link Constructor} belonging to this {@link ClassOrInterface} instance.
+         *
+         * @param classConstructors {@link List} of {@link Constructor}s.
+         * @return this {@link Builder}.
+         */
+        public Builder withClassConstructors(List<Constructor> classConstructors) {
+            classOrInterface.classConstructors = classConstructors;
+            return this;
+        }
+
+        /**
+         * Adds all the {@link Method} belonging to this {@link ClassOrInterface} instance.
+         *
+         * @param methods {@link List} of {@link Method}s.
+         * @return this {@link Builder}.
+         */
+        public Builder withMethods(List<Method> methods) {
+            classOrInterface.classOrInterfaceMethods = methods;
+            return this;
+        }
+
+        /**
+         * Adds all {@link Field} belonging to this {@link ClassOrInterface} instance.
+         *
+         * @param fields {@link List} of {@link Field}s.
+         * @return this builder.
+         */
+        public Builder withFields(List<Field> fields) {
+            classOrInterface.classFields = fields;
+            return this;
+        }
+
+        /**
+         * Adds all the {@link TypeParam} to belonging to this {@link ClassOrInterface} instance.
+         *
+         * @param typeParameters {@link List} of {@link TypeParam}
+         * @return this {@link Builder}
+         */
+        public Builder withTypeParameters(List<TypeParam> typeParameters) {
+            classOrInterface.classOrInterfaceTypeParameters = typeParameters;
+            return this;
+        }
+
+        /**
+         * Is this {@link ClassOrInterface} instance is class?
+         *
+         * @param isClass boolean describing whether this instance is class or not.
+         * @return this {@link Builder}
+         */
+        public Builder withIsClass(boolean isClass) {
+            classOrInterface.isClass = isClass;
+            return this;
+        }
+
+        /**
+         * Is this {@link ClassOrInterface} external to the project?
+         *
+         * @param isExternal boolean describing whether this instance is external to the project.
+         * @return this {@link Builder}
+         */
+        public Builder withIsExternal(boolean isExternal) {
+            classOrInterface.isExternal = isExternal;
+            return this;
+        }
+
+        /**
+         * Adds {@link Body} of this {@link ClassOrInterface} instance.
+         *
+         * @param body {@link Body} instance belonging to this {@link ClassOrInterface} instance.
+         * @return this {@link Builder}
+         */
+        public Builder withBody(Body body) {
+            classOrInterface.body = body;
+            return this;
+        }
+
+        /**
+         * Builds an instance of {@link ClassOrInterface} with all the provided properties.
+         *
+         * @return {@link ClassOrInterface} Instance.
+         * @throws UnsupportedOperationException if <code>build()</code> has already been called before.
+         * i.e an instance has already been built using this builder once. If you want another instance
+         * of {@link ClassOrInterface}, create new instance of {@link Builder}
+         */
+        public ClassOrInterface build() {
+            if (!built) {
+                built = true;
+                return classOrInterface;
+            }
+            throw new UnsupportedOperationException("Build method can only be called once.");
+        }
     }
 
     @Override
