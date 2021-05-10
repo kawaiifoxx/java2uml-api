@@ -35,7 +35,12 @@ class ClassOrInterfaceRepositoryTest {
     @DisplayName("using findClassOrInterfaceByName, should return all classes with " +
             "same name as passed in findClassOrInterfaceByName.")
     void findAllByName() {
-        var saved = new ClassOrInterface("TestClass", true, false, new Body("\n{\n}"));
+        var saved = new ClassOrInterface.Builder()
+                .withName("TestClass")
+                .withIsClass(true)
+                .withIsExternal(false)
+                .withBody(new Body("\n{\n}"))
+                .build();
         classOrInterfaceRepository.save(saved);
         var retrieved = classOrInterfaceRepository.findAllByName("TestClass").get(0);
         assertEquals(saved, retrieved
@@ -48,15 +53,20 @@ class ClassOrInterfaceRepositoryTest {
      */
     private List<ClassOrInterface> getClassOrInterfaces(Source source) {
         var class1 = classOrInterfaceRepository.save(
-                new ClassOrInterface("T1", true, false, new Body("{}")));
+                new ClassOrInterface.Builder()
+                        .withName("T1").withIsClass(true).withIsExternal(false).withBody(new Body("{}")).build());
         var class2 = classOrInterfaceRepository.save(
-                new ClassOrInterface("T2", true, false, new Body("{}")));
+                new ClassOrInterface.Builder()
+                        .withName("T2").withIsClass(true).withIsExternal(false).withBody(new Body("{}")).build());
         var class3 = classOrInterfaceRepository.save(
-                new ClassOrInterface("T3", true, false, new Body("{}")));
+                new ClassOrInterface.Builder()
+                        .withName("T3").withIsClass(true).withIsExternal(false).withBody(new Body("{}")).build());
         var class4 = classOrInterfaceRepository.save(
-                new ClassOrInterface("T4", true, false, new Body("{}")));
+                new ClassOrInterface.Builder()
+                        .withName("T4").withIsClass(true).withIsExternal(false).withBody(new Body("{}")).build());
         var class5 = classOrInterfaceRepository.save(
-                new ClassOrInterface("T5", true, false, new Body("{}")));
+                new ClassOrInterface.Builder()
+                        .withName("T5").withIsClass(true).withIsExternal(false).withBody(new Body("{}")).build());
         class1.setParent(source);
         class2.setParent(source);
         class3.setParent(source);
@@ -103,7 +113,7 @@ class ClassOrInterfaceRepositoryTest {
         getClassOrInterfaces(source);
         sourceRepository.delete(source);
         var retrieved = classOrInterfaceRepository.findAllByParent(source);
-        assertEquals(0, retrieved.size(),"all the classes with deleted source should be deleted and " +
+        assertEquals(0, retrieved.size(), "all the classes with deleted source should be deleted and " +
                 "hence, size of retrieved should be zero.");
     }
 }

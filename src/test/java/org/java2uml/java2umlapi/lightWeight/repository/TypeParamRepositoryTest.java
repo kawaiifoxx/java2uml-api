@@ -69,7 +69,7 @@ class TypeParamRepositoryTest {
     @DisplayName("removing parent should remove all the typeParameters which belong to this parent.")
     void deletingClassOrInterfaceShouldDeleteAllRelatedTypeParameters() {
         var classOrInterface = classOrInterfaceRepository.save(
-                new ClassOrInterface("Test", true, false)
+                new ClassOrInterface.Builder().withName("Test").withIsClass(true).withIsExternal(false).build()
         );
         var saved = typeParamRepository.save(new TypeParam("test"));
         saved.setParent(classOrInterface);
