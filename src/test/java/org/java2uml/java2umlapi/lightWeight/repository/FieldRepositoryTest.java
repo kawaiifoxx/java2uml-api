@@ -44,7 +44,8 @@ class FieldRepositoryTest {
     @DisplayName("using findAllByParent should return list containing all the instances which contains passed parent.")
     void findAllByParent() {
         var saved = getSavedField();
-        var classOrInterface = new ClassOrInterface("Test", true, false);
+        var classOrInterface =
+                new ClassOrInterface.Builder().withName("Test").withIsClass(true).withIsExternal(false).build();
         classOrInterface.setClassFields(List.of(saved));
         saved.setParent(classOrInterface);
         classOrInterfaceRepository.save(classOrInterface);
@@ -65,7 +66,7 @@ class FieldRepositoryTest {
     @DisplayName("removing classOrInterface should remove all fields which belong to deleted classOrInterface.")
     void deletingClassOrInterfaceShouldDeleteField() {
         var classOrInterface = classOrInterfaceRepository.save(
-                new ClassOrInterface("Test", true, false)
+                new ClassOrInterface.Builder().withName("Test").withIsClass(true).withIsExternal(false).build()
         );
         var saved = getSavedField();
         classOrInterface.setClassFields(new ArrayList<>(List.of(saved)));

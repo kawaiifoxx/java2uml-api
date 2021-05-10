@@ -70,12 +70,13 @@ public class LightWeightExtractor implements Visitor<LightWeight> {
     @Override
     public LightWeight visit(ParsedClassOrInterfaceComponent parsedClassOrInterfaceComponent) {
         var children = parsedClassOrInterfaceComponent.getChildren();
-        var classOrInterface = new ClassOrInterface(
-                parsedClassOrInterfaceComponent.getName(),
-                parsedClassOrInterfaceComponent.getPackageName(),
-                parsedClassOrInterfaceComponent.isClass(),
-                false
-        );
+        var classOrInterface = new ClassOrInterface.Builder()
+                .withName(parsedClassOrInterfaceComponent.getName())
+                .withPackageName(parsedClassOrInterfaceComponent.getPackageName())
+                .withIsClass(parsedClassOrInterfaceComponent.isClass())
+                .withIsExternal(false)
+                .build();
+
         classOrInterface.setPackageName(parsedClassOrInterfaceComponent.getPackageName());
         classOrInterface.setClassConstructors(getConstructorList(children, this, classOrInterface));
         classOrInterface.setClassOrInterfaceMethods(
@@ -105,12 +106,13 @@ public class LightWeightExtractor implements Visitor<LightWeight> {
     public LightWeight visit(ParsedExternalComponent parsedExternalComponent) {
         var resolvedDeclaration = getResolvedDeclaration(parsedExternalComponent)
                 .asType().asReferenceType();
-        var classOrInterface = new ClassOrInterface(
-                parsedExternalComponent.getName(),
-                parsedExternalComponent.getPackageName(),
-                resolvedDeclaration.isClass(),
-                true
-        );
+        var classOrInterface = new ClassOrInterface.Builder()
+                .withName(parsedExternalComponent.getName())
+                .withPackageName(parsedExternalComponent.getPackageName())
+                .withIsClass(resolvedDeclaration.isClass())
+                .withIsExternal(true)
+                .build();
+
         classOrInterface.setClassConstructors(new ArrayList<>());
         classOrInterface.setClassOrInterfaceMethods(new ArrayList<>());
         classOrInterface.setClassFields(new ArrayList<>());

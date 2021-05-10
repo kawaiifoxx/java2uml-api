@@ -68,7 +68,7 @@ class BodyRepositoryTest {
     @DisplayName("deleting parent of body should delete the body.")
     void deletingClassOrInterfaceShouldDeleteItsBody() {
         var classOrInterface = classOrInterfaceRepository.save(
-                new ClassOrInterface("Test", true, false)
+                new ClassOrInterface.Builder().withName("Test").withIsClass(true).withIsExternal(false).build()
         );
         var body = bodyRepository.save(new Body("test{\n}"));
         body.setParent(classOrInterface);

@@ -62,7 +62,7 @@ class MethodRepositoryTest {
                         .build()
         );
         ClassOrInterface classOrInterface = classOrInterfaceRepository.save(
-                new ClassOrInterface("Test", true, false)
+                new ClassOrInterface.Builder().withName("Test").withIsClass(true).withIsExternal(false).build()
         );
         saved.setParent(classOrInterface);
         classOrInterface.setClassOrInterfaceMethods(new ArrayList<>(List.of(saved)));
@@ -100,7 +100,7 @@ class MethodRepositoryTest {
                         .build()
         );
         ClassOrInterface classOrInterface = classOrInterfaceRepository.save(
-                new ClassOrInterface("Test", true, false)
+                new ClassOrInterface.Builder().withName("Test").withIsClass(true).withIsExternal(false).build()
         );
         saved.setParent(classOrInterface);
         classOrInterface.setClassOrInterfaceMethods(new ArrayList<>(List.of(saved)));

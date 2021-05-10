@@ -26,7 +26,7 @@ class LightWeightRepositoryTest {
     @DisplayName("findById should return same lightWeight which was persisted.")
     void findLightWeightById() {
         LightWeight saved = lightWeightRepository.save(
-                new ClassOrInterface("Test", true, false)
+                new ClassOrInterface.Builder().withName("Test").withIsClass(true).withIsExternal(false).build()
         );
         var retrieved = lightWeightRepository.findById(saved.getId());
         if (retrieved.isEmpty()) {

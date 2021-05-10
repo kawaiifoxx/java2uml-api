@@ -43,7 +43,7 @@ class ConstructorRepositoryTest {
     @DisplayName("using findConstructorByParent, should return a list of constructor containing the given parentId.")
     void findConstructorByParent() {
         var classOrInterface = classOrInterfaceRepository.save(
-                new ClassOrInterface("Test", true, false)
+                new ClassOrInterface.Builder().withName("Test").withIsClass(true).withIsExternal(false).build()
         );
         var saved = constructorRepository.save(
                 new Constructor("Test", "Test.Test()", "PUBLIC", new Body("{}"))

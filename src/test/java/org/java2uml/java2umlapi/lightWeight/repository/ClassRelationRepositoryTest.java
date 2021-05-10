@@ -32,10 +32,8 @@ class ClassRelationRepositoryTest {
     @Test
     @DisplayName("using findAllByFrom, should retrieve all the ClassRelation with from.")
     void findAllByFrom() {
-        var from = classOrInterfaceRepository.save(
-                new ClassOrInterface("TestClass", true, false, new Body("{}")));
-        var to = classOrInterfaceRepository.save(
-                new ClassOrInterface("TestClass1", true, false, new Body("{}")));
+        ClassOrInterface from = getClassOrInterface("TestClass");
+        ClassOrInterface to = getClassOrInterface("TestClass1");
         var classRelation = classRelationRepository.save(
                 new ClassRelation(from, to, RelationsSymbol.AGGREGATION, null));
         var retrieved = classRelationRepository.findAllByFrom(from).get(0);
@@ -43,13 +41,23 @@ class ClassRelationRepositoryTest {
         assertEquals(classRelation, retrieved, "saved classRelation should be same as retrieved classRelation");
     }
 
+    /**
+     * @param name name of {@link ClassOrInterface}
+     * @return An instance of {@link ClassOrInterface} with passed name.
+     */
+    private ClassOrInterface getClassOrInterface(String name) {
+        return classOrInterfaceRepository.save(
+                new ClassOrInterface
+                        .Builder().withName(name)
+                        .withIsClass(true).withIsExternal(false).withBody(new Body("{}")).build()
+        );
+    }
+
     @Test
     @DisplayName("using findAllByTo, should retrieve all the ClassRelation with to.")
     void findAllByTo() {
-        var from = classOrInterfaceRepository.save(
-                new ClassOrInterface("TestClass", true, false, new Body("{}")));
-        var to = classOrInterfaceRepository.save(
-                new ClassOrInterface("TestClass1", true, false, new Body("{}")));
+        ClassOrInterface from = getClassOrInterface("TestClass");
+        ClassOrInterface to = getClassOrInterface("TestClass1");
         var classRelation = classRelationRepository.save(
                 new ClassRelation(from, to, RelationsSymbol.AGGREGATION, null));
         var retrieved = classRelationRepository.findAllByTo(to).get(0);
@@ -61,10 +69,8 @@ class ClassRelationRepositoryTest {
     @DisplayName("using deleteAllByFrom, should remove all the " +
             "instances of classRelation containing given class in from field.")
     void deleteAllByFrom() {
-        var from = classOrInterfaceRepository.save(
-                new ClassOrInterface("TestClass", true, false, new Body("{}")));
-        var to = classOrInterfaceRepository.save(
-                new ClassOrInterface("TestClass1", true, false, new Body("{}")));
+        ClassOrInterface from = getClassOrInterface("TestClass");
+        ClassOrInterface to = getClassOrInterface("TestClass1");
         classRelationRepository.save(new ClassRelation(from, to, RelationsSymbol.AGGREGATION, null));
         classRelationRepository.deleteAllByFrom(from);
 
@@ -76,10 +82,8 @@ class ClassRelationRepositoryTest {
     @DisplayName("using deleteAllByTo, should remove all the " +
             "instances of classRelation containing given class in to field.")
     void deleteAllByTo() {
-        var from = classOrInterfaceRepository.save(
-                new ClassOrInterface("TestClass", true, false, new Body("{}")));
-        var to = classOrInterfaceRepository.save(
-                new ClassOrInterface("TestClass1", true, false, new Body("{}")));
+        ClassOrInterface from = getClassOrInterface("TestClass");
+        ClassOrInterface to = getClassOrInterface("TestClass1");
         classRelationRepository.save(new ClassRelation(from, to, RelationsSymbol.AGGREGATION, null));
         classRelationRepository.deleteAllByTo(to);
 
