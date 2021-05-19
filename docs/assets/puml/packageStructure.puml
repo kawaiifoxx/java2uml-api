@@ -1,0 +1,31 @@
+@startmindmap
+title Java2UML Package Structure
+    * org.java2uml.java2umlapi
+    ** org.java2uml.java2umlapi.aspects
+    ** org.java2uml.java2umlapi.callGraph
+    ** org.java2uml.java2umlapi.exceptions
+    ** org.java2uml.java2umlapi.fileStorage
+    *** org.java2uml.java2umlapi.fileStorage.entity
+    *** org.java2uml.java2umlapi.fileStorage.exceptions
+    *** org.java2uml.java2umlapi.fileStorage.repository
+    *** org.java2uml.java2umlapi.fileStorage.service
+    ** org.java2uml.java2umlapi.lightWeight
+    *** org.java2uml.java2umlapi.lightWeight.repository
+    *** org.java2uml.java2umlapi.lightWeight.service
+    ** org.java2uml.java2umlapi.modelAssemblers
+    ** org.java2uml.java2umlapi.parsedComponent
+    *** org.java2uml.java2umlapi.parsedComponent.service
+    ** org.java2uml.java2umlapi.parser
+    ** org.java2uml.java2umlapi.restControllers
+    *** org.java2uml.java2umlapi.restControllers.callGraphControllers
+    *** org.java2uml.java2umlapi.restControllers.error
+    *** org.java2uml.java2umlapi.restControllers.exceptionalHandlers
+    *** org.java2uml.java2umlapi.restControllers.exceptions
+    *** org.java2uml.java2umlapi.restControllers.LWControllers
+    ** org.java2uml.java2umlapi.util
+    *** org.java2uml.java2umlapi.util.umlSymbols
+    *** org.java2uml.java2umlapi.util.unzipper
+    ** org.java2uml.java2umlapi.visitors
+    *** org.java2uml.java2umlapi.visitors.lightWeightExtractor
+    *** org.java2uml.java2umlapi.visitors.umlExtractor
+@endmindmap
