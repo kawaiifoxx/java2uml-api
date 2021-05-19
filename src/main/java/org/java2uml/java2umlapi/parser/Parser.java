@@ -29,7 +29,7 @@ import java.util.List;
  *
  * @author kawaiifox.
  */
-public class Parser {
+public abstract class Parser {
     /**
      * <p>
      * resolves all reference types in given java source directory and returns a SourceComponent.
