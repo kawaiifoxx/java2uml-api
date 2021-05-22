@@ -1,0 +1,8 @@
+@startuml
+abstract Parser {
+    {static} + parse(PATH: Path): SourceComponent
+}
+
+note left: Parser class acts as a facade for \nJavaparser library and provides a\n simplified interface.
+note right of Parser: the Parser.parse method parses,\n java project at the given path and\n constructs SourceComponent which\n is a part of ParsedComponents Hierarchy.
+@enduml
