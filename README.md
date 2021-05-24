@@ -19,7 +19,17 @@ Yet another tool for generating and viewing UML diagrams.
 <br>✅ View call graphs for method calls.
 <br>✅ more features coming soon. 😉
 
-## Getting Started 🛫
+## How to Compile from source?
 
-Work in progress 👷
+To compile Java2UML you need JDK 11 and Maven
+```
+git clone https://github.com/kawaiifoxx/java2uml-api
+cd java2uml-api
+mvn compile
+```
+To generate jar files
+`mvn package`
+
+To test
+`mvn verify`
 
