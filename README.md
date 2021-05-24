@@ -28,8 +28,12 @@ cd java2uml-api
 mvn compile
 ```
 To generate jar files
-`mvn package`
+```
+mvn package
+```
 
 To test
-`mvn verify`
+```
+mvn verify
+```
 
