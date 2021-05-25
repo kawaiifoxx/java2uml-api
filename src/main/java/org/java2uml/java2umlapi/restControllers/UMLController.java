@@ -1,5 +1,12 @@
 package org.java2uml.java2umlapi.restControllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.SourceStringReader;
@@ -9,6 +16,7 @@ import org.java2uml.java2umlapi.lightWeight.UMLBody;
 import org.java2uml.java2umlapi.modelAssemblers.UMLBodyAssembler;
 import org.java2uml.java2umlapi.parsedComponent.SourceComponent;
 import org.java2uml.java2umlapi.parsedComponent.service.SourceComponentService;
+import org.java2uml.java2umlapi.restControllers.error.ErrorResponse;
 import org.java2uml.java2umlapi.restControllers.exceptions.CannotGenerateSVGException;
 import org.java2uml.java2umlapi.restControllers.exceptions.ParsedComponentNotFoundException;
 import org.java2uml.java2umlapi.restControllers.exceptions.ProjectInfoNotFoundException;
@@ -25,6 +33,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import static org.java2uml.java2umlapi.restControllers.SwaggerDescription.*;
+
 /**
  * <p>
  * This controller handles all the requests having path "/api/uml".<br>
@@ -33,6 +43,8 @@ import java.io.IOException;
  *
  * @author kawaiifox
  */
+@Tag(name = "Generate Class Diagrams", description = "generate plant uml code and plant uml class diagrams," +
+        " Note: pls upload the project files first then use any get requests.")
 @RestController
 @RequestMapping("/api/uml")
 public class UMLController {
@@ -60,8 +72,18 @@ public class UMLController {
      * @throws ProjectInfoNotFoundException     if {@link ProjectInfo} is not found.
      * @throws ParsedComponentNotFoundException if {@link SourceComponent} is not found.
      */
+    @Operation(summary = "generate plant uml code from uploaded java source code.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Generation Successful"),
+            @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR_DESC,
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = NOT_FOUND_DESC,
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+    })
     @GetMapping("/plant-uml-code/{projectInfoId}")
-    public EntityModel<UMLBody> getPUMLCode(@PathVariable Long projectInfoId) {
+    public EntityModel<UMLBody> getPUMLCode(
+            @Parameter(description = PROJECT_ID_DESC) @PathVariable Long projectInfoId
+    ) {
         var projectInfo = projectInfoRepository.findById(projectInfoId)
                 .orElseThrow(() -> new ProjectInfoNotFoundException("file with id " + projectInfoId +
                         "does not exist, please try uploading the given file again."));
@@ -82,10 +104,20 @@ public class UMLController {
      * @param projectInfoId id of the {@link ProjectInfo}
      * @return UML in form of SVG
      * @throws ParsedComponentNotFoundException if {@link SourceComponent} is not found.
-     * @throws CannotGenerateSVGException if Svg cannot be generated.
+     * @throws CannotGenerateSVGException       if Svg cannot be generated.
      */
     @GetMapping("/svg/{projectInfoId}")
-    public ResponseEntity<String> getSvg(@PathVariable Long projectInfoId) {
+    @Operation(summary = "generate plant uml class diagram svg from uploaded java source code.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Generation Successful"),
+            @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR_DESC,
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = NOT_FOUND_DESC,
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity<String> getSvg(
+            @Parameter(description = PROJECT_ID_DESC) @PathVariable Long projectInfoId
+    ) {
         var projectInfo = projectInfoRepository.findById(projectInfoId)
                 .orElseThrow(() -> new ProjectInfoNotFoundException("The information about file you were looking " +
                         "for is not present. please consider, uploading the given file again."));
