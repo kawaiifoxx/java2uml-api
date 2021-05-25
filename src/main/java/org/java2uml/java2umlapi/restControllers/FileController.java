@@ -9,11 +9,13 @@ import org.java2uml.java2umlapi.parsedComponent.service.SourceComponentService;
 import org.java2uml.java2umlapi.restControllers.exceptions.BadRequest;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.Objects;
 
 /**
  * <p>
@@ -52,10 +54,10 @@ public class FileController {
      * @throws HttpMediaTypeNotSupportedException if file format is not "application/zip".
      */
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping
-    public EntityModel<ProjectInfo> upload(@RequestParam("file") MultipartFile file)
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public EntityModel<ProjectInfo> upload(@RequestPart @RequestParam("file") MultipartFile file)
             throws HttpMediaTypeNotSupportedException {
-        if (file.getContentType() == null || !file.getContentType().contains("application/zip")) {
+        if (!Objects.requireNonNull(file.getContentType()).contains("zip")) {
             throw new HttpMediaTypeNotSupportedException("please upload file with zip format.");
         }
 
