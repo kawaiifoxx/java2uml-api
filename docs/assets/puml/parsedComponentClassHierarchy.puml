@@ -1,0 +1,56 @@
+@startuml
+title ParsedComponent Class Hierarchy
+interface ParsedComponent {
+    + getResolvedDeclaration(): Optional<ResolvedDeclaration>
+    + <T extends ParsedComponent> find(exactname: String, clazz: Class<T>): Optional<T>
+    + getParent(): Optional<ParsedComponent>
+    + getChildren(): Map<String, ParsedComponent>
+    + <T> accept(v: Visitor<T>): T
+    + getName(): String
+    + getPackageName(): String
+    + is[InsertAnySubtypeOfParsedComponentHere](): boolean
+    + as[InsertAnySubtypeOfParsedComponentHere](): Optional<? extends ParsedComponent>
+}
+
+note top of ParsedComponent: The ParsedComponent interface declares and provides\n default implementation for methods which are common\n to Complex Classes as well as leaf classes.
+note left of ParsedComponent: The ParsedComponent.find() method finds ParsedComponent in\n composite tree with passed name and class. Every element in\n the parsed component hierarchy has unique name.
+note left of ParsedComponent: The ParsedComponent.accept() method accepts a\n Visitor and returns whatever is returned by the visitor.\n This Method uses a technique called Double Dispatch.
+
+interface ParsedCompositeComponent {
+    + getName(): String
+    + isLeaf(): boolean
+    + asParsedCompositeComponent(): Optional<ParsedCompositeComponent>
+    + getPackageName(): String
+    + <T extends ParsedComponent> findInChildren(exactName: String, clazz: Class<T>):  Optional<T>
+}
+
+note top of ParsedCompositeComponent: ParsedCompositeComponent is implemented by all the composite components.\n It provides default implementation for useful methods such as findInChildren\n and other common methods.
+
+class SourceComponent {
+    - children: Map<String, ParsedComponent>
+    - externalComponents: Map<String, ParsedComponent>
+    - allParsedTypes: List<ResolvedDeclaration>
+    - allRelations: Set<TypeRelation>
+
+    + isSourceComponent(): boolean
+    + getPackageName(): String
+    + asSourceComponent(): Optional<SourceComponent>
+    + getAllParsedTypes(): List<ResolvedDeclaration>
+    + getParent(): Optional<ParsedComponent>
+    + getChildren(): Map<String, ParsedComponent>
+    + getName(): String
+}
+
+note top of SourceComponent: SourceComponent is root of composite tree.
+
+class ParsedClassOrInterfaceComponent {
+    - resolvedDeclaration: ResolvedDeclaration
+    - parent: ParsedComponent
+    - name: String
+    - packageName: String
+    - isClass: boolean
+    - children: Map<String, ParsedComponent>
+    --getter and setter for all fields--
+}
+
+@enduml
