@@ -1,0 +1,18 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="RunAllTests" type="JUnit" factoryName="JUnit">
+    <module name="java2uml-api" />
+    <extension name="coverage" sample_coverage="false">
+      <pattern>
+        <option name="PATTERN" value="org.java2uml.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <option name="MAIN_CLASS_NAME" value="" />
+    <option name="METHOD_NAME" value="" />
+    <option name="TEST_OBJECT" value="directory" />
+    <dir value="$PROJECT_DIR$/src/test/java" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
