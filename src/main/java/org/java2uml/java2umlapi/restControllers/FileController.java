@@ -24,6 +24,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.util.Objects;
 
+import static org.java2uml.java2umlapi.restControllers.SwaggerDescription.INTERNAL_SERVER_ERROR_DESC;
+
 /**
  * <p>
  * This file controller is main access point for interaction with the api.
@@ -64,7 +66,7 @@ public class FileController {
     @Operation(summary = "upload source file, to explore, generate UML diagrams and much more.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Upload Successful"),
-            @ApiResponse(responseCode = "500", description = "Something went wrong on our side. We will fix it promise!",
+            @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR_DESC,
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "415", description = "Please upload a zip file.",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
