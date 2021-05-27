@@ -1,4 +1,4 @@
-package org.java2uml.java2umlapi;
+package org.java2uml.java2umlapi.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
