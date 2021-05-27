@@ -32,7 +32,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  *
  * @author kawaiifox
  */
-@Tag(name = "Class Relation", description = "Get Relations b/w different classes.")
+@Tag(name = "Class Relation", description = "ClassRelation defines Relations b/w different classes.")
 @RestController
 @RequestMapping("/api/relation")
 public class ClassRelationController {
