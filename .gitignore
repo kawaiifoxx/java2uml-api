@@ -51,3 +51,5 @@ dependencies
 application
 snapshot-dependencies
 spring-boot-loader
+### HEROKU FILES ###
+/Drepos.m2/
