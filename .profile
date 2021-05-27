@@ -1,5 +1,8 @@
+#add universe repository.
+sudo add-apt-repository universe
+
 # update packages
-apt update
+sudo apt update
 
 # install graphviz
-apt install graphviz -y
+sudo apt install graphviz -y
