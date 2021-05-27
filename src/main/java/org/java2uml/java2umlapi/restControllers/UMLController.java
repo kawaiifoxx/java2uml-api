@@ -109,7 +109,6 @@ public class UMLController {
      * @throws ParsedComponentNotFoundException if {@link SourceComponent} is not found.
      * @throws CannotGenerateSVGException       if Svg cannot be generated.
      */
-    @GetMapping("/svg/{projectInfoId}")
     @Operation(summary = "Generate Class Diagram",
             description = "generate plant uml class diagram svg from uploaded java source code.")
     @ApiResponses(value = {
@@ -121,6 +120,7 @@ public class UMLController {
                     content = @Content(mediaType = ERR_RESPONSE_MEDIA_TYPE,
                             schema = @Schema(implementation = ErrorResponse.class)))
     })
+    @GetMapping(value = "/svg/{projectInfoId}", produces = {"image/svg+xml"})
     public ResponseEntity<String> getSvg(
             @Parameter(description = PROJECT_ID_DESC) @PathVariable Long projectInfoId
     ) {
