@@ -63,7 +63,8 @@ public class FileController {
      * @return ProjectInfo containing meta data and useful links.
      * @throws HttpMediaTypeNotSupportedException if file format is not "application/zip".
      */
-    @Operation(summary = "upload source file, to explore, generate UML diagrams and much more.")
+    @Operation(summary = "Upload Source",
+            description = "upload source file, to explore, generate UML diagrams and much more.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Upload Successful"),
             @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR_DESC,

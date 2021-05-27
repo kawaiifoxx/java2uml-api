@@ -72,12 +72,13 @@ public class UMLController {
      * @throws ProjectInfoNotFoundException     if {@link ProjectInfo} is not found.
      * @throws ParsedComponentNotFoundException if {@link SourceComponent} is not found.
      */
-    @Operation(summary = "generate plant uml code from uploaded java source code.")
+    @Operation(summary = "Generate Plant UML.",
+            description = "generate plant uml code from uploaded java source code.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Generation Successful"),
             @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR_DESC,
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404", description = NOT_FOUND_DESC,
+            @ApiResponse(responseCode = "404", description = SOURCE_CODE_NOT_FOUND_DESC,
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping("/plant-uml-code/{projectInfoId}")
@@ -107,12 +108,13 @@ public class UMLController {
      * @throws CannotGenerateSVGException       if Svg cannot be generated.
      */
     @GetMapping("/svg/{projectInfoId}")
-    @Operation(summary = "generate plant uml class diagram svg from uploaded java source code.")
+    @Operation(summary = "Generate Class Diagram",
+            description = "generate plant uml class diagram svg from uploaded java source code.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Generation Successful"),
             @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR_DESC,
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404", description = NOT_FOUND_DESC,
+            @ApiResponse(responseCode = "404", description = SOURCE_CODE_NOT_FOUND_DESC,
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
     public ResponseEntity<String> getSvg(
