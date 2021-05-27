@@ -1,0 +1,9 @@
+
+${AnsiColor.BRIGHT_YELLOW} _____                              ${AnsiColor.BRIGHT_MAGENTA}   ___   ${AnsiColor.BRIGHT_YELLOW} __  __           __
+${AnsiColor.BRIGHT_WHITE}/\___ \                             ${AnsiColor.BRIGHT_WHITE} /'___`\ ${AnsiColor.BRIGHT_WHITE}/\ \/\ \  /'\_/`\/\ \
+${AnsiColor.BRIGHT_YELLOW}\/__/\ \     __     __  __     __   ${AnsiColor.BRIGHT_MAGENTA}/\_\ /\ \${AnsiColor.BRIGHT_YELLOW}\ \ \ \ \/\      \ \ \
+${AnsiColor.BRIGHT_WHITE}   _\ \ \  /'__`\  /\ \/\ \  /'__`\ ${AnsiColor.BRIGHT_WHITE}\/_/// /__${AnsiColor.BRIGHT_WHITE}\ \ \ \ \ \ \__\ \ \ \  __
+${AnsiColor.BRIGHT_YELLOW}  /\ \_\ \/\ \L\.\_\ \ \_/ |/\ \L\.\_${AnsiColor.BRIGHT_MAGENTA}  // /_\ \${AnsiColor.BRIGHT_YELLOW}\ \ \_\ \ \ \_/\ \ \ \L\ \
+${AnsiColor.BRIGHT_WHITE}  \ \____/\ \__/.\_\\ \___/ \ \__/.\_\${AnsiColor.BRIGHT_WHITE}/\______/${AnsiColor.BRIGHT_WHITE} \ \_____\ \_\\ \_\ \____/
+${AnsiColor.BRIGHT_YELLOW}   \/___/  \/__/\/_/ \/__/   \/__/\/_/${AnsiColor.BRIGHT_MAGENTA}\/_____/ ${AnsiColor.BRIGHT_YELLOW}  \/_____/\/_/ \/_/\/___/
+                                         ${AnsiStyle.ITALIC}${AnsiColor.GREEN}  with Spring Boot${AnsiColor.MAGENTA}${spring-boot.formatted-version} ${Ansi.DEFAULT}

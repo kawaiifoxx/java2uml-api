@@ -1,0 +1,10 @@
+
+
+
+${AnsiColor.BRIGHT_YELLOW}             ██╗ █████╗ ██╗   ██╗ █████╗   ${AnsiColor.BRIGHT_MAGENTA}  ██████╗   ${AnsiColor.BRIGHT_YELLOW}  ██╗   ██╗███╗   ███╗██╗
+${AnsiColor.BRIGHT_WHITE}             ██║██╔══██╗██║   ██║██╔══██╗  ${AnsiColor.BRIGHT_WHITE}  ╚════██╗  ${AnsiColor.BRIGHT_WHITE}  ██║   ██║████╗ ████║██║
+${AnsiColor.BRIGHT_YELLOW}             ██║███████║██║   ██║███████║  ${AnsiColor.BRIGHT_MAGENTA}   █████╔╝  ${AnsiColor.BRIGHT_YELLOW}  ██║   ██║██╔████╔██║██║
+${AnsiColor.BRIGHT_WHITE}        ██   ██║██╔══██║╚██╗ ██╔╝██╔══██║  ${AnsiColor.BRIGHT_WHITE}  ██╔═══╝   ${AnsiColor.BRIGHT_WHITE}  ██║   ██║██║╚██╔╝██║██║
+${AnsiColor.BRIGHT_YELLOW}        ╚█████╔╝██║  ██║ ╚████╔╝ ██║  ██║  ${AnsiColor.BRIGHT_MAGENTA}  ███████╗  ${AnsiColor.BRIGHT_YELLOW}  ╚██████╔╝██║ ╚═╝ ██║███████╗
+${AnsiColor.BRIGHT_WHITE}         ╚════╝ ╚═╝  ╚═╝  ╚═══╝  ╚═╝  ╚═╝  ${AnsiColor.BRIGHT_WHITE}  ╚══════╝  ${AnsiColor.BRIGHT_WHITE}   ╚═════╝ ╚═╝     ╚═╝╚══════╝
+                                                          ${AnsiStyle.ITALIC}${AnsiColor.GREEN}  with Spring Boot${AnsiColor.MAGENTA}${spring-boot.formatted-version} ${Ansi.DEFAULT}
