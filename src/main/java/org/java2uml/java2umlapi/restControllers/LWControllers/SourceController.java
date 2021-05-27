@@ -74,7 +74,7 @@ public class SourceController {
     @Operation(summary = "Get Source", description = "get the source by source id.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = OK_200_RESPONSE),
-            @ApiResponse(responseCode = "404", description = "Source " + NOT_FOUND_404,
+            @ApiResponse(responseCode = "404", description = NOT_FOUND_404,
                     content = @Content(mediaType = ERR_RESPONSE_MEDIA_TYPE,
                             schema = @Schema(implementation = ErrorResponse.class))
             )
@@ -103,7 +103,7 @@ public class SourceController {
     @Operation(summary = "Get Source", description = "get the source by ProjectInfo id.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = OK_200_RESPONSE),
-            @ApiResponse(responseCode = "404", description = "ProjectInfo " + NOT_FOUND_404,
+            @ApiResponse(responseCode = "404", description = NOT_FOUND_404,
                     content = @Content(mediaType = ERR_RESPONSE_MEDIA_TYPE,
                             schema = @Schema(implementation = ErrorResponse.class))
             )

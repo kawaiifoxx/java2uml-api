@@ -64,8 +64,9 @@ public class ProjectInfoController {
     @Operation(summary = "Query a project.", description = "Query an existing project by providing its id.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = OK_200_RESPONSE),
-            @ApiResponse(responseCode = "404", description = "Project Info, " + NOT_FOUND_404,
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            @ApiResponse(responseCode = "404", description = NOT_FOUND_404,
+                    content = @Content(mediaType = ERR_RESPONSE_MEDIA_TYPE,
+                            schema = @Schema(implementation = ErrorResponse.class))
             )
     })
     @GetMapping("/{projectId}")
@@ -91,8 +92,9 @@ public class ProjectInfoController {
             @ApiResponse(responseCode = "204", description = DELETE_SUCCESS_204,
                     content = @Content(schema = @Schema)
             ),
-            @ApiResponse(responseCode = "404", description = "Project Info, " + NOT_FOUND_404,
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            @ApiResponse(responseCode = "404", description = NOT_FOUND_404,
+                    content = @Content(mediaType = ERR_RESPONSE_MEDIA_TYPE,
+                            schema = @Schema(implementation = ErrorResponse.class))
             )
     })
     @DeleteMapping("/{projectId}")

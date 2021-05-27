@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.util.Objects;
 
+import static org.java2uml.java2umlapi.restControllers.SwaggerDescription.ERR_RESPONSE_MEDIA_TYPE;
 import static org.java2uml.java2umlapi.restControllers.SwaggerDescription.INTERNAL_SERVER_ERROR_DESC;
 
 /**
@@ -68,7 +69,8 @@ public class FileController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Upload Successful"),
             @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR_DESC,
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+                    content = @Content(mediaType = ERR_RESPONSE_MEDIA_TYPE,
+                            schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "415", description = "Please upload a zip file.",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })

@@ -77,9 +77,11 @@ public class UMLController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Generation Successful"),
             @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR_DESC,
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+                    content = @Content(mediaType = ERR_RESPONSE_MEDIA_TYPE,
+                            schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = SOURCE_CODE_NOT_FOUND_DESC,
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+                    content = @Content(mediaType = ERR_RESPONSE_MEDIA_TYPE,
+                            schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping("/plant-uml-code/{projectInfoId}")
     public EntityModel<UMLBody> getPUMLCode(
@@ -113,9 +115,11 @@ public class UMLController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Generation Successful"),
             @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR_DESC,
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+                    content = @Content(mediaType = ERR_RESPONSE_MEDIA_TYPE,
+                            schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = SOURCE_CODE_NOT_FOUND_DESC,
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+                    content = @Content(mediaType = ERR_RESPONSE_MEDIA_TYPE,
+                            schema = @Schema(implementation = ErrorResponse.class)))
     })
     public ResponseEntity<String> getSvg(
             @Parameter(description = PROJECT_ID_DESC) @PathVariable Long projectInfoId
