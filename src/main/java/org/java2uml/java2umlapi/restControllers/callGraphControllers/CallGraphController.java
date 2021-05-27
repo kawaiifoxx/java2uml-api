@@ -1,6 +1,13 @@
 package org.java2uml.java2umlapi.restControllers.callGraphControllers;
 
 import com.github.javaparser.resolution.declarations.ResolvedMethodDeclaration;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.java2uml.java2umlapi.callGraph.CallGraphRelation;
 import org.java2uml.java2umlapi.callGraph.MethodCallGraph;
 import org.java2uml.java2umlapi.callGraph.MethodCallGraphImpl;
@@ -13,6 +20,7 @@ import org.java2uml.java2umlapi.parsedComponent.ParsedMethodComponent;
 import org.java2uml.java2umlapi.parsedComponent.SourceComponent;
 import org.java2uml.java2umlapi.parsedComponent.service.SourceComponentService;
 import org.java2uml.java2umlapi.restControllers.LWControllers.MethodController;
+import org.java2uml.java2umlapi.restControllers.error.ErrorResponse;
 import org.java2uml.java2umlapi.restControllers.exceptions.LightWeightNotFoundException;
 import org.java2uml.java2umlapi.restControllers.exceptions.MethodNameToMethodIdNotFoundException;
 import org.java2uml.java2umlapi.restControllers.exceptions.ParsedComponentNotFoundException;
@@ -23,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+import static org.java2uml.java2umlapi.restControllers.SwaggerDescription.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -33,6 +42,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  *
  * @author kawaiifox
  */
+@Tag(name = "Function Call Graph", description = "Generate a call graph of a method.")
 @RestController
 @RequestMapping("/api/call-graph")
 public class CallGraphController {
@@ -62,9 +72,18 @@ public class CallGraphController {
      * @param packageName name of the package to which you want to limit the call graph relations to.
      * @return {@link CollectionModel} of List of {@link CallGraphRelation}.
      */
+    @Operation(summary = "Get Call Graph",
+            description = "Generate a call graph for a given method " +
+                    "from method id and package name (is required to restrict search area)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = OK_200_RESPONSE),
+            @ApiResponse(responseCode = "404", description = "Method or Source " + NOT_FOUND_404,
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
     @GetMapping("/{methodId}")
     public CollectionModel<EntityModel<CallGraphRelation>> getCallGraph(
-            @PathVariable("methodId") Long methodId,
+            @Parameter(description = METHOD_ID_DESC) @PathVariable("methodId") Long methodId,
             @RequestParam(value = "package", required = false) String packageName
     ) {
         var method = getMethod(methodId);
@@ -133,7 +152,7 @@ public class CallGraphController {
      * @param source   {@link Source}
      * @return {@link SourceComponent}
      * @throws ParsedComponentNotFoundException if {@link SourceComponent} was not found
-     * for given {@link Method} id and {@link Source}.
+     *                                          for given {@link Method} id and {@link Source}.
      */
     private SourceComponent getSourceComponent(Long methodId, Source source) {
         var projectInfo = source.getProjectInfo();
