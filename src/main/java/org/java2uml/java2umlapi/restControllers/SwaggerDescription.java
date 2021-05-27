@@ -22,4 +22,5 @@ abstract public class SwaggerDescription {
     public static final String CONSTRUCTOR_ID_DESC = "id of constructor.";
     public static final String ENUM_CONST_ID_DESC = "id of enum constant.";
     public static final String ENUM_ID_DESC = "id of enum.";
+    public static final String FIELD_ID_DESC = "id of field.";
 }
