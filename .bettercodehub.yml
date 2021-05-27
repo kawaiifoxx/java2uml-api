@@ -1,0 +1,8 @@
+component_depth: 3
+default_excludes: true
+languages:
+  - name: java
+    production:
+      exclude:
+        - .*/restControllers/.*\.java
+
