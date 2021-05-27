@@ -1,6 +1,7 @@
 package org.java2uml.java2umlapi.restControllers;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -55,6 +56,7 @@ public class ProjectInfoController {
     /**
      * Defines a get mapping for "/api/project-info" endpoint, this method retrieves {@link ProjectInfo}
      * instances for provided id.
+     *
      * @param projectId id of the {@link ProjectInfo} that you want to retrieve.
      * @return {@link EntityModel<ProjectInfo>} with some useful links.
      * @throws ProjectInfoNotFoundException if {@link ProjectInfo} has not been found.
@@ -67,7 +69,8 @@ public class ProjectInfoController {
             )
     })
     @GetMapping("/{projectId}")
-    public EntityModel<ProjectInfo> one(@PathVariable("projectId") Long projectId) {
+    public EntityModel<ProjectInfo> one(
+            @Parameter(description = PROJECT_ID_DESC) @PathVariable("projectId") Long projectId) {
         return assembler.toModel(projectInfoRepository
                 .findById(projectId)
                 .orElseThrow(
@@ -79,6 +82,7 @@ public class ProjectInfoController {
     /**
      * Defines a delete mapping for "/api/project-info" endpoint, this method deletes the {@link ProjectInfo} instance
      * as well as files related to the project, sourceComponent, methodSignatureToMethodIdMap.
+     *
      * @param projectId id of the {@link ProjectInfo} you want to delete.
      * @return Http no content response.
      */

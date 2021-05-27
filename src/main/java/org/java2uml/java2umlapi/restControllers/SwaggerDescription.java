@@ -12,4 +12,5 @@ abstract public class SwaggerDescription {
     public static final String OK_200_RESPONSE = "Request was successful.";
     public static final String NOT_FOUND_404 = "Not found.";
     public static final String DELETE_SUCCESS_204 = "Delete Successful";
+    public static final String METHOD_ID_DESC = "id of method.";
 }
