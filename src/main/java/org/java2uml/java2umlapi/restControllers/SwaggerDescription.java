@@ -11,10 +11,12 @@ abstract public class SwaggerDescription {
     public static final String PROJECT_ID_DESC = "id of uploaded project.";
     public static final String OK_200_RESPONSE = "Request was successful.";
     public static final String NOT_FOUND_404 = "Not found.";
-    public static final String DELETE_SUCCESS_204 = "Delete Successful";
+    public static final String DELETE_SUCCESS_204 = "Delete Successful.";
     public static final String METHOD_ID_DESC = "id of method.";
-    public static final String ERR_RESPONSE_MEDIA_TYPE = "application/json";
-    public static final String SOURCE_ID_DESC = "id of Source";
-    public static final String CLASS_ID_DESC = "id of class or interface";
-    public static final String CLASS_REL_ID_DESC = "id of class relation";
+    public static final String ERR_RESPONSE_MEDIA_TYPE = "application/json.";
+    public static final String SOURCE_ID_DESC = "id of Source.";
+    public static final String CLASS_ID_DESC = "id of class or interface.";
+    public static final String CLASS_REL_ID_DESC = "id of class relation.";
+    public static final String BODY_ID_DESC = "id of body(code snippet).";
+    public static final String PARENT_ID_DESC = "id of parent.";
 }
