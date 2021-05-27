@@ -1,5 +1,12 @@
 package org.java2uml.java2umlapi.restControllers.LWControllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.java2uml.java2umlapi.fileStorage.entity.ProjectInfo;
 import org.java2uml.java2umlapi.fileStorage.repository.ProjectInfoRepository;
 import org.java2uml.java2umlapi.lightWeight.Source;
@@ -9,6 +16,7 @@ import org.java2uml.java2umlapi.lightWeight.service.MethodSignatureToMethodIdMap
 import org.java2uml.java2umlapi.modelAssemblers.SourceAssembler;
 import org.java2uml.java2umlapi.parsedComponent.SourceComponent;
 import org.java2uml.java2umlapi.parsedComponent.service.SourceComponentService;
+import org.java2uml.java2umlapi.restControllers.error.ErrorResponse;
 import org.java2uml.java2umlapi.restControllers.exceptions.CannotGenerateSourceException;
 import org.java2uml.java2umlapi.restControllers.exceptions.LightWeightNotFoundException;
 import org.java2uml.java2umlapi.restControllers.exceptions.ParsedComponentNotFoundException;
@@ -20,6 +28,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static org.java2uml.java2umlapi.restControllers.SwaggerDescription.*;
+
 /**
  * <p>
  * Rest Controller for {@link Source} entities.
@@ -27,6 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author kawaiifox.
  */
+@Tag(name = "Source", description = "Source represents source code of your project.")
 @RestController
 @RequestMapping("/api/source")
 public class SourceController {
@@ -60,8 +71,16 @@ public class SourceController {
      * @return {@link EntityModel} of {@link Source} with useful links.
      * @throws LightWeightNotFoundException if {@link Source} is not found.
      */
+    @Operation(summary = "Get Source", description = "get the source by source id.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = OK_200_RESPONSE),
+            @ApiResponse(responseCode = "404", description = NOT_FOUND_404,
+                    content = @Content(mediaType = ERR_RESPONSE_MEDIA_TYPE,
+                            schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
     @GetMapping("/{sourceId}")
-    public EntityModel<Source> one(@PathVariable("sourceId") Long sourceId) {
+    public EntityModel<Source> one(@Parameter(description = SOURCE_ID_DESC) @PathVariable("sourceId") Long sourceId) {
         return assembler.toModel(
                 sourceRepository.findById(sourceId)
                         .orElseThrow(
@@ -81,8 +100,17 @@ public class SourceController {
      * @throws CannotGenerateSourceException    if {@link Source} cannot be generated.
      * @throws ParsedComponentNotFoundException if {@link SourceComponent} is not found.
      */
+    @Operation(summary = "Get Source", description = "get the source by ProjectInfo id.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = OK_200_RESPONSE),
+            @ApiResponse(responseCode = "404", description = NOT_FOUND_404,
+                    content = @Content(mediaType = ERR_RESPONSE_MEDIA_TYPE,
+                            schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
     @GetMapping("/by-project-info/{projectInfoId}")
-    public EntityModel<Source> findByProjectId(@PathVariable("projectInfoId") Long projectInfoId) {
+    public EntityModel<Source> findByProjectId(
+            @Parameter(description = PROJECT_ID_DESC) @PathVariable("projectInfoId") Long projectInfoId) {
         var projectInfo = projectInfoRepository.findById(projectInfoId)
                 .orElseThrow(() -> new ProjectInfoNotFoundException("The information about file you were looking " +
                         "for is not present. please consider, uploading the given file again."));
