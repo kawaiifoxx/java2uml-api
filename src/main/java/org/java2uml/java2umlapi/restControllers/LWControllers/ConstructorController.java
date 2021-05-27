@@ -1,10 +1,19 @@
 package org.java2uml.java2umlapi.restControllers.LWControllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.java2uml.java2umlapi.lightWeight.Constructor;
 import org.java2uml.java2umlapi.lightWeight.LightWeight;
 import org.java2uml.java2umlapi.lightWeight.repository.ConstructorRepository;
 import org.java2uml.java2umlapi.lightWeight.repository.LightWeightRepository;
 import org.java2uml.java2umlapi.modelAssemblers.ConstructorAssembler;
+import org.java2uml.java2umlapi.restControllers.SwaggerDescription;
+import org.java2uml.java2umlapi.restControllers.error.ErrorResponse;
 import org.java2uml.java2umlapi.restControllers.exceptions.LightWeightNotFoundException;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -13,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static org.java2uml.java2umlapi.restControllers.SwaggerDescription.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -24,6 +34,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  * @author kawaiifox
  */
 @RestController
+@Tag(name = "Constructor", description = "represents constructor in a source code.")
 @RequestMapping("/api/constructor")
 public class ConstructorController {
 
@@ -48,8 +59,18 @@ public class ConstructorController {
      * @return Entity model of constructor with useful links.
      * @throws LightWeightNotFoundException if constructor is not found.
      */
+    @Operation(summary = "Get Constructor", description = "get constructor by id")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = OK_200_RESPONSE),
+            @ApiResponse(responseCode = "404", description = NOT_FOUND_404,
+                    content = @Content(mediaType = ERR_RESPONSE_MEDIA_TYPE,
+                            schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
     @GetMapping("/{constructorId}")
-    public EntityModel<Constructor> one(@PathVariable("constructorId") Long constructorId) {
+    public EntityModel<Constructor> one(
+            @Parameter(description = SwaggerDescription.CONSTRUCTOR_ID_DESC)
+            @PathVariable("constructorId") Long constructorId) {
         return assembler.toModel(
                 constructorRepository.findById(constructorId)
                         .orElseThrow(
@@ -67,8 +88,17 @@ public class ConstructorController {
      * @return Collection model of constructors with useful links.
      * @throws LightWeightNotFoundException if parent cannot be found.
      */
+    @Operation(summary = "Get Constructors", description = "get all constructors by parent id")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = OK_200_RESPONSE),
+            @ApiResponse(responseCode = "404", description = NOT_FOUND_404,
+                    content = @Content(mediaType = ERR_RESPONSE_MEDIA_TYPE,
+                            schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
     @GetMapping("/by-parent/{parentId}")
-    public CollectionModel<EntityModel<Constructor>> allByParent(@PathVariable("parentId") Long parentId) {
+    public CollectionModel<EntityModel<Constructor>> allByParent(@Parameter(name = PARENT_ID_DESC)
+                                                                 @PathVariable("parentId") Long parentId) {
         var parent = lightWeightRepository.findById(parentId)
                 .orElseThrow(() -> new LightWeightNotFoundException("Unable to fetch parent with id: " + parentId));
         return toCollectionModel(parent);

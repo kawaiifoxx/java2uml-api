@@ -45,3 +45,9 @@ tmp
 ### MISC ###
 # ignore logback.xml
 ./src/main/resources/logback.xml
+
+### DOCKER IMAGE RELATED FILES ###
+dependencies
+application
+snapshot-dependencies
+spring-boot-loader
