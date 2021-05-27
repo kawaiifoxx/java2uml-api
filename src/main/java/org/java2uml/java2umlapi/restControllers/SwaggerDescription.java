@@ -19,4 +19,5 @@ abstract public class SwaggerDescription {
     public static final String CLASS_REL_ID_DESC = "id of class relation.";
     public static final String BODY_ID_DESC = "id of body(code snippet).";
     public static final String PARENT_ID_DESC = "id of parent.";
+    public static final String CONSTRUCTOR_ID_DESC = "id of constructor.";
 }
