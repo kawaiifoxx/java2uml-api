@@ -1,8 +1,17 @@
+# Docker Hub CI
+# To trigger this action, do:
+# git tag -a vn.n.n
+# git push origin vn.n.n
+# vn.n.n is version
+
 name: Docker Image CI
 
 on:
   push:
     branches: [ main ]
+    tags:
+      - "v*.*.*"
+  
   pull_request:
     branches: [ main ]
 
