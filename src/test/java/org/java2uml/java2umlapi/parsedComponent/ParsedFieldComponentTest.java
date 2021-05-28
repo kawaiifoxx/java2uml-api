@@ -2,7 +2,6 @@ package org.java2uml.java2umlapi.parsedComponent;
 
 import com.github.javaparser.ast.AccessSpecifier;
 import com.github.javaparser.resolution.declarations.ResolvedFieldDeclaration;
-import com.github.javaparser.resolution.types.ResolvedPrimitiveType;
 import com.github.javaparser.resolution.types.ResolvedReferenceType;
 import com.github.javaparser.resolution.types.ResolvedType;
 import org.java2uml.java2umlapi.util.umlSymbols.VisibilityModifierSymbol;
@@ -110,20 +109,16 @@ class ParsedFieldComponentTest {
 
         private final String fieldName = "testField";
         private final String accessSpecifierStr = "private";
-        private final String primitiveTypeName = "INT";
+        private final String primitiveTypeName = "int";
         private final boolean isStatic = true;
 
         @BeforeEach
         void setUp() {
             doReturn(fieldName).when(resolvedFieldDeclaration).getName();
 
-            var resolvedPrimitiveType = mock(ResolvedPrimitiveType.class);
-            doReturn(primitiveTypeName).when(resolvedPrimitiveType).name();
-            doReturn(false).when(resolvedPrimitiveType).isArray();
-
             var resolvedType = mock(ResolvedType.class);
+            doReturn(primitiveTypeName).when(resolvedType).describe();
             doReturn(false).when(resolvedType).isReferenceType();
-            doReturn(resolvedPrimitiveType).when(resolvedType).asPrimitive();
 
             var accessSpecifier = mock(AccessSpecifier.class);
             doReturn(accessSpecifierStr).when(accessSpecifier).asString();
