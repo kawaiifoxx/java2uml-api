@@ -1,5 +1,6 @@
 package org.java2uml.java2umlapi.visitors.umlExtractor;
 
+import com.github.javaparser.resolution.UnsolvedSymbolException;
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedFieldDeclaration;
 import org.java2uml.java2umlapi.parsedComponent.ParsedClassOrInterfaceComponent;
@@ -124,14 +125,23 @@ public abstract class UMLExtractorUtilMethods {
     }
 
 
+    /**
+     * @param resolvedDeclaration {@link ResolvedDeclaration} from which type is extracted.
+     * @return The type of field.
+     */
     static String getClassOfField(ResolvedFieldDeclaration resolvedDeclaration) {
+        try {
+            resolvedDeclaration.getType();
+        } catch (UnsolvedSymbolException e) {
+            return e.getName();
+        }
+
         if (resolvedDeclaration.getType().isReferenceType()) {
             var list = resolvedDeclaration.getType().asReferenceType().getQualifiedName().split("\\.");
             return list[list.length - 1];
         }
 
-        return resolvedDeclaration.getType().asPrimitive().name()
-                + (resolvedDeclaration.getType().asPrimitive().isArray() ? "[]" : "");
+        return resolvedDeclaration.getType().describe();
     }
 
 }

@@ -26,7 +26,7 @@ public class UMLExtractor implements Visitor<String> {
      */
     @Override
     public String visit(SourceComponent sourceComponent) {
-        return StartEnd.START.toString()
+        return StartEnd.START
                 + "\n" + generateUMLClasses(sourceComponent.getChildren(),
                 sourceComponent.getExternalComponents(),
                 this)
@@ -88,7 +88,7 @@ public class UMLExtractor implements Visitor<String> {
         return VisibilityModifierSymbol.of(resolvedDeclaration.accessSpecifier().asString()) + " "
                 + UMLModifier.METHOD + " "
                 + (resolvedDeclaration.isStatic() ? UMLModifier.STATIC + " " : "")
-                + resolvedDeclaration.getSignature() + ": " + parsedMethodComponent.getReturnTypeName();
+                + parsedMethodComponent.getSignature() + ": " + parsedMethodComponent.getReturnTypeName();
     }
 
     /**
