@@ -32,7 +32,11 @@ class ParsedFieldComponentTest {
     void setUp() {
         assertNotNull(resolvedFieldDeclaration, "ResolvedFieldDeclaration is null.");
 
+        ResolvedType resolvableType = mock(ResolvedType.class);
+        doReturn("Type").when(resolvableType).describe();
+
         doReturn(fieldName).when(resolvedFieldDeclaration).getName();
+        doReturn(resolvableType).when(resolvedFieldDeclaration).getType();
 
         var parent = mock(ParsedComponent.class);
         doReturn(parentName).when(parent).getName();
