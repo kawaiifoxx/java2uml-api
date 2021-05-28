@@ -50,11 +50,7 @@ public class ParsedMethodComponent implements ParsedComponent {
             return qualifiedReturnType[qualifiedReturnType.length - 1];
         }
 
-        if (resolvedType.isArray()) {
-            return resolvedType.asArrayType().describe();
-        }
-
-        return resolvedType.asPrimitive().name().toLowerCase();
+        return resolvedType.describe();
     }
 
     @Override
@@ -76,10 +72,10 @@ public class ParsedMethodComponent implements ParsedComponent {
      * This returns the Optional<ResolvedMethodDeclaration>.
      *
      * <p>
-     *     <p>Why I did not just override the getResolvedDeclaration() method, overridden by all parsedComponents?</p>
+     * <p>Why I did not just override the getResolvedDeclaration() method, overridden by all parsedComponents?</p>
      * <code>
      * public Optional<ResolvedDeclaration> getResolvedDeclaration() {
-     *      return Optional.of(resolvedDeclaration);
+     * return Optional.of(resolvedDeclaration);
      * }
      * </code>
      * <p>
