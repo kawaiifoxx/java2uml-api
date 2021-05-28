@@ -1,8 +1,10 @@
 package org.java2uml.java2umlapi.parsedComponent;
 
+import com.github.javaparser.resolution.UnsolvedSymbolException;
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedMethodDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedParameterDeclaration;
+import com.github.javaparser.resolution.types.ResolvedType;
 import org.java2uml.java2umlapi.visitors.Visitor;
 
 import java.util.*;
@@ -24,6 +26,7 @@ public class SourceComponent implements ParsedCompositeComponent {
     private final Map<String, ParsedComponent> externalComponents;
     private final List<ResolvedDeclaration> allParsedTypes;
     private final Set<TypeRelation> allRelations;
+    private boolean isExternalDependenciesIncluded = true;
 
     /**
      * Initializes sourceComponent and generates tree and all the type relations.
@@ -197,7 +200,13 @@ public class SourceComponent implements ParsedCompositeComponent {
             }
 
             parameterList.forEach(parameter -> {
-                var typeOfParameter = parameter.getType();
+                ResolvedType typeOfParameter;
+                try {
+                    typeOfParameter = parameter.getType();
+                } catch (Exception e) {
+                    isExternalDependenciesIncluded = false;
+                    return;
+                }
 
                 if (typeOfParameter.isReferenceType()) {
                     var to = children
@@ -225,7 +234,14 @@ public class SourceComponent implements ParsedCompositeComponent {
         var aggregations = resolvedTypeDeclaration.asReferenceType().getDeclaredFields();
 
         aggregations.forEach(aggregation -> {
-            var declaringType = aggregation.getType();
+            ResolvedType declaringType;
+            try {
+                declaringType = aggregation.getType();
+            } catch (UnsolvedSymbolException e) {
+                isExternalDependenciesIncluded = false;
+                return;
+            }
+
             if (declaringType.isReferenceType()) {
                 var declaringReferenceType = declaringType.asReferenceType();
                 var to = children
@@ -336,6 +352,10 @@ public class SourceComponent implements ParsedCompositeComponent {
 
     public Set<TypeRelation> getAllRelations() {
         return allRelations;
+    }
+
+    public boolean isExternalDependenciesIncluded() {
+        return isExternalDependenciesIncluded;
     }
 
     @Override
