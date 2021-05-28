@@ -17,7 +17,7 @@ import java.util.Optional;
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EnumLW extends LightWeight {
-    @Column(columnDefinition = "varchar(500)")
+    @Column(columnDefinition = "varchar(1000)")
     private String name;
 
     @Column(columnDefinition = "varchar(500)")

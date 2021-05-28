@@ -17,14 +17,14 @@ import java.util.Optional;
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Method extends LightWeight {
-    @Column(columnDefinition = "varchar(500)")
+    @Column(columnDefinition = "varchar(1000)")
     private String name;
     @JsonIgnore
-    @Column(columnDefinition = "varchar(500)")
+    @Column(columnDefinition = "varchar(1000)")
     private String packageName;
     @Column(columnDefinition = "varchar(500)")
     private String returnType;
-    @Column(columnDefinition = "varchar(500)")
+    @Column(columnDefinition = "varchar(1000)")
     private String signature;
     @Column(columnDefinition = "varchar(10)")
     private String visibility;

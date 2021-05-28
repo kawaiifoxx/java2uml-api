@@ -21,7 +21,7 @@ import javax.persistence.ManyToOne;
 public class Param extends LightWeight {
     @Column(columnDefinition = "varchar(500)")
     private String typeName;
-    @Column(columnDefinition = "varchar(500)")
+    @Column(columnDefinition = "varchar(1000)")
     private String name;
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

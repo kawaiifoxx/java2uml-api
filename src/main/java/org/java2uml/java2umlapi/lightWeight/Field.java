@@ -21,7 +21,7 @@ import java.util.Optional;
 public class Field extends LightWeight {
     @Column(columnDefinition = "varchar(500)")
     private String typeName;
-    @Column(columnDefinition = "varchar(500)")
+    @Column(columnDefinition = "varchar(1000)")
     private String name;
     @Column(columnDefinition = "varchar(10)")
     private String visibility;

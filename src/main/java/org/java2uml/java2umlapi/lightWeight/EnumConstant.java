@@ -19,7 +19,7 @@ import java.util.Optional;
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EnumConstant extends LightWeight {
-    @Column(columnDefinition = "varchar(500)")
+    @Column(columnDefinition = "varchar(1000)")
     private String name;
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

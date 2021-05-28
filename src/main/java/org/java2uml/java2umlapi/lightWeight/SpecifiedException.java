@@ -3,6 +3,7 @@ package org.java2uml.java2umlapi.lightWeight;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -17,6 +18,7 @@ import javax.persistence.ManyToOne;
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SpecifiedException extends LightWeight {
+    @Column(columnDefinition = "varchar(1000)")
     private String name;
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

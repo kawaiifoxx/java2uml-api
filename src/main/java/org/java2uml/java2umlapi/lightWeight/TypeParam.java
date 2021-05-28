@@ -18,7 +18,7 @@ import javax.persistence.ManyToOne;
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TypeParam extends LightWeight {
-    @Column(columnDefinition = "varchar(500)")
+    @Column(columnDefinition = "varchar(1000)")
     private String name;
 
     @JsonIgnore

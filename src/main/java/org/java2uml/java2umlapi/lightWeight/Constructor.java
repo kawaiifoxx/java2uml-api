@@ -18,9 +18,9 @@ import java.util.Optional;
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Constructor extends LightWeight {
-    @Column(columnDefinition = "varchar(500)")
+    @Column(columnDefinition = "varchar(1000)")
     private String name;
-    @Column(columnDefinition = "varchar(500)")
+    @Column(columnDefinition = "varchar(1000)")
     private String signature;
     @Column(columnDefinition = "varchar(10)")
     private String visibility;
@@ -37,10 +37,6 @@ public class Constructor extends LightWeight {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private LightWeight parent;
-
-    @Id
-    @GeneratedValue
-    private Long id;
 
 
     protected Constructor() {
@@ -99,16 +95,8 @@ public class Constructor extends LightWeight {
         return constructorParameters;
     }
 
-    public Long getId() {
-        return id;
-    }
-
     public Body getBody() {
         return body;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setName(String name) {
