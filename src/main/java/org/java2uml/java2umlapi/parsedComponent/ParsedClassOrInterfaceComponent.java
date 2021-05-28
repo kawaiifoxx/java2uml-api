@@ -1,6 +1,8 @@
 package org.java2uml.java2umlapi.parsedComponent;
 
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.java2uml.java2umlapi.visitors.Visitor;
 
 import java.util.HashMap;
@@ -125,6 +127,29 @@ public class ParsedClassOrInterfaceComponent implements ParsedCompositeComponent
      */
     public boolean isClass() {
         return isClass;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (!(o instanceof ParsedClassOrInterfaceComponent)) return false;
+
+        ParsedClassOrInterfaceComponent that = (ParsedClassOrInterfaceComponent) o;
+
+        return new EqualsBuilder()
+                .append(isClass(), that.isClass())
+                .append(getParent(), that.getParent())
+                .append(getName(), that.getName())
+                .append(getPackageName(), that.getPackageName()).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(getName())
+                .append(getPackageName())
+                .append(isClass()).toHashCode();
     }
 
     @Override
