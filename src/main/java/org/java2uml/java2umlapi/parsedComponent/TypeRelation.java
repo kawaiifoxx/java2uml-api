@@ -1,6 +1,8 @@
 package org.java2uml.java2umlapi.parsedComponent;
 
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.java2uml.java2umlapi.util.umlSymbols.RelationsSymbol;
 import org.java2uml.java2umlapi.visitors.Visitor;
 
@@ -53,6 +55,29 @@ public class TypeRelation {
 
     public <T> T accept(Visitor<T> v) {
         return v.visit(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (!(o instanceof TypeRelation)) return false;
+
+        TypeRelation that = (TypeRelation) o;
+
+        return new EqualsBuilder()
+                .append(getFrom(), that.getFrom()).append(getTo(), that.getTo())
+                .append(getRelationsType(), that.getRelationsType())
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(getFrom())
+                .append(getTo())
+                .append(getRelationsType())
+                .toHashCode();
     }
 
     @Override
