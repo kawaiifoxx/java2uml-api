@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.java2uml.java2umlapi.lightWeight.Source;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * <p>
@@ -28,6 +29,8 @@ public class ProjectInfo {
     private Source source;
     private Long size;
     private String fileType;
+    @ElementCollection
+    private List<String> suggestions;
 
     protected ProjectInfo() {
     }
@@ -147,5 +150,19 @@ public class ProjectInfo {
      */
     public void setUnzippedFileName(String unzippedFileName) {
         this.unzippedFileName = unzippedFileName;
+    }
+
+    /**
+     * @return suggestions if any or null otherwise.
+     */
+    public List<String> getSuggestions() {
+        return suggestions;
+    }
+
+    /**
+     * @param suggestions setter for suggestions
+     */
+    public void setSuggestions(List<String> suggestions) {
+        this.suggestions = suggestions;
     }
 }
