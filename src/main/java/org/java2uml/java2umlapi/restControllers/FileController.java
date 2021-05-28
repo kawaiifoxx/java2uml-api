@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import static org.java2uml.java2umlapi.restControllers.SwaggerDescription.ERR_RESPONSE_MEDIA_TYPE;
@@ -97,6 +99,13 @@ public class FileController {
                             sourceComponentService.save(unzippedFile.toPath())
                     )
             );
+            var sourceComponent = sourceComponentService.get(projectInfo.getSourceComponentId())
+                    .orElse(null);
+            projectInfo.setSuggestions(
+                    sourceComponent != null && !sourceComponent.isExternalDependenciesIncluded() ?
+                            List.of("Please include external dependencies." +
+                                    " So, that java2uml can provide you with better results.")
+                            : Collections.emptyList());
         } catch (BadRequest e) {
             unzippedFileStorageService.delete(unzippedFile.getName());
             throw e;
