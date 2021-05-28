@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.java2uml.java2umlapi.fileStorage.ClassDiagramSVGService;
 import org.java2uml.java2umlapi.fileStorage.entity.ProjectInfo;
 import org.java2uml.java2umlapi.fileStorage.repository.ProjectInfoRepository;
 import org.java2uml.java2umlapi.fileStorage.service.UnzippedFileStorageService;
@@ -38,19 +39,21 @@ public class ProjectInfoController {
     private final UnzippedFileStorageService unzippedFileStorageService;
     private final SourceComponentService sourceComponentService;
     private final MethodSignatureToMethodIdMapService methodSignatureToMethodIdMapService;
+    private final ClassDiagramSVGService classDiagramSVGService;
 
     public ProjectInfoController(
             ProjectInfoRepository projectInfoRepository,
             ProjectInfoAssembler assembler,
             UnzippedFileStorageService unzippedFileStorageService,
             SourceComponentService sourceComponentService,
-            MethodSignatureToMethodIdMapService methodSignatureToMethodIdMapService
-    ) {
+            MethodSignatureToMethodIdMapService methodSignatureToMethodIdMapService,
+            ClassDiagramSVGService classDiagramSVGService) {
         this.projectInfoRepository = projectInfoRepository;
         this.assembler = assembler;
         this.unzippedFileStorageService = unzippedFileStorageService;
         this.sourceComponentService = sourceComponentService;
         this.methodSignatureToMethodIdMapService = methodSignatureToMethodIdMapService;
+        this.classDiagramSVGService = classDiagramSVGService;
     }
 
     /**
@@ -107,6 +110,7 @@ public class ProjectInfoController {
                 )
         );
 
+        classDiagramSVGService.delete(projectInfo.getId());
         sourceComponentService.delete(projectInfo.getSourceComponentId());
         unzippedFileStorageService.delete(projectInfo.getUnzippedFileName());
         methodSignatureToMethodIdMapService.delete(projectId);

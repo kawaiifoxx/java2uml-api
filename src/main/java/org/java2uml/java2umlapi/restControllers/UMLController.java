@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.SourceStringReader;
+import org.java2uml.java2umlapi.fileStorage.ClassDiagramSVGService;
 import org.java2uml.java2umlapi.fileStorage.entity.ProjectInfo;
 import org.java2uml.java2umlapi.fileStorage.repository.ProjectInfoRepository;
 import org.java2uml.java2umlapi.lightWeight.UMLBody;
@@ -51,15 +52,18 @@ public class UMLController {
     private final UMLBodyAssembler umlBodyAssembler;
     private final ProjectInfoRepository projectInfoRepository;
     private final SourceComponentService sourceComponentService;
+    private final ClassDiagramSVGService classDiagramSVGService;
 
     public UMLController(
             UMLBodyAssembler umlBodyAssembler,
             ProjectInfoRepository projectInfoRepository,
-            SourceComponentService sourceComponentService
+            SourceComponentService sourceComponentService,
+            ClassDiagramSVGService classDiagramSVGService
     ) {
         this.umlBodyAssembler = umlBodyAssembler;
         this.projectInfoRepository = projectInfoRepository;
         this.sourceComponentService = sourceComponentService;
+        this.classDiagramSVGService = classDiagramSVGService;
     }
 
 
@@ -122,8 +126,7 @@ public class UMLController {
     })
     @GetMapping(value = "/svg/{projectInfoId}", produces = {"image/svg+xml"})
     public ResponseEntity<String> getSvg(
-            @Parameter(description = PROJECT_ID_DESC) @PathVariable Long projectInfoId
-    ) {
+            @Parameter(description = PROJECT_ID_DESC) @PathVariable Long projectInfoId) {
         var projectInfo = projectInfoRepository.findById(projectInfoId)
                 .orElseThrow(() -> new ProjectInfoNotFoundException("The information about file you were looking " +
                         "for is not present. please consider, uploading the given file again."));
@@ -137,20 +140,25 @@ public class UMLController {
                 .header(
                         HttpHeaders.CONTENT_DISPOSITION,
                         "attachment;filename=\"" + getFileName(projectInfo) + "\""
-                ).body(generateSVG(sourceComponent.accept(new UMLExtractor())));
+                ).body(generateSVG(sourceComponent, projectInfoId));
     }
 
     /**
      * Generates svg from given plant uml code.
      *
-     * @param uml String of plant uml code.
+     * @param sourceComponent SourceComponent from which uml will be extracted.
+     * @param projectInfoId id of {@link ProjectInfo} to check if project info is present.
      * @return Generated svg
      * @throws CannotGenerateSVGException if svg cannot be generated.
      */
-    private String generateSVG(String uml) {
+    private String generateSVG(SourceComponent sourceComponent, Long projectInfoId) {
+        if (classDiagramSVGService.contains(projectInfoId)) {
+            return classDiagramSVGService.get(projectInfoId);
+        }
+
         final ByteArrayOutputStream os;
         try {
-            var reader = new SourceStringReader(uml);
+            var reader = new SourceStringReader(sourceComponent.accept(new UMLExtractor()));
             os = new ByteArrayOutputStream();
             //noinspection deprecation
             reader.generateImage(os, new FileFormatOption(FileFormat.SVG));
@@ -162,7 +170,7 @@ public class UMLController {
             );
         }
 
-        return os.toString();
+        return classDiagramSVGService.save(projectInfoId, os.toString());
     }
 
     /**
