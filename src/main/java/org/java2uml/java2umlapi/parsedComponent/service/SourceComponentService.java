@@ -7,9 +7,9 @@ import org.java2uml.java2umlapi.restControllers.exceptions.BadRequest;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Vector;
 
 /**
  * <p>
@@ -23,7 +23,7 @@ public class SourceComponentService {
     private final List<SourceComponent> sourceComponents;
 
     public SourceComponentService() {
-        this.sourceComponents = new ArrayList<>();
+        this.sourceComponents = new Vector<>();
     }
 
     /**
