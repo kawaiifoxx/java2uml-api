@@ -1,5 +1,6 @@
 package org.java2uml.java2umlapi.parsedComponent;
 
+import com.github.javaparser.resolution.UnsolvedSymbolException;
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedFieldDeclaration;
 import org.java2uml.java2umlapi.visitors.Visitor;
@@ -17,6 +18,7 @@ public class ParsedFieldComponent implements ParsedComponent {
     private final ParsedComponent parent;
     private final ResolvedFieldDeclaration resolvedDeclaration;
     private final String name;
+    private final String typeName;
 
     /**
      * Initializes ParsedFieldComponent.
@@ -29,6 +31,18 @@ public class ParsedFieldComponent implements ParsedComponent {
         this.parent = parent;
         this.resolvedDeclaration = resolvedDeclaration;
         this.name = parent.getName() + "." + resolvedDeclaration.getName();
+        this.typeName = produceTypeName();
+    }
+
+    /**
+     * @return try to get type name.
+     */
+    private String produceTypeName() {
+        try {
+            return resolvedDeclaration.getType().describe();
+        } catch (UnsolvedSymbolException e) {
+            return e.getName();
+        }
     }
 
     @Override
@@ -77,6 +91,13 @@ public class ParsedFieldComponent implements ParsedComponent {
     @Override
     public <T> T accept(Visitor<T> v) {
         return v.visit(this);
+    }
+
+    /**
+     * @return type name of the field.
+     */
+    public String getTypeName() {
+        return typeName;
     }
 
     @Override

@@ -231,7 +231,7 @@ public class LightWeightExtractor implements Visitor<LightWeight> {
     public LightWeight visit(ParsedFieldComponent parsedFieldComponent) {
         var resolvedDeclaration = parsedFieldComponent.getResolvedFieldDeclaration();
         return new Field(
-                resolvedDeclaration.getType().describe(),
+                parsedFieldComponent.getTypeName(),
                 resolvedDeclaration.getName(),
                 resolvedDeclaration.accessSpecifier().asString(),
                 resolvedDeclaration.isStatic()
