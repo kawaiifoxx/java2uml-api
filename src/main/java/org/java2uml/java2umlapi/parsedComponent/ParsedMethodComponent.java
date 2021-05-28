@@ -38,30 +38,47 @@ public class ParsedMethodComponent implements ParsedComponent {
         this.returnType = getReturnType();
     }
 
+    /**
+     * @return The qualified signature of the method. It is composed by the qualified name of the declaring type
+     * followed by the signature of the method.
+     */
     private String getQualifiedSignature() {
         String signature;
         try {
             signature = resolvedDeclaration.getQualifiedSignature();
         } catch (UnsolvedSymbolException e) {
+            return resolvedDeclaration.declaringType().getId() + "." + getSignature();
+        }
+
+        return signature;
+    }
+
+    /**
+     * @return Signature of the method
+     */
+    public String getSignature() {
+        try {
+            return resolvedDeclaration.getSignature();
+        } catch (UnsolvedSymbolException e) {
             var sigBuilder = new StringBuilder();
-            sigBuilder.append(resolvedDeclaration.declaringType().getName())
-                    .append('.')
-                    .append(resolvedDeclaration.getName())
+            sigBuilder.append(resolvedDeclaration.getName())
                     .append('(');
 
             for (int i = 0; i < resolvedDeclaration.getNumberOfParams(); i++) {
                 if (i != 0) {
                     sigBuilder.append(", ");
                 }
-                sigBuilder.append(getTypeName(i));
+                sigBuilder.append(getParamTypeName(i));
             }
             return sigBuilder.append(')').toString();
         }
-
-        return signature;
     }
 
-    private String getTypeName(int i) {
+    /**
+     * @param i index of method parameter you want to retrieve.
+     * @return Type name of the parameter at index i.
+     */
+    private String getParamTypeName(int i) {
         String typeName;
         try {
             typeName = resolvedDeclaration.getParam(i).getType().describe();
