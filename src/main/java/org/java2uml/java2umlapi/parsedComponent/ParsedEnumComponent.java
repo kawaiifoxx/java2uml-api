@@ -2,6 +2,8 @@ package org.java2uml.java2umlapi.parsedComponent;
 
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedEnumDeclaration;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.java2uml.java2umlapi.visitors.Visitor;
 
 import java.util.HashMap;
@@ -126,6 +128,28 @@ public class ParsedEnumComponent implements ParsedCompositeComponent {
     @Override
     public <T> T accept(Visitor<T> v) {
         return v.visit(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (!(o instanceof ParsedEnumComponent)) return false;
+
+        ParsedEnumComponent that = (ParsedEnumComponent) o;
+
+        return new EqualsBuilder()
+                .append(getName(), that.getName())
+                .append(getPackageName(), that.getPackageName())
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(getName())
+                .append(getPackageName())
+                .toHashCode();
     }
 
     @Override
