@@ -48,7 +48,7 @@ Java2UML api is very intutive and easy to use, if you want to generate class dia
 2. Upload a .zip file containing your java source code. If you have any external dependencies, please include them as well. For example, if you are using maven as your build        system then to download all the dependencies just use  `mvn dependency:copy-dependencies` and then maven will download all the dependencies in target folder.
    <br>
    ![FileUpload](./docs/assets/GettingStarted_SS/file_upload.png)
-3. Now, navigate to File Upload section in api docs, there click on <kbd>try it out</kbd> and then click on <kbd>Choose File</kbd> and upload your zip file.
+3. Now, navigate to File Upload section in api docs, click on <kbd>try it out</kbd> and then click on <kbd>Choose File</kbd> and upload your zip file.
    <br>
    ![FileUpload](./docs/assets/GettingStarted_SS/file_upload_2.png)
 4. After the file has been uploaded you should get a response where you can find a link to generate class diagrams, the link should look like this `api/uml/svg/{projectInfoId}`.
