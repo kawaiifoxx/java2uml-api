@@ -61,7 +61,7 @@ Java2UML api is very intutive and easy to use, if you want to generate class dia
    ![Class Diagram](./docs/assets/GettingStarted_SS/generate_uml-diagram_response.png)
 
    
-The Downloaded file should have class diagrams. Below is a class diagram generated for java2uml project. take a look.
+The Downloaded [file](./docs/assets/GettingStarted_SS/java2uml-api.svg) should have class diagrams. Below is a class diagram generated for java2uml project. take a look.
 <br>
 ![Class Diagram](./docs/assets/GettingStarted_SS/java2uml_cd.gif)
 <br>
