@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.java2uml.java2umlapi.executor.ExecutorWrapper;
 import org.java2uml.java2umlapi.fileStorage.entity.ProjectInfo;
 import org.java2uml.java2umlapi.fileStorage.repository.ProjectInfoRepository;
 import org.java2uml.java2umlapi.fileStorage.service.FileStorageService;
@@ -14,6 +15,8 @@ import org.java2uml.java2umlapi.modelAssemblers.ProjectInfoAssembler;
 import org.java2uml.java2umlapi.parsedComponent.service.SourceComponentService;
 import org.java2uml.java2umlapi.restControllers.error.ErrorResponse;
 import org.java2uml.java2umlapi.restControllers.exceptions.BadRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,10 +24,10 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import static org.java2uml.java2umlapi.restControllers.SwaggerDescription.ERR_RESPONSE_MEDIA_TYPE;
 import static org.java2uml.java2umlapi.restControllers.SwaggerDescription.INTERNAL_SERVER_ERROR_DESC;
@@ -46,17 +49,21 @@ public class FileController {
     private final ProjectInfoRepository projectInfoRepository;
     private final UnzippedFileStorageService unzippedFileStorageService;
     private final SourceComponentService sourceComponentService;
+    private final ExecutorWrapper executor;
+    private final Logger logger = LoggerFactory.getLogger(FileController.class);
 
     public FileController(FileStorageService fileStorageService,
                           ProjectInfoAssembler assembler,
                           ProjectInfoRepository projectInfoRepository,
                           UnzippedFileStorageService unzippedFileStorageService,
-                          SourceComponentService sourceComponentService) {
+                          SourceComponentService sourceComponentService,
+                          ExecutorWrapper executor) {
         this.fileStorageService = fileStorageService;
         this.assembler = assembler;
         this.projectInfoRepository = projectInfoRepository;
         this.unzippedFileStorageService = unzippedFileStorageService;
         this.sourceComponentService = sourceComponentService;
+        this.executor = executor;
     }
 
     /**
@@ -65,6 +72,7 @@ public class FileController {
      * @param file Multipart file should be a zip file.
      * @return ProjectInfo containing meta data and useful links.
      * @throws HttpMediaTypeNotSupportedException if file format is not "application/zip".
+     * @throws InterruptedException               if {@link ExecutorWrapper} is interrupted.
      */
     @Operation(summary = "Upload Source",
             description = "upload source file, to explore, generate UML diagrams and much more.")
@@ -79,36 +87,34 @@ public class FileController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public EntityModel<ProjectInfo> upload(@RequestPart @RequestParam("file") MultipartFile file)
-            throws HttpMediaTypeNotSupportedException {
+            throws HttpMediaTypeNotSupportedException, InterruptedException {
         if (!Objects.requireNonNull(file.getContentType()).contains("zip")) {
             throw new HttpMediaTypeNotSupportedException("please upload file with zip format.");
         }
 
         String fileName = fileStorageService.store(file);
-        File unzippedFile = unzippedFileStorageService.unzipAndStore(fileName);
-        fileStorageService.delete(fileName);
+        ProjectInfo projectInfo = projectInfoRepository
+                .save(new ProjectInfo(fileName, file.getSize(), file.getContentType()));
 
-        ProjectInfo projectInfo;
+        var future = executor.submit(() -> {
+            var unzippedFile = unzippedFileStorageService.unzipAndStore(projectInfo.getId(), fileName);
+            fileStorageService.delete(fileName);
+            sourceComponentService.save(projectInfo.getId(), unzippedFile.toPath());
+        });
+
         try {
-            projectInfo = projectInfoRepository.save(
-                    new ProjectInfo(
-                            unzippedFile.getName(),
-                            fileName,
-                            file.getSize(),
-                            file.getContentType(),
-                            sourceComponentService.save(unzippedFile.toPath())
-                    )
-            );
-            var sourceComponent = sourceComponentService.get(projectInfo.getSourceComponentId())
-                    .orElse(null);
-            projectInfo.setSuggestions(
-                    sourceComponent != null && !sourceComponent.isExternalDependenciesIncluded() ?
-                            List.of("Please include external dependencies." +
-                                    " So, that java2uml can provide you with better results.")
-                            : Collections.emptyList());
-        } catch (BadRequest e) {
-            unzippedFileStorageService.delete(unzippedFile.getName());
+            future.get(5, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            logger.warn("ExecutorWrapper's thread was interrupted while parsing project.");
             throw e;
+        } catch (ExecutionException e) {
+            if (e.getCause() instanceof BadRequest) {
+                unzippedFileStorageService.delete(projectInfo.getId());
+                throw (BadRequest) e.getCause();
+            }
+            logger.warn("an unidentified exception occurred ", e);
+        } catch (TimeoutException ignored) {
+            logger.info("Time Out occurred, proceeding with task at hand.");
         }
 
         return assembler.toModel(projectInfo);
