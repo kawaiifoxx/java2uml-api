@@ -22,6 +22,14 @@ public abstract class LightWeight {
     }
 
     /**
+     * @param parent to of this {@link LightWeight}
+     */
+    public void setParent(LightWeight parent) {
+        throw new UnsupportedOperationException("This lightweight does not have a parent.");
+    }
+
+
+    /**
      * @return parent of this lightWeight.
      */
     @JsonIgnore
