@@ -21,10 +21,6 @@ public class ProjectInfo {
     private Long id;
     private String projectName;
     @JsonIgnore
-    private String unzippedFileName;
-    @JsonIgnore
-    private Integer sourceComponentId;
-    @JsonIgnore
     @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     private Source source;
     private Long size;
@@ -35,21 +31,15 @@ public class ProjectInfo {
     protected ProjectInfo() {
     }
 
-    public ProjectInfo(
-            String unzippedFileName,
-            String projectName,
-            Long size, String fileType,
-            Integer sourceComponentId
-    ) {
-        this.unzippedFileName = unzippedFileName;
+    public ProjectInfo(String projectName, Long size, String fileType) {
         this.projectName = projectName;
         this.size = size;
         this.fileType = fileType;
-        this.sourceComponentId = sourceComponentId;
     }
 
     /**
      * Setter for project info id.
+     *
      * @param id id of the project info.
      */
     public void setId(Long id) {
@@ -72,25 +62,11 @@ public class ProjectInfo {
 
     /**
      * Setter for name of the project.
+     *
      * @param projectName name of the project.
      */
     public void setProjectName(String projectName) {
         this.projectName = projectName;
-    }
-
-    /**
-     * @return source component id.
-     */
-    public Integer getSourceComponentId() {
-        return sourceComponentId;
-    }
-
-    /**
-     * setter for source component id.
-     * @param sourceComponentId source component id.
-     */
-    public void setSourceComponentId(Integer sourceComponentId) {
-        this.sourceComponentId = sourceComponentId;
     }
 
     /**
@@ -102,6 +78,7 @@ public class ProjectInfo {
 
     /**
      * Setter for source
+     *
      * @param source source
      */
     public void setSource(Source source) {
@@ -117,6 +94,7 @@ public class ProjectInfo {
 
     /**
      * Setter for file size.
+     *
      * @param size file size.
      */
     public void setSize(Long size) {
@@ -132,24 +110,11 @@ public class ProjectInfo {
 
     /**
      * setter for file type
+     *
      * @param fileType type of file.
      */
     public void setFileType(String fileType) {
         this.fileType = fileType;
-    }
-
-    /**
-     * @return unzipped file name which has unique uuid.
-     */
-    public String getUnzippedFileName() {
-        return unzippedFileName;
-    }
-
-    /**
-     * @param unzippedFileName setter for unzipped file name.
-     */
-    public void setUnzippedFileName(String unzippedFileName) {
-        this.unzippedFileName = unzippedFileName;
     }
 
     /**
