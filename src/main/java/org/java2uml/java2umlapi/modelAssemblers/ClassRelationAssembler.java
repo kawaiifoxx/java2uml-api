@@ -3,6 +3,7 @@ package org.java2uml.java2umlapi.modelAssemblers;
 import org.java2uml.java2umlapi.lightWeight.ClassRelation;
 import org.java2uml.java2umlapi.restControllers.LWControllers.ClassOrInterfaceController;
 import org.java2uml.java2umlapi.restControllers.LWControllers.ClassRelationController;
+import org.java2uml.java2umlapi.restControllers.LWControllers.EnumLWController;
 import org.java2uml.java2umlapi.restControllers.LWControllers.SourceController;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -66,10 +67,19 @@ public class ClassRelationAssembler implements RepresentationModelAssembler<Clas
             entityModel.add(
                     linkTo(methodOn(ClassOrInterfaceController.class).one(entity.getFrom().getId())).withRel("from")
             );
+        } else if (entity.getFrom().asEnumLW().isPresent()) {
+            entityModel.add(
+                    linkTo(methodOn(EnumLWController.class).one(entity.getFrom().getId())).withRel("from")
+            );
         }
+
         if (entity.getTo().asClassOrInterface().isPresent()) {
             entityModel.add(
                     linkTo(methodOn(ClassOrInterfaceController.class).one(entity.getTo().getId())).withRel("to")
+            );
+        } else if (entity.getTo().asEnumLW().isPresent()) {
+            entityModel.add(
+                    linkTo(methodOn(EnumLWController.class).one(entity.getTo().getId())).withRel("to")
             );
         }
     }
