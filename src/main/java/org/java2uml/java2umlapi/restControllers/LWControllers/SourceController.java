@@ -168,7 +168,7 @@ public class SourceController {
      * @throws ParsedComponentNotFoundException if {@link SourceComponent} is not found.
      */
     private SourceComponent getSourceComponent(ProjectInfo projectInfo) {
-        return sourceComponentService.get(projectInfo.getSourceComponentId())
+        return sourceComponentService.get(projectInfo.getId())
                 .orElseThrow(() -> new ParsedComponentNotFoundException("Unable to fetch source component," +
                         " uploading files again should fix this."));
     }

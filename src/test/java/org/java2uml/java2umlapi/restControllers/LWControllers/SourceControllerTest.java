@@ -117,7 +117,7 @@ class SourceControllerTest {
     @Test
     @DisplayName("given that source component is not present, respond with 500 internal server error.")
     void whenSourceComponentIsNotPresent_thenShouldRespondWith500InternalServerError() throws Exception {
-        sourceComponentService.delete(projectInfo.getSourceComponentId());
+        sourceComponentService.delete(projectInfo.getId());
 
         assertThatOnPerformingGetProvidedExceptionIsThrown(
                 mvc, sourceURIByProjectInfo, ParsedComponentNotFoundException.class

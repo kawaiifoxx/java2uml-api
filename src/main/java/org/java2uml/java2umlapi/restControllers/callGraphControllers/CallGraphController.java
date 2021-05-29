@@ -156,7 +156,7 @@ public class CallGraphController {
      */
     private SourceComponent getSourceComponent(Long methodId, Source source) {
         var projectInfo = source.getProjectInfo();
-        return sourceComponentService.get(projectInfo.getSourceComponentId())
+        return sourceComponentService.get(projectInfo.getId())
                 .orElseThrow(() -> new ParsedComponentNotFoundException(
                         "Unable to fetch source component for method id: " + methodId));
     }

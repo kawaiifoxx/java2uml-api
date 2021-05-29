@@ -118,7 +118,7 @@ class ProjectInfoControllerTest {
      * @param projectInfo {@link ProjectInfo} from which unzipped file name will be fetched.
      */
     private void assertThatUnzippedFileIsDeleted(ProjectInfo projectInfo) {
-        assertThatThrownBy(() -> fileStorageService.find(projectInfo.getUnzippedFileName()))
+        assertThatThrownBy(() -> fileStorageService.find(projectInfo.getId()))
                 .describedAs("Unzipped file should be deleted")
                 .isInstanceOf(MyFileNotFoundException.class);
     }
@@ -129,7 +129,7 @@ class ProjectInfoControllerTest {
      * @param projectInfo {@link ProjectInfo} from which {@link SourceComponent} id is fetched.
      */
     private void assertThatSourceComponentIsNotPresent(ProjectInfo projectInfo) {
-        sourceComponentService.get(projectInfo.getSourceComponentId()).
+        sourceComponentService.get(projectInfo.getId()).
                 ifPresent(sourceComponent -> fail("Source Component should have been deleted."));
     }
 

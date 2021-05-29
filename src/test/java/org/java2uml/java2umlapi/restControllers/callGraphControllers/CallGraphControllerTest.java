@@ -94,7 +94,7 @@ class CallGraphControllerTest {
     @Test
     @DisplayName("when source component is not present then should get 500 internal server error")
     void whenSourceComponentIsNotPresent_thenReturn500InternalServerError() throws Exception {
-        sourceComponentService.delete(projectInfo.getSourceComponentId());
+        sourceComponentService.delete(projectInfo.getId());
         Exception e = getException(status().isInternalServerError());
         assertThat(e).isInstanceOf(ParsedComponentNotFoundException.class);
     }

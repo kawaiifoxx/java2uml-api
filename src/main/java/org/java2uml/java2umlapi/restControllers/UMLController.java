@@ -95,7 +95,7 @@ public class UMLController {
                 .orElseThrow(() -> new ProjectInfoNotFoundException("file with id " + projectInfoId +
                         "does not exist, please try uploading the given file again."));
 
-        var sourceComponent = sourceComponentService.get(projectInfo.getSourceComponentId()).
+        var sourceComponent = sourceComponentService.get(projectInfo.getId()).
                 orElseThrow(
                         () -> new ParsedComponentNotFoundException("Please, upload your file again.")
                 );
@@ -131,7 +131,7 @@ public class UMLController {
                 .orElseThrow(() -> new ProjectInfoNotFoundException("The information about file you were looking " +
                         "for is not present. please consider, uploading the given file again."));
 
-        var sourceComponent = sourceComponentService.get(projectInfo.getSourceComponentId()).
+        var sourceComponent = sourceComponentService.get(projectInfo.getId()).
                 orElseThrow(
                         () -> new ParsedComponentNotFoundException("Please, upload your file again.")
                 );

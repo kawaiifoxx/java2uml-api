@@ -126,7 +126,7 @@ class UMLControllerTest {
         String requestURI = JsonPath.read(parsedJson, s);
 
         ProjectInfo projectInfo = getEntityFromJson(parsedJson, projectInfoRepository);
-        sourceComponentService.delete(projectInfo.getSourceComponentId());
+        sourceComponentService.delete(projectInfo.getId());
 
         var e = mvc.perform(get(requestURI))
                 .andDo(print())

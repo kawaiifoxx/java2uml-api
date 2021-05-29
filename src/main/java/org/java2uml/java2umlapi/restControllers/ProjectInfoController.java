@@ -111,8 +111,8 @@ public class ProjectInfoController {
         );
 
         classDiagramSVGService.delete(projectInfo.getId());
-        sourceComponentService.delete(projectInfo.getSourceComponentId());
-        unzippedFileStorageService.delete(projectInfo.getUnzippedFileName());
+        sourceComponentService.delete(projectInfo.getId());
+        unzippedFileStorageService.delete(projectInfo.getId());
         methodSignatureToMethodIdMapService.delete(projectId);
         projectInfoRepository.delete(projectInfo);
         return null;
