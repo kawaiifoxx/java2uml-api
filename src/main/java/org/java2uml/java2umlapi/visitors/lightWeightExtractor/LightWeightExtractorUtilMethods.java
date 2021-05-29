@@ -1,11 +1,11 @@
 package org.java2uml.java2umlapi.visitors.lightWeightExtractor;
 
+import com.github.javaparser.resolution.UnsolvedSymbolException;
 import com.github.javaparser.resolution.declarations.*;
 import com.github.javaparser.resolution.types.ResolvedType;
 import org.java2uml.java2umlapi.lightWeight.*;
 import org.java2uml.java2umlapi.parsedComponent.ParsedClassOrInterfaceComponent;
 import org.java2uml.java2umlapi.parsedComponent.ParsedComponent;
-import org.java2uml.java2umlapi.parsedComponent.ParsedCompositeComponent;
 import org.java2uml.java2umlapi.parsedComponent.TypeRelation;
 
 import java.util.*;
@@ -23,14 +23,12 @@ public abstract class LightWeightExtractorUtilMethods {
     /**
      * Generates list of ClassRelation from set of typeRelation.
      *
-     * @param classOrInterfaceMap         map of classOrInterfaceMap.
-     * @param externalClassOrInterfaceMap map of externalClassOrInterfaceMap.
+     * @param lightWeightMap              map of lightWeightMap.
      * @param typeRelations               Set of relations b/w these class/interface.
      * @return list of ClassRelation.
      */
     static List<ClassRelation> getClassRelations(
-            Map<String, ClassOrInterface> classOrInterfaceMap,
-            Map<String, ClassOrInterface> externalClassOrInterfaceMap,
+            Map<String, LightWeight> lightWeightMap,
             Set<TypeRelation> typeRelations,
             Source source
     ) {
@@ -38,39 +36,17 @@ public abstract class LightWeightExtractorUtilMethods {
                 .stream()
                 .map(typeRelation -> {
                     var from = typeRelation.getFrom();
-                    ClassOrInterface fromLW = getClassOrInterface(classOrInterfaceMap, externalClassOrInterfaceMap, from);
-
                     var to = typeRelation.getTo();
-                    ClassOrInterface toLW = getClassOrInterface(classOrInterfaceMap, externalClassOrInterfaceMap, to);
-
-                    return new ClassRelation(fromLW, toLW, typeRelation.getRelationsSymbol(), source);
+                    return new ClassRelation(
+                            lightWeightMap.get(from.getName()),
+                            lightWeightMap.get(to.getName()),
+                            typeRelation.getRelationsSymbol(), source);
                 }).collect(Collectors.toList());
     }
 
     /**
-     * Fetches {@link ClassOrInterface} from provided maps.
-     * @param classOrInterfaceMap a {@link Map} of {@link ClassOrInterface} name to {@link ClassOrInterface}
-     * @param externalClassOrInterfaceMap a {@link Map} of {@link ClassOrInterface} name to {@link ClassOrInterface}
-     * @param pcc {@link ParsedCompositeComponent} from which name will be fetched.
-     * @return {@link ClassOrInterface} or <b>null</b> if ClassOrInterface not present in provided maps.
-     */
-    private static ClassOrInterface getClassOrInterface(
-            Map<String, ClassOrInterface> classOrInterfaceMap,
-            Map<String, ClassOrInterface> externalClassOrInterfaceMap,
-            ParsedCompositeComponent pcc
-    ) {
-        ClassOrInterface classOrInterface;
-        if (classOrInterfaceMap.containsKey(pcc.getName())) {
-            classOrInterface = classOrInterfaceMap.get(pcc.getName());
-        } else {
-            classOrInterface = externalClassOrInterfaceMap.get(pcc.getName());
-        }
-        return classOrInterface;
-    }
-
-    /**
      * @param children children of sourceComponent may contain ParsedClassOrInterfaceComponent, ParsedEnumComponent
-     * @param parent parent to be injected into all enumLWs.
+     * @param parent   parent to be injected into all enumLWs.
      * @return list of enumLW from children.
      */
     static List<EnumLW> getEnumLWList(
@@ -91,10 +67,10 @@ public abstract class LightWeightExtractorUtilMethods {
 
     /**
      * @param externalComponent map of external components containing classes out of project scope.
-     * @param parent parent to be injected into all external classes.
+     * @param parent            parent to be injected into all external classes.
      * @return Map of ClassOrInterface.
      */
-    static Map<String, ClassOrInterface> getExternalClassOrInterfaceList(
+    static List<ClassOrInterface> getExternalClassOrInterfaceList(
             Map<String, ParsedComponent> externalComponent,
             LightWeightExtractor lightWeightExtractor,
             Source parent
@@ -107,17 +83,15 @@ public abstract class LightWeightExtractorUtilMethods {
                 .map(parsedExternalComponent -> parsedExternalComponent.accept(lightWeightExtractor))
                 .map(LightWeight::asClassOrInterface)
                 .map(Optional::get)
-                .collect(Collectors.toMap(ClassOrInterface::getName, classOrInterface -> {
-                    classOrInterface.setParent(parent);
-                    return classOrInterface;
-                }));
+                .peek(classOrInterface -> classOrInterface.setParent(parent))
+                .collect(Collectors.toList());
     }
 
     /**
      * @param children map of classes/interfaces in project scope.
-     * @return Map of ClassOrInterface
+     * @return List of ClassOrInterface
      */
-    static Map<String, ClassOrInterface> getClassOrInterface(
+    static List<ClassOrInterface> getClassOrInterface(
             Map<String, ParsedComponent> children,
             LightWeightExtractor lightWeightExtractor,
             Source source
@@ -131,15 +105,13 @@ public abstract class LightWeightExtractorUtilMethods {
                 .map(parsedClassOrInterfaceComponent -> parsedClassOrInterfaceComponent.accept(lightWeightExtractor))
                 .map(LightWeight::asClassOrInterface)
                 .map(Optional::get)
-                .collect(Collectors.toMap(ClassOrInterface::getName, classOrInterface -> {
-                    classOrInterface.setParent(source);
-                    return classOrInterface;
-                }));
+                .peek(classOrInterface -> classOrInterface.setParent(source))
+                .collect(Collectors.toList());
     }
 
     /**
      * @param parsedClassOrInterfaceComponent component of which you want body of.
-     * @param parent parent to injected into the body.
+     * @param parent                          parent to injected into the body.
      * @return body of component.
      */
     static Body getBody(ParsedClassOrInterfaceComponent parsedClassOrInterfaceComponent, LightWeight parent) {
@@ -155,7 +127,7 @@ public abstract class LightWeightExtractorUtilMethods {
 
     /**
      * @param resolvedDeclaration ResolvedConstructorDeclaration of which you want body of.
-     * @param parent parent to be injected in body.
+     * @param parent              parent to be injected in body.
      * @return body of parent.
      */
     static Body getBody(ResolvedConstructorDeclaration resolvedDeclaration, Constructor parent) {
@@ -192,7 +164,7 @@ public abstract class LightWeightExtractorUtilMethods {
 
     /**
      * @param parsedClassOrInterfaceComponent component of which you want type parameters of.
-     * @param parent parent to be injected in all the type parameters.
+     * @param parent                          parent to be injected in all the type parameters.
      * @return a list of type parameters.
      */
     static List<TypeParam> getTypeParamList(
@@ -211,7 +183,7 @@ public abstract class LightWeightExtractorUtilMethods {
     /**
      * Get a list of TypeParameters from ResolvedTypeParameterDeclaration
      *
-     * @param list list of ResolvedTypeParameterDeclaration
+     * @param list   list of ResolvedTypeParameterDeclaration
      * @param parent parent to be injected in all the type parameters.
      * @return List of TypeParameters
      */
@@ -226,7 +198,7 @@ public abstract class LightWeightExtractorUtilMethods {
      * converts all the ParsedMethodComponent to List of Method.
      *
      * @param children children from which Method will be extracted.
-     * @param parent parent to be injected in all the methods.
+     * @param parent   parent to be injected in all the methods.
      * @return a list of Method.
      */
     static List<Method> getMethodList(
@@ -253,7 +225,7 @@ public abstract class LightWeightExtractorUtilMethods {
      * converts all the ParsedFieldComponent to List of Field.
      *
      * @param children children from which Field
-     * @param parent parent to be injected into fields.
+     * @param parent   parent to be injected into fields.
      * @return a List of Field.
      */
     static List<Field> getFieldList(
@@ -277,8 +249,8 @@ public abstract class LightWeightExtractorUtilMethods {
     /**
      * converts all the ParsedConstructorComponent to  List of Constructor.
      *
-     * @param children         children from which Constructor will be children extracted.
-     * @param parent class or interface to be injected as the parent of constructor.
+     * @param children children from which Constructor will be children extracted.
+     * @param parent   class or interface to be injected as the parent of constructor.
      * @return a list of Constructor.
      */
     static List<Constructor> getConstructorList(
@@ -301,7 +273,7 @@ public abstract class LightWeightExtractorUtilMethods {
 
     /**
      * @param children children of enum component.
-     * @param parent parent to be injected in enum constants.
+     * @param parent   parent to be injected in enum constants.
      * @return a list of enumConstants.
      */
     static List<EnumConstant> getEnumConstantList(Map<String, ParsedComponent> children, LightWeightExtractor lightWeightExtractor, LightWeight parent) {
@@ -322,7 +294,7 @@ public abstract class LightWeightExtractorUtilMethods {
      * Get all the exceptions specified by a signature.
      *
      * @param exceptionList list of exception classes
-     * @param parent parent to be injected in type parameters.
+     * @param parent        parent to be injected in type parameters.
      * @return list of SpecifiedException
      */
     static List<SpecifiedException> getSpecifiedExceptions(List<ResolvedType> exceptionList, LightWeight parent) {
@@ -340,7 +312,7 @@ public abstract class LightWeightExtractorUtilMethods {
      * @param numberOfParameters number of parameters in a signature
      * @param getParameter       Function with mapping i -> ResolvedParameterDeclaration, i.e get ith parameter from the
      *                           list of all the parameters.
-     * @param parent parent to be injected in each parameter.
+     * @param parent             parent to be injected in each parameter.
      * @return List of all the parameters(Param).
      */
     static List<Param> getParamList(int numberOfParameters,
@@ -349,7 +321,14 @@ public abstract class LightWeightExtractorUtilMethods {
 
         for (int i = 0; i < numberOfParameters; i++) {
             ResolvedParameterDeclaration parameterDeclaration = getParameter.apply(i);
-            parametersList.add(new Param(parameterDeclaration.describeType(), parameterDeclaration.getName(), parent));
+            String paramType;
+            try {
+                paramType = parameterDeclaration.describeType();
+            } catch (UnsolvedSymbolException e) {
+                paramType = e.getName();
+            }
+
+            parametersList.add(new Param(paramType, parameterDeclaration.getName(), parent));
         }
 
         return parametersList;

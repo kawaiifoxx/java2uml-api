@@ -7,6 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.java2uml.java2umlapi.visitors.lightWeightExtractor.LightWeightExtractorUtilMethods.*;
 
@@ -35,28 +38,25 @@ public class LightWeightExtractor implements Visitor<LightWeight> {
         var typeRelations = sourceComponent.getAllRelations();
 
         var source = new Source();
-        var externalClassOrInterfaceMap = getExternalClassOrInterfaceList(
-                sourceComponent.getExternalComponents(),
-                this,
-                source
+
+        var classOrInterfaceList = getClassOrInterface(children, this, source);
+        classOrInterfaceList.addAll(
+                getExternalClassOrInterfaceList(sourceComponent.getExternalComponents(), this, source)
         );
-        var classOrInterfaceMap = getClassOrInterface(
-                children,
-                this,
-                source
-        );
-        var classOrInterfaceList = new ArrayList<>(classOrInterfaceMap.values());
-        classOrInterfaceList.addAll(externalClassOrInterfaceMap.values());
+        var enumList = getEnumLWList(children, this, source);
+        Map<String, LightWeight> lightWeightMap = new HashMap<>();
+        lightWeightMap.putAll(enumList.stream().collect(Collectors.toMap(EnumLW::getName, enumLW -> enumLW)));
+        lightWeightMap.putAll(classOrInterfaceList.stream()
+                .collect(Collectors.toMap(ClassOrInterface::getName, classOrInterface -> classOrInterface)));
         source.setClassOrInterfaceList(classOrInterfaceList);
+        source.setEnumLWList(enumList);
         source.setClassRelationList(
                 getClassRelations(
-                        classOrInterfaceMap,
-                        externalClassOrInterfaceMap,
+                        lightWeightMap,
                         typeRelations,
                         source
                 )
         );
-        source.setEnumLWList(getEnumLWList(children, this, source));
 
         return source;
     }
@@ -159,7 +159,7 @@ public class LightWeightExtractor implements Visitor<LightWeight> {
                                 " contain resolvedMethodDeclaration."));
         var method = new Method.Builder()
                 .withName(parsedMethodComponent.getName())
-                .withSignature(resolvedMethodDeclaration.getQualifiedSignature())
+                .withSignature(parsedMethodComponent.getName())
                 .withReturnType(parsedMethodComponent.getReturnTypeName())
                 .withVisibility(resolvedMethodDeclaration.accessSpecifier().asString())
                 .withStatic(resolvedMethodDeclaration.isStatic())
