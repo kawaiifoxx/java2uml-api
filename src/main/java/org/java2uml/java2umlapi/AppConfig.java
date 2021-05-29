@@ -26,7 +26,7 @@ public class AppConfig {
     private final Logger logger = LoggerFactory.getLogger(AppConfig.class);
     private final AppProperties appProperties;
     private final ExecutorWrapper executorWrapper;
-    private final Long SHUTDOWN_TIME = 100L;
+    private final static Long SHUTDOWN_TIME = 1000L;
 
     public AppConfig(AppProperties appProperties, ExecutorWrapper executorWrapper) {
         this.appProperties = appProperties;
@@ -42,7 +42,7 @@ public class AppConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info().title(appProperties.getName()).version(appProperties.getVersion())
-                        .description("Java2UML API is simple web api which provides ability explore java source code.")
+                        .description("Java2UML API is simple web api which provides ability to explore java source code.")
                         .license(new License().name("Apache 2.0")
                                 .url("https://raw.githubusercontent.com/kawaiifoxx/java2uml-api/main/LICENSE")));
     }
