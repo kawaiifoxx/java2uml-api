@@ -42,7 +42,7 @@ mvn verify
 
 Java2UML api is very intutive and easy to use, if you want to generate class diagrams follow these steps:
 
-1. Go to [Jav2UML API Docs](https://java2uml-api.herokuapp.com/swagger-ui.html)
+1. Go to [Java2UML API Docs](https://java2uml-api.herokuapp.com/swagger-ui.html)
    <br>
    ![Java2UML](./docs/assets/GettingStarted_SS/dash_board.png)
 2. Upload a .zip file containing your java source code. If you have any external dependencies, please include them as well. For example, if you are using maven as your build        system then to download all the dependencies just use  `mvn dependency:copy-dependencies` and then maven will download all the dependencies in target folder.
@@ -61,11 +61,11 @@ Java2UML api is very intutive and easy to use, if you want to generate class dia
    ![Class Diagram](./docs/assets/GettingStarted_SS/generate_uml-diagram_response.png)
 
    
-The Downloaded [file](./docs/assets/GettingStarted_SS/java2uml-api.svg) should have class diagrams. Below is a class diagram generated for java2uml project. take a look.
+The Downloaded file should have class diagrams. Below is a class diagram generated for java2uml project. take a look.
 <br>
 ![Class Diagram](./docs/assets/GettingStarted_SS/java2uml_cd.gif)
 <br>
-Here's a link to actual svg file
+Here's a link to generated [svg file](./docs/assets/GettingStarted_SS/java2uml-api.svg)
 Java2uml can also perform many other tasks besides generating class diagrams.
 Also if you dont have a java source code lying around, or you are just to lazy to zip your source code, you can upload this [sample](https://github.com/kawaiifoxx/java2uml-api/blob/main/src/test/testSources/ParserTest/test.zip) as well.
  
