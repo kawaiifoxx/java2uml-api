@@ -1,4 +1,4 @@
-package org.java2uml.java2umlapi.fileStorage;
+package org.java2uml.java2umlapi.fileStorage.service;
 
 import org.springframework.stereotype.Component;
 
