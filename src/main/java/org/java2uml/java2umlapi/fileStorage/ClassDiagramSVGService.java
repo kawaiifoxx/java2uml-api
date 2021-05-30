@@ -3,6 +3,7 @@ package org.java2uml.java2umlapi.fileStorage;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -13,9 +14,18 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class ClassDiagramSVGService {
     private final Map<Long, String> svgCache;
+    /**
+     * Contains id of SVGs that need to be deleted.
+     * <p>
+     * This is added because a delete request may be issued before the
+     * svg is created in which case the svg might be added later and it will
+     * remain there hogging memory.
+     */
+    private final Set<Long> toBeDeletedSet;
 
     public ClassDiagramSVGService() {
         svgCache = new ConcurrentHashMap<>();
+        toBeDeletedSet = ConcurrentHashMap.newKeySet();
     }
 
     /**
@@ -49,6 +59,11 @@ public class ClassDiagramSVGService {
      * @return saved svgString
      */
     public String save(Long projectInfoId, String svgString) {
+        if (toBeDeletedSet.contains(projectInfoId)) {
+            toBeDeletedSet.remove(projectInfoId);
+            return svgString;
+        }
+
         svgCache.put(projectInfoId, svgString);
         return svgString;
     }
@@ -59,6 +74,8 @@ public class ClassDiagramSVGService {
      * @param projectInfoId id to be removed from repository.
      */
     public void delete(Long projectInfoId) {
-        svgCache.remove(projectInfoId);
+        if (svgCache.remove(projectInfoId) == null) {
+            toBeDeletedSet.add(projectInfoId);
+        }
     }
 }
