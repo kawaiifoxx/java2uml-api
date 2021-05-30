@@ -13,8 +13,8 @@ import org.java2uml.java2umlapi.fileStorage.service.FileStorageService;
 import org.java2uml.java2umlapi.fileStorage.service.UnzippedFileStorageService;
 import org.java2uml.java2umlapi.modelAssemblers.ProjectInfoAssembler;
 import org.java2uml.java2umlapi.parsedComponent.service.SourceComponentService;
-import org.java2uml.java2umlapi.restControllers.error.ErrorResponse;
 import org.java2uml.java2umlapi.restControllers.exceptions.BadRequest;
+import org.java2uml.java2umlapi.restControllers.response.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.EntityModel;
@@ -23,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -50,6 +51,7 @@ public class FileController {
     private final UnzippedFileStorageService unzippedFileStorageService;
     private final SourceComponentService sourceComponentService;
     private final ExecutorWrapper executor;
+    private static final Long TIME_OUT = 5L;
     private final Logger logger = LoggerFactory.getLogger(FileController.class);
 
     public FileController(FileStorageService fileStorageService,
@@ -96,6 +98,18 @@ public class FileController {
         ProjectInfo projectInfo = projectInfoRepository
                 .save(new ProjectInfo(fileName, file.getSize(), file.getContentType()));
 
+        return getProjectInfoResponse(fileName, projectInfo);
+    }
+
+    /**
+     * Generate response for project info.
+     *
+     * @param fileName    name of the file to be parsed.
+     * @param projectInfo project info for which response needs to be generated.
+     * @return Generated response.
+     * @throws InterruptedException if any of {@link ExecutorWrapper}' s thread is interrupted b/w activity.
+     */
+    private EntityModel<ProjectInfo> getProjectInfoResponse(String fileName, ProjectInfo projectInfo) throws InterruptedException {
         var future = executor.submit(() -> {
             var unzippedFile = unzippedFileStorageService.unzipAndStore(projectInfo.getId(), fileName);
             fileStorageService.delete(fileName);
@@ -103,7 +117,7 @@ public class FileController {
         });
 
         try {
-            future.get(5, TimeUnit.SECONDS);
+            future.get(TIME_OUT, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             logger.warn("ExecutorWrapper's thread was interrupted while parsing project.");
             throw e;
@@ -112,7 +126,7 @@ public class FileController {
                 unzippedFileStorageService.delete(projectInfo.getId());
                 throw (BadRequest) e.getCause();
             }
-            logger.warn("an unidentified exception occurred ", e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "an unknown error occurred.");
         } catch (TimeoutException ignored) {
             logger.info("Time Out occurred, proceeding with task at hand.");
         }
