@@ -16,11 +16,11 @@ import org.java2uml.java2umlapi.lightWeight.service.MethodSignatureToMethodIdMap
 import org.java2uml.java2umlapi.modelAssemblers.SourceAssembler;
 import org.java2uml.java2umlapi.parsedComponent.SourceComponent;
 import org.java2uml.java2umlapi.parsedComponent.service.SourceComponentService;
-import org.java2uml.java2umlapi.restControllers.error.ErrorResponse;
 import org.java2uml.java2umlapi.restControllers.exceptions.CannotGenerateSourceException;
 import org.java2uml.java2umlapi.restControllers.exceptions.LightWeightNotFoundException;
 import org.java2uml.java2umlapi.restControllers.exceptions.ParsedComponentNotFoundException;
 import org.java2uml.java2umlapi.restControllers.exceptions.ProjectInfoNotFoundException;
+import org.java2uml.java2umlapi.restControllers.response.ErrorResponse;
 import org.java2uml.java2umlapi.visitors.lightWeightExtractor.specialized.LightWeightExtractorWithMethodSignatureCache;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.GetMapping;
