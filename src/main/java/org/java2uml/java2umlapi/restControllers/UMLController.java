@@ -111,13 +111,15 @@ public class UMLController {
     })
     @GetMapping("/plant-uml-code/{projectInfoId}")
     public EntityModel<UMLBody> getPUMLCode(@Parameter(description = PROJECT_ID_DESC) @PathVariable Long projectInfoId) {
+        if (umlCodeCacheService.contains(projectInfoId))
+            return umlBodyAssembler.toModel(new UMLBody(umlCodeCacheService.get(projectInfoId), projectInfoId));
+
         var projectInfo = getProjectInfo(projectInfoId);
         SourceComponent sourceComponent = getSourceComponent(projectInfo);
 
         var pUMLCode = getFromFuture(executor.submit(() ->
                 umlCodeCacheService.save(projectInfo.getId(), sourceComponent.accept(new UMLExtractor()))));
-
-        return umlBodyAssembler.toModel(new UMLBody(pUMLCode, projectInfo));
+        return umlBodyAssembler.toModel(new UMLBody(pUMLCode, projectInfo.getId()));
     }
 
     /**

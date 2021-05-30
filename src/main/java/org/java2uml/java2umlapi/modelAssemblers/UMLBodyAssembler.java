@@ -1,6 +1,5 @@
 package org.java2uml.java2umlapi.modelAssemblers;
 
-import org.java2uml.java2umlapi.fileStorage.entity.ProjectInfo;
 import org.java2uml.java2umlapi.lightWeight.UMLBody;
 import org.java2uml.java2umlapi.restControllers.ProjectInfoController;
 import org.java2uml.java2umlapi.restControllers.UMLController;
@@ -25,12 +24,12 @@ public class UMLBodyAssembler implements RepresentationModelAssembler<UMLBody, E
 
     @Override
     public EntityModel<UMLBody> toModel(UMLBody entity) {
-        ProjectInfo projectInfo = entity.getProjectInfo();
+        var projectInfoId = entity.getProjectInfoId();
         return EntityModel.of(
                 entity,
-                linkTo(methodOn(UMLController.class).getPUMLCode(projectInfo.getId())).withSelfRel(),
-                linkTo(methodOn(UMLController.class).getSvg(projectInfo.getId())).withRel("umlSvg"),
-                linkTo(methodOn(ProjectInfoController.class).one(projectInfo.getId())).withRel("projectInfo")
+                linkTo(methodOn(UMLController.class).getPUMLCode(projectInfoId)).withSelfRel(),
+                linkTo(methodOn(UMLController.class).getSvg(projectInfoId)).withRel("umlSvg"),
+                linkTo(methodOn(ProjectInfoController.class).one(projectInfoId)).withRel("projectInfo")
         );
     }
 }
