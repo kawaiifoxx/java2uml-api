@@ -11,9 +11,10 @@ import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.SourceStringReader;
 import org.java2uml.java2umlapi.executor.ExecutorWrapper;
-import org.java2uml.java2umlapi.fileStorage.ClassDiagramSVGService;
 import org.java2uml.java2umlapi.fileStorage.entity.ProjectInfo;
 import org.java2uml.java2umlapi.fileStorage.repository.ProjectInfoRepository;
+import org.java2uml.java2umlapi.fileStorage.service.ClassDiagramSVGService;
+import org.java2uml.java2umlapi.fileStorage.service.UMLCodeCacheService;
 import org.java2uml.java2umlapi.lightWeight.UMLBody;
 import org.java2uml.java2umlapi.modelAssemblers.UMLBodyAssembler;
 import org.java2uml.java2umlapi.parsedComponent.SourceComponent;
@@ -63,6 +64,7 @@ public class UMLController {
     private final ProjectInfoRepository projectInfoRepository;
     private final SourceComponentService sourceComponentService;
     private final ClassDiagramSVGService classDiagramSVGService;
+    private final UMLCodeCacheService umlCodeCacheService;
     private final ExecutorWrapper executor;
     private final Logger logger = LoggerFactory.getLogger(UMLController.class);
     private static final Long TIME_OUT = 2L;
@@ -72,12 +74,14 @@ public class UMLController {
             ProjectInfoRepository projectInfoRepository,
             SourceComponentService sourceComponentService,
             ClassDiagramSVGService classDiagramSVGService,
+            UMLCodeCacheService umlCodeCacheService,
             ExecutorWrapper executor
     ) {
         this.umlBodyAssembler = umlBodyAssembler;
         this.projectInfoRepository = projectInfoRepository;
         this.sourceComponentService = sourceComponentService;
         this.classDiagramSVGService = classDiagramSVGService;
+        this.umlCodeCacheService = umlCodeCacheService;
         this.executor = executor;
     }
 
@@ -110,7 +114,10 @@ public class UMLController {
         var projectInfo = getProjectInfo(projectInfoId);
         SourceComponent sourceComponent = getSourceComponent(projectInfo);
 
-        return umlBodyAssembler.toModel(new UMLBody(sourceComponent.accept(new UMLExtractor()), projectInfo));
+        var pUMLCode = getFromFuture(executor.submit(() ->
+                umlCodeCacheService.save(projectInfo.getId(), sourceComponent.accept(new UMLExtractor()))));
+
+        return umlBodyAssembler.toModel(new UMLBody(pUMLCode, projectInfo));
     }
 
     /**
@@ -153,27 +160,38 @@ public class UMLController {
      * @return Generated {@link ResponseEntity}
      */
     private ResponseEntity<String> generateResponse(ProjectInfo projectInfo, SourceComponent sourceComponent) {
-        Future<String> future = executor.submit(() -> generateSVG(sourceComponent, projectInfo.getId()));
-
-        String svg = null;
-        try {
-            svg = future.get(TIME_OUT, TimeUnit.SECONDS);
-        } catch (ExecutionException e) {
-            logger.warn("Exception caused due to {}", e.getMessage());
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        } catch (InterruptedException e) {
-            logger.warn("Executor thread interrupted in b/w.");
-        } catch (TimeoutException e) {
-            logger.info("Timed Out, moving on with task at hand.");
-            throw new ResponseStatusException(HttpStatus.ACCEPTED,
-                    "Your, request is being processed check back in a few seconds.");
-        }
+        String svg = getFromFuture(executor.submit(() -> generateSVG(sourceComponent, projectInfo.getId())));
 
         return ResponseEntity.ok().contentType(MediaType.parseMediaType("image/svg+xml"))
                 .header(
                         HttpHeaders.CONTENT_DISPOSITION,
                         "attachment;filename=\"" + getFileName(projectInfo) + "\""
                 ).body(svg);
+    }
+
+    /**
+     * Get the generated response from the provided future Object.
+     *
+     * @param future from which response will be extracted.
+     * @return a {@link String} extracted from future.
+     * @throws ResponseStatusException if {@link ExecutionException} or {@link InterruptedException} or
+     *                                 {@link TimeoutException} occurs while extracting from {@link Future}
+     *                                 this exception is thrown.
+     */
+    private String getFromFuture(Future<String> future) {
+        try {
+            return future.get(TIME_OUT, TimeUnit.SECONDS);
+        } catch (ExecutionException e) {
+            logger.warn("Exception caused due to {}", e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } catch (InterruptedException e) {
+            logger.warn("Executor thread interrupted in b/w.");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } catch (TimeoutException e) {
+            logger.info("Timed Out, moving on with task at hand.");
+            throw new ResponseStatusException(HttpStatus.ACCEPTED,
+                    "Your, request is being processed check back in a few seconds.");
+        }
     }
 
     /**
