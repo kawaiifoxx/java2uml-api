@@ -3,10 +3,10 @@ package org.java2uml.java2umlapi.fileStorage.service;
 import org.springframework.stereotype.Service;
 
 /**
- * Cache for Generated svg files.
+ * Service for uml code cache.
  *
- * @author shrey
+ * @author kawaiifox
  */
 @Service
-public class ClassDiagramSVGService extends CacheService<Long, String> {
+public class UMLCodeCacheService extends CacheService<Long, String> {
 }
