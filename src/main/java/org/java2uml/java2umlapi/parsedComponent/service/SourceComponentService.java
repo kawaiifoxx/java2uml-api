@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -21,9 +22,11 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class SourceComponentService {
     private final Map<Long, SourceComponent> sourceComponents;
+    private final Set<Long> toBeDeleted;
 
     public SourceComponentService() {
         this.sourceComponents = new ConcurrentHashMap<>();
+        this.toBeDeleted = ConcurrentHashMap.newKeySet();
     }
 
     /**
@@ -48,6 +51,11 @@ public class SourceComponentService {
      * @param projectInfoId   id of corresponding {@link org.java2uml.java2umlapi.fileStorage.entity.ProjectInfo}
      */
     public void save(Long projectInfoId, SourceComponent sourceComponent) {
+        if (toBeDeleted.contains(projectInfoId)) {
+            toBeDeleted.remove(projectInfoId);
+            return;
+        }
+
         sourceComponents.put(projectInfoId, sourceComponent);
     }
 
@@ -59,6 +67,11 @@ public class SourceComponentService {
      * @throws BadRequest if source directory does not contain any .java files.
      */
     public void save(Long projectInfoId, Path path) {
+        if (toBeDeleted.contains(projectInfoId)) {
+            toBeDeleted.remove(projectInfoId);
+            return;
+        }
+
         try {
             sourceComponents.put(projectInfoId, Parser.parse(path));
         } catch (EmptySourceDirectoryException exception) {
@@ -72,6 +85,7 @@ public class SourceComponentService {
      * @param projectInfoId id of the project info for which you want to delete the source component.
      */
     public void delete(Long projectInfoId) {
-        sourceComponents.remove(projectInfoId);
+        if (sourceComponents.remove(projectInfoId) == null)
+            toBeDeleted.add(projectInfoId);
     }
 }
