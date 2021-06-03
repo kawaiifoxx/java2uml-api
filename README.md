@@ -5,6 +5,7 @@
 [![Docker Image CI](https://github.com/kawaiifoxx/java2uml-api/actions/workflows/docker-image.yml/badge.svg)](https://github.com/kawaiifoxx/java2uml-api/actions/workflows/docker-image.yml)
 [![codecov](https://codecov.io/gh/kawaiifoxx/java2uml-api/branch/main/graph/badge.svg?token=J4Q5EY03AD)](https://codecov.io/gh/kawaiifoxx/java2uml-api)
 [![GitHub issues](https://img.shields.io/github/issues/kawaiifoxx/java2uml-api)](https://github.com/kawaiifoxx/java2uml-api/issues)
+![GitHub](https://img.shields.io/github/license/kawaiifoxx/java2uml-api?color=blue)
 <br>
 
 ## Description 📚
@@ -67,7 +68,7 @@ The Downloaded file should have class diagrams. Below is a class diagram generat
 <br><br>
 Here's a link to generated [svg file](./docs/assets/GettingStarted_SS/java2uml-api.svg)
 Java2uml can also perform many other tasks besides generating class diagrams.
-Also if you dont have a java source code lying around, or you are just to lazy to zip your source code, you can upload this [sample](https://github.com/kawaiifoxx/java2uml-api/blob/main/src/test/testSources/ParserTest/test.zip) as well.
+Also if you dont have a java source code lying around, or you are just to0 lazy, to zip your source code, you can upload this [sample](https://github.com/kawaiifoxx/java2uml-api/blob/main/src/test/testSources/ParserTest/test.zip) as well.
  
  ## Contributors
  - Shreyansh Gupta [@kawaiifoxx](https://github.com/kawaiifoxx)
