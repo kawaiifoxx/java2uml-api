@@ -72,7 +72,7 @@ Also if you dont have a java source code lying around, or you are just to lazy t
  ## Contributors
  - Shreyansh Gupta [@kawaiifoxx](https://github.com/kawaiifoxx)
  
- ## Licence & Copyright
+ ## License & Copyright
  © Shreyansh Gupta
  
  Licensed under the [Apache 2.0](LICENSE) License
