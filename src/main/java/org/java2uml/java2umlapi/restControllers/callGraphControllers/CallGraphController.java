@@ -121,7 +121,7 @@ public class CallGraphController {
      * @throws MethodNameToMethodIdNotFoundException if methodNameToMethodIdMap has not been found.
      */
     private Map<String, Long> getMethodNameToMethodIdMap(Long methodId, Source source) {
-        return methodIdMapService.findById(source.getId())
+        return methodIdMapService.findById(source.getProjectInfo().getId())
                 .orElseThrow(
                         () -> new MethodNameToMethodIdNotFoundException(
                                 "Unable to fetch map for method with id:" + methodId
