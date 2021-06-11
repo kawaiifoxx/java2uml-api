@@ -1,16 +1,13 @@
 package org.java2uml.java2umlapi.restControllers.LWControllers;
 
-import com.github.javaparser.symbolsolver.resolution.typesolvers.JarTypeSolver;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
-import org.apache.commons.io.FileDeleteStrategy;
 import org.java2uml.java2umlapi.fileStorage.entity.ProjectInfo;
 import org.java2uml.java2umlapi.fileStorage.repository.ProjectInfoRepository;
 import org.java2uml.java2umlapi.lightWeight.Source;
 import org.java2uml.java2umlapi.lightWeight.repository.SourceRepository;
 import org.java2uml.java2umlapi.parsedComponent.service.SourceComponentService;
 import org.java2uml.java2umlapi.restControllers.exceptions.LightWeightNotFoundException;
-import org.java2uml.java2umlapi.restControllers.exceptions.ParsedComponentNotFoundException;
 import org.java2uml.java2umlapi.restControllers.exceptions.ProjectInfoNotFoundException;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +60,7 @@ class SourceControllerTest {
      * @return {@link ResultActions} to perform more checks.
      */
     private ResultActions performGetRequestOnSourceByProjectInfoId() throws Exception {
+        waitTillResourceGetsGenerated(mvc, sourceURIByProjectInfo);
         return mvc.perform(get(sourceURIByProjectInfo))
                 .andDo(print());
     }
@@ -106,6 +104,7 @@ class SourceControllerTest {
 
     @Test
     @DisplayName("given that project info is not present, response should be 404 not found.")
+    @DirtiesContext
     void whenProjectInfoIsNotPresent_thenShouldRespondWith404NotFound() throws Exception {
         projectInfoRepository.delete(projectInfo);
 
@@ -115,13 +114,11 @@ class SourceControllerTest {
     }
 
     @Test
-    @DisplayName("given that source component is not present, respond with 500 internal server error.")
+    @DisplayName("given that source component is not yet generated, respond with 202 Accepted.")
+    @DirtiesContext
     void whenSourceComponentIsNotPresent_thenShouldRespondWith500InternalServerError() throws Exception {
-        sourceComponentService.delete(projectInfo.getSourceComponentId());
-
-        assertThatOnPerformingGetProvidedExceptionIsThrown(
-                mvc, sourceURIByProjectInfo, ParsedComponentNotFoundException.class
-        ).andExpect(status().isInternalServerError());
+        sourceComponentService.delete(projectInfo.getId());
+        mvc.perform(get(sourceURIByProjectInfo)).andExpect(status().isAccepted());
     }
 
     @Test
@@ -136,10 +133,7 @@ class SourceControllerTest {
     }
 
     @AfterAll
-    public static void tearDown() throws IOException {
-        //Release all resources first.
-        JarTypeSolver.ResourceRegistry.getRegistry().cleanUp();
-        //Then delete directory.
-        FileDeleteStrategy.FORCE.delete(TMP_DIR.toFile());
+    public static void tearDown() throws IOException, InterruptedException {
+        cleanUp();
     }
 }

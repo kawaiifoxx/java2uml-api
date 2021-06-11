@@ -30,6 +30,7 @@ public class EnumLWAssembler implements RepresentationModelAssembler<EnumLW, Ent
                 linkTo(methodOn(EnumConstantController.class).allByParent(entity.getId())).withRel("enumConstants"),
                 linkTo(methodOn(FieldController.class).allByParent(entity.getId())).withRel("fields"),
                 linkTo(methodOn(ConstructorController.class).allByParent(entity.getId())).withRel("constructors"),
+                linkTo(methodOn(MethodController.class).allByParent(entity.getId())).withRel("methods"),
                 linkTo(methodOn(BodyController.class).bodyByParentId(entity.getId())).withRel("body"),
                 linkTo(methodOn(EnumLWController.class).one(entity.getId())).withSelfRel(),
                 linkTo(methodOn(SourceController.class).one(entity.getParent().getId())).withRel("parent"),

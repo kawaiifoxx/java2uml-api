@@ -7,15 +7,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.java2uml.java2umlapi.fileStorage.ClassDiagramSVGService;
 import org.java2uml.java2umlapi.fileStorage.entity.ProjectInfo;
 import org.java2uml.java2umlapi.fileStorage.repository.ProjectInfoRepository;
+import org.java2uml.java2umlapi.fileStorage.service.ClassDiagramSVGService;
 import org.java2uml.java2umlapi.fileStorage.service.UnzippedFileStorageService;
 import org.java2uml.java2umlapi.lightWeight.service.MethodSignatureToMethodIdMapService;
 import org.java2uml.java2umlapi.modelAssemblers.ProjectInfoAssembler;
 import org.java2uml.java2umlapi.parsedComponent.service.SourceComponentService;
-import org.java2uml.java2umlapi.restControllers.error.ErrorResponse;
 import org.java2uml.java2umlapi.restControllers.exceptions.ProjectInfoNotFoundException;
+import org.java2uml.java2umlapi.restControllers.response.ErrorResponse;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -75,12 +75,10 @@ public class ProjectInfoController {
     @GetMapping("/{projectId}")
     public EntityModel<ProjectInfo> one(
             @Parameter(description = PROJECT_ID_DESC) @PathVariable("projectId") Long projectId) {
-        return assembler.toModel(projectInfoRepository
-                .findById(projectId)
-                .orElseThrow(
-                        () -> new ProjectInfoNotFoundException("The information about file you were looking " +
-                                "for is not present. please consider, uploading the given file again.")
-                ));
+        return assembler.toModel(projectInfoRepository.findById(projectId).orElseThrow(
+                () -> new ProjectInfoNotFoundException("The information about file you were looking " +
+                        "for is not present. please consider, uploading the given file again.")
+        ));
     }
 
     /**
@@ -110,11 +108,20 @@ public class ProjectInfoController {
                 )
         );
 
-        classDiagramSVGService.delete(projectInfo.getId());
-        sourceComponentService.delete(projectInfo.getSourceComponentId());
-        unzippedFileStorageService.delete(projectInfo.getUnzippedFileName());
-        methodSignatureToMethodIdMapService.delete(projectId);
-        projectInfoRepository.delete(projectInfo);
+        performCleanUp(projectInfo);
         return null;
+    }
+
+    /**
+     * Frees resources and performs cleanup.
+     *
+     * @param projectInfo resources associated to this {@link ProjectInfo} will be freed.
+     */
+    private void performCleanUp(ProjectInfo projectInfo) {
+        classDiagramSVGService.delete(projectInfo.getId());
+        sourceComponentService.delete(projectInfo.getId());
+        unzippedFileStorageService.delete(projectInfo.getId());
+        methodSignatureToMethodIdMapService.delete(projectInfo.getId());
+        projectInfoRepository.delete(projectInfo);
     }
 }

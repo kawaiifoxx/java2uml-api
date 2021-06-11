@@ -3,6 +3,7 @@ package org.java2uml.java2umlapi.fileStorage.service;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.JarTypeSolver;
 import org.apache.commons.io.FileDeleteStrategy;
 import org.java2uml.java2umlapi.fileStorage.FileStorageProperties;
+import org.java2uml.java2umlapi.fileStorage.entity.ProjectInfo;
 import org.java2uml.java2umlapi.fileStorage.exceptions.MyFileNotFoundException;
 import org.java2uml.java2umlapi.fileStorage.exceptions.UnableToUnzipFileException;
 import org.java2uml.java2umlapi.util.unzipper.Unzipper;
@@ -14,7 +15,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <p>
@@ -29,9 +32,12 @@ import java.util.UUID;
 public class UnzippedFileStorageService {
     private final Path unzippedFileLocation;
     private final Path uploadFileLocation;
+    private final Map<Long, String> fileNameRegistry;
     private final Logger logger = LoggerFactory.getLogger(UnzippedFileStorageService.class);
 
     public UnzippedFileStorageService(FileStorageProperties fileStorageProperties) {
+        this.fileNameRegistry = new ConcurrentHashMap<>();
+
         this.unzippedFileLocation = Path.of(
                 fileStorageProperties
                         .getUnzipDir()
@@ -52,10 +58,11 @@ public class UnzippedFileStorageService {
      * Files are stored in unzipped File location, this location can be changed from
      * application.properties file.
      *
-     * @param filename name of the uploaded file present in upload file location.
+     * @param filename      name of the uploaded file present in upload file location.
+     * @param projectInfoId id of the corresponding {@link ProjectInfo}
      * @return Unzipped file
      */
-    public File unzipAndStore(String filename) {
+    public File unzipAndStore(Long projectInfoId, String filename) {
         File file;
 
         Path sourcePath = this.uploadFileLocation.resolve(filename).normalize();
@@ -69,6 +76,8 @@ public class UnzippedFileStorageService {
         } catch (IOException exception) {
             throw new UnableToUnzipFileException("Unable to unzip, given file, please upload again.", exception);
         }
+
+        fileNameRegistry.put(projectInfoId, file.getName());
 
         return file;
     }
@@ -91,6 +100,21 @@ public class UnzippedFileStorageService {
     }
 
     /**
+     * Finds the given file in registry as well as given file location.
+     *
+     * @param projectId id of the corresponding {@link ProjectInfo}.
+     * @throws MyFileNotFoundException if file is not found.
+     * @return File if present.
+     */
+    public File find(Long projectId) {
+        if (!fileNameRegistry.containsKey(projectId)) {
+            throw new MyFileNotFoundException("the file you are looking for is not present.");
+        }
+
+        return find(fileNameRegistry.get(projectId));
+    }
+
+    /**
      * <p>
      * Deletes file with provided filename in the unzipped file location given that file exists in the first place.
      * </p>
@@ -108,5 +132,21 @@ public class UnzippedFileStorageService {
         } catch (IOException exception) {
             logger.error("Unable to delete unzipped file!.", exception);
         }
+    }
+
+    /**
+     * Deletes file corresponding to given {@link ProjectInfo} id, if the corresponding file
+     * does not exist then logs that file is not present.
+     *
+     * @param projectInfoId id of the {@link ProjectInfo} to which this file belongs.
+     */
+    public void delete(Long projectInfoId) {
+        if (!fileNameRegistry.containsKey(projectInfoId)) {
+            logger.info("File corresponding to project id {} is not present.", projectInfoId);
+            return;
+        }
+
+        var fileName = fileNameRegistry.remove(projectInfoId);
+        delete(fileName);
     }
 }

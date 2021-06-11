@@ -7,9 +7,10 @@ import org.java2uml.java2umlapi.restControllers.exceptions.BadRequest;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Path;
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.Vector;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <p>
@@ -20,20 +21,23 @@ import java.util.Vector;
  */
 @Service
 public class SourceComponentService {
-    private final List<SourceComponent> sourceComponents;
+    private final Map<Long, SourceComponent> sourceComponents;
+    private final Set<Long> toBeDeleted;
 
     public SourceComponentService() {
-        this.sourceComponents = new Vector<>();
+        this.sourceComponents = new ConcurrentHashMap<>();
+        this.toBeDeleted = ConcurrentHashMap.newKeySet();
     }
 
     /**
      * Returns a Optional of SourceComponent, Optional is empty
      * if source component has not been found with given index.
+     *
      * @param index of source component to be fetched.
      * @return Optional of SourceComponent
      */
-    public Optional<SourceComponent> get(int index) {
-        if (sourceComponents.size() <= index) {
+    public Optional<SourceComponent> get(Long index) {
+        if (!sourceComponents.containsKey(index)) {
             return Optional.empty();
         }
 
@@ -41,41 +45,47 @@ public class SourceComponentService {
     }
 
     /**
-     * Saves an optional of SourceComponent and provides id for the saved source component.
+     * Saves a SourceComponent with provided id.
+     *
      * @param sourceComponent to be saved
-     * @return id of the saved source component
+     * @param projectInfoId   id of corresponding {@link org.java2uml.java2umlapi.fileStorage.entity.ProjectInfo}
      */
-    public int save(SourceComponent sourceComponent) {
-        int size = sourceComponents.size();
-        sourceComponents.add(sourceComponent);
-        return size;
+    public void save(Long projectInfoId, SourceComponent sourceComponent) {
+        if (toBeDeleted.contains(projectInfoId)) {
+            toBeDeleted.remove(projectInfoId);
+            return;
+        }
+
+        sourceComponents.put(projectInfoId, sourceComponent);
     }
 
     /**
      * tries to generate a source component by parsing files on the provided path.
-     * @param path on which source files located for parsing
-     * @return id of the saved source component.
+     *
+     * @param path          on which source files located for parsing
+     * @param projectInfoId id of corresponding {@link org.java2uml.java2umlapi.fileStorage.entity.ProjectInfo}
      * @throws BadRequest if source directory does not contain any .java files.
      */
-    public int save(Path path) {
-        int size = sourceComponents.size();
+    public void save(Long projectInfoId, Path path) {
+        if (toBeDeleted.contains(projectInfoId)) {
+            toBeDeleted.remove(projectInfoId);
+            return;
+        }
+
         try {
-            sourceComponents.add(Parser.parse(path));
+            sourceComponents.put(projectInfoId, Parser.parse(path));
         } catch (EmptySourceDirectoryException exception) {
             throw new BadRequest(exception.getMessage(), exception);
         }
-        return size;
     }
 
     /**
      * Deletes the source component with provided id.
-     * @param sourceComponentId id of the source Component.
+     *
+     * @param projectInfoId id of the project info for which you want to delete the source component.
      */
-    public void delete(Integer sourceComponentId) {
-        if (sourceComponents.size() > sourceComponentId) {
-            sourceComponents.remove(
-                    sourceComponents.get(sourceComponentId)
-            );
-        }
+    public void delete(Long projectInfoId) {
+        if (sourceComponents.remove(projectInfoId) == null)
+            toBeDeleted.add(projectInfoId);
     }
 }

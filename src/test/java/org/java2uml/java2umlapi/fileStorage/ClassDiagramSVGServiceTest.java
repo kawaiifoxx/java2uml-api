@@ -1,5 +1,6 @@
 package org.java2uml.java2umlapi.fileStorage;
 
+import org.java2uml.java2umlapi.fileStorage.service.ClassDiagramSVGService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

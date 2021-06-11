@@ -1,7 +1,8 @@
 package org.java2uml.java2umlapi.restControllers.exceptionHandlers;
 
-import org.java2uml.java2umlapi.restControllers.error.ErrorResponse;
 import org.java2uml.java2umlapi.restControllers.exceptions.*;
+import org.java2uml.java2umlapi.restControllers.response.ErrorResponse;
+import org.java2uml.java2umlapi.restControllers.response.TryAgainResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -294,6 +296,23 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorResponse errorResponse = getErrorResponse("Unable to find requested ParsedComponent.",
                 HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage());
         return new ResponseEntity<>(errorResponse, new HttpHeaders(), errorResponse.getHttpStatus());
+    }
+
+    /**
+     * This method is called when a ResponseStatusException is thrown.
+     *
+     * @param ex {@link ResponseStatusException} which needs to be handled.
+     * @return {@link ResponseEntity}
+     */
+    @ExceptionHandler({ResponseStatusException.class})
+    public ResponseEntity<Object> handleResponseStatusException(ResponseStatusException ex) {
+        if (ex.getStatus().is5xxServerError()) {
+            return handleAll(ex);
+        }
+        return new ResponseEntity<>(
+                new TryAgainResponse(ex.getLocalizedMessage(), ex.getStatus()),
+                new HttpHeaders(), ex.getStatus()
+        );
     }
 
     /**

@@ -1,8 +1,6 @@
 package org.java2uml.java2umlapi.restControllers;
 
-import com.github.javaparser.symbolsolver.resolution.typesolvers.JarTypeSolver;
 import com.jayway.jsonpath.JsonPath;
-import org.apache.commons.io.FileDeleteStrategy;
 import org.java2uml.java2umlapi.fileStorage.entity.ProjectInfo;
 import org.java2uml.java2umlapi.fileStorage.repository.ProjectInfoRepository;
 import org.java2uml.java2umlapi.fileStorage.service.UnzippedFileStorageService;
@@ -53,6 +51,8 @@ class UMLControllerTest {
         String requestURI = read(parsedJson, "$._links.umlText.href");
         String svgURI = read(parsedJson, "$._links.umlSvg.href");
         String projectInfoURI = read(parsedJson, "$._links.self.href");
+        waitTillSourceComponentGetsGenerated(sourceComponentService, getIdFromSelfLink(parsedJson));
+        waitTillResourceGetsGenerated(mvc, requestURI);
         var response = mvc.perform(get(requestURI))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -80,6 +80,7 @@ class UMLControllerTest {
     @Test
     @DisplayName("given that SourceComponent is not present, " +
             "sending request to \"/api/plant-uml-code/{projectInfoId}\" should give 500 internal server error.")
+    @DirtiesContext
     void whenSourceComponentIsNotPresent_thenShouldGet500_From_getPUMLCode() throws Exception {
         assertThatSourceComponentIsNotPresentOn("$._links.umlText.href");
     }
@@ -89,6 +90,8 @@ class UMLControllerTest {
     void getSvg() throws Exception {
         var parsedJson = parseJson(getMultipartResponse(doMultipartRequest(mvc, TEST_FILE_4)));
         String requestURI = read(parsedJson, "$._links.umlSvg.href");
+        waitTillSourceComponentGetsGenerated(sourceComponentService, getIdFromSelfLink(parsedJson));
+        waitTillResourceGetsGenerated(mvc, requestURI);
         var response = mvc.perform(get(requestURI))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -112,6 +115,7 @@ class UMLControllerTest {
     @Test
     @DisplayName("given that SourceComponent is not present, sending request to " +
             " \"/api/svg/{projectInfoId}\" should give 500.")
+    @DirtiesContext
     void whenSourceComponentIsNotPresent_thenShouldGet500_From_getSvg() throws Exception {
         assertThatSourceComponentIsNotPresentOn("$._links.umlSvg.href");
     }
@@ -126,7 +130,7 @@ class UMLControllerTest {
         String requestURI = JsonPath.read(parsedJson, s);
 
         ProjectInfo projectInfo = getEntityFromJson(parsedJson, projectInfoRepository);
-        sourceComponentService.delete(projectInfo.getSourceComponentId());
+        sourceComponentService.delete(projectInfo.getId());
 
         var e = mvc.perform(get(requestURI))
                 .andDo(print())
@@ -139,10 +143,7 @@ class UMLControllerTest {
     }
 
     @AfterAll
-    public static void tearDown() throws IOException {
-        //Release all resources first.
-        JarTypeSolver.ResourceRegistry.getRegistry().cleanUp();
-        //Then delete directory.
-        FileDeleteStrategy.FORCE.delete(TMP_DIR.toFile());
+    public static void tearDown() throws IOException, InterruptedException {
+        cleanUp();
     }
 }

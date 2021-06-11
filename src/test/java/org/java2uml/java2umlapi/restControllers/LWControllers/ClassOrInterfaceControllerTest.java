@@ -59,6 +59,7 @@ class ClassOrInterfaceControllerTest {
         var parsedJsonForProjectInfo = parseJson(getMultipartResponse(doMultipartRequest(mvc, TEST_FILE_4)));
         projectInfo = getEntityFromJson(parsedJsonForProjectInfo, projectInfoRepository);
         String sourceURI = JsonPath.read(parsedJsonForProjectInfo, "$._links.projectModel.href");
+        waitTillResourceGetsGenerated(mvc, sourceURI);
         var sourceUnparsed = mvc.perform(get(sourceURI))
                 .andDo(print())
                 .andExpect(status().isOk())

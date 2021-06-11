@@ -63,8 +63,9 @@ public class MethodCallGraphImpl implements MethodCallGraph {
 
     /**
      * Performs a dfs on currentNode and generates a Map of  nodeName(String) -> neighbors(List<String>))
+     *
      * @param currentNode node on which dfs needs to be done.
-     * @param visited already visited nodes.
+     * @param visited     already visited nodes.
      * @return a map of nodeName(String) -> neighbors(List<String>).
      */
     private Map<String, List<String>> generateCallGraphMap(CallGraphNode currentNode, Set<String> visited) {
@@ -169,8 +170,9 @@ public class MethodCallGraphImpl implements MethodCallGraph {
     /**
      * Performs DFS on given resolvedMethodDeclaration and returns a set of ResolvedMethodDeclaration, excluding given
      * resolvedMethodDeclaration.
+     *
      * @param resolvedMethodDeclaration resolvedMethodDeclaration of which you want all the children of.
-     * @param visited contains names of already visited resolvedMethodDeclarations. (just pass an empty set if you are calling this method.)
+     * @param visited                   contains names of already visited resolvedMethodDeclarations. (just pass an empty set if you are calling this method.)
      * @return Set of resolvedMethodDeclaration.
      */
     private Set<ResolvedMethodDeclaration> getSetOfRMD(ResolvedMethodDeclaration resolvedMethodDeclaration, Set<String> visited) {
@@ -191,14 +193,18 @@ public class MethodCallGraphImpl implements MethodCallGraph {
      * Takes in resolvedMethodDeclaration and finds resolvedMethodDeclarations of methods
      * that are present in the body of passed resolvedMethodDeclaration and returns a
      * stream containing these resolvedMethodDeclarations.
+     *
      * @param resolvedMethodDeclaration resolvedMethodDeclaration of which you want to find all resolvedMethodDeclarations
      *                                  of method calls present in body of the passed resolvedMethodDeclaration.
      * @return stream of resolvedMethodDeclarations
      */
     private Stream<ResolvedMethodDeclaration> getResolvedMethodDeclarationStream(ResolvedMethodDeclaration resolvedMethodDeclaration) {
-        return resolvedMethodDeclaration
-                .toAst()
-                .orElseThrow(() -> new RuntimeException("unable to get AST from ResolvedMethodDeclaration."))
+        var methodDeclaration = resolvedMethodDeclaration.toAst();
+
+        if (methodDeclaration.isEmpty()) {
+            return Stream.empty();
+        }
+        return methodDeclaration.get()
                 .findAll(MethodCallExpr.class)
                 .stream()
                 .map(MethodCallExpr::resolve);

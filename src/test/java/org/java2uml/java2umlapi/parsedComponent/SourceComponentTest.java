@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import java.io.*;
 import java.nio.file.Path;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -31,6 +32,11 @@ class SourceComponentTest {
         sourceComponent = Parser.parse(generatedSourceFiles.toPath());
     }
 
+    @Test
+    @DisplayName("given that external dependencies are included isExternalDependenciesIncluded method should return true.")
+    void testIsExternalDependenciesIncluded() {
+        assertThat(sourceComponent.isExternalDependenciesIncluded()).isTrue();
+    }
 
     @SuppressWarnings("deprecation")
     @Test

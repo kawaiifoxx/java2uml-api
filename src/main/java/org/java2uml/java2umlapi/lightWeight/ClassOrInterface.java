@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static javax.persistence.CascadeType.*;
+
 /**
  * <p>
  * A lightweight data class containing all necessary information for a particular class or interface in source files.
@@ -27,22 +29,22 @@ public class ClassOrInterface extends LightWeight {
     private boolean isExternal;
 
     @JsonIgnore
-    @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = ALL)
     private List<Constructor> classConstructors;
 
     @JsonIgnore
-    @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(orphanRemoval = true,fetch = FetchType.LAZY, cascade = {DETACH, MERGE, REFRESH, REMOVE})
     private List<Method> classOrInterfaceMethods;
 
     @JsonIgnore
-    @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = ALL)
     private List<Field> classFields;
 
-    @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = ALL)
     private List<TypeParam> classOrInterfaceTypeParameters;
 
     @JsonIgnore
-    @OneToOne(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(orphanRemoval = true, fetch = FetchType.LAZY, cascade = ALL)
     private Body body;
 
     @JsonIgnore

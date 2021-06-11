@@ -2,7 +2,6 @@ package org.java2uml.java2umlapi.lightWeight;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.java2uml.java2umlapi.fileStorage.entity.ProjectInfo;
 
 /**
  * <p>
@@ -15,11 +14,11 @@ import org.java2uml.java2umlapi.fileStorage.entity.ProjectInfo;
 public class UMLBody {
     private String content;
     @JsonIgnore
-    private ProjectInfo projectInfo;
+    private Long projectInfoId;
 
-    public UMLBody(String content, ProjectInfo projectInfo) {
+    public UMLBody(String content, Long projectInfoId) {
         this.content = content;
-        this.projectInfo = projectInfo;
+        this.projectInfoId = projectInfoId;
     }
 
     public void setContent(String content) {
@@ -30,11 +29,11 @@ public class UMLBody {
         return content;
     }
 
-    public ProjectInfo getProjectInfo() {
-        return projectInfo;
+    public Long getProjectInfoId() {
+        return projectInfoId;
     }
 
-    public void setProjectInfo(ProjectInfo projectInfo) {
-        this.projectInfo = projectInfo;
+    public void setProjectInfoId(Long projectInfoId) {
+        this.projectInfoId = projectInfoId;
     }
 }

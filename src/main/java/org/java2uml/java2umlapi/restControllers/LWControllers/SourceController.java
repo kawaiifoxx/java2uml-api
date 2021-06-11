@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.java2uml.java2umlapi.executor.ExecutorWrapper;
 import org.java2uml.java2umlapi.fileStorage.entity.ProjectInfo;
 import org.java2uml.java2umlapi.fileStorage.repository.ProjectInfoRepository;
 import org.java2uml.java2umlapi.lightWeight.Source;
@@ -16,17 +17,27 @@ import org.java2uml.java2umlapi.lightWeight.service.MethodSignatureToMethodIdMap
 import org.java2uml.java2umlapi.modelAssemblers.SourceAssembler;
 import org.java2uml.java2umlapi.parsedComponent.SourceComponent;
 import org.java2uml.java2umlapi.parsedComponent.service.SourceComponentService;
-import org.java2uml.java2umlapi.restControllers.error.ErrorResponse;
 import org.java2uml.java2umlapi.restControllers.exceptions.CannotGenerateSourceException;
 import org.java2uml.java2umlapi.restControllers.exceptions.LightWeightNotFoundException;
 import org.java2uml.java2umlapi.restControllers.exceptions.ParsedComponentNotFoundException;
 import org.java2uml.java2umlapi.restControllers.exceptions.ProjectInfoNotFoundException;
+import org.java2uml.java2umlapi.restControllers.response.ErrorResponse;
 import org.java2uml.java2umlapi.visitors.lightWeightExtractor.specialized.LightWeightExtractorWithMethodSignatureCache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import static org.java2uml.java2umlapi.restControllers.SwaggerDescription.*;
 
@@ -41,12 +52,17 @@ import static org.java2uml.java2umlapi.restControllers.SwaggerDescription.*;
 @RestController
 @RequestMapping("/api/source")
 public class SourceController {
+    private static final Long TIME_OUT = 4L;
+    private static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;
+    private final Logger logger = LoggerFactory.getLogger(SourceController.class);
     private final SourceRepository sourceRepository;
     private final SourceAssembler assembler;
     private final ProjectInfoRepository projectInfoRepository;
     private final MethodRepository methodRepository;
     private final SourceComponentService sourceComponentService;
     private final MethodSignatureToMethodIdMapService methodIdMapService;
+    private final Set<Long> submittedTasks;
+    private final ExecutorWrapper executor;
 
     public SourceController(
             SourceRepository sourceRepository,
@@ -54,14 +70,16 @@ public class SourceController {
             ProjectInfoRepository projectInfoRepository,
             MethodRepository methodRepository,
             SourceComponentService sourceComponentService,
-            MethodSignatureToMethodIdMapService methodIdMapService
-    ) {
+            MethodSignatureToMethodIdMapService methodIdMapService,
+            ExecutorWrapper executor) {
         this.sourceRepository = sourceRepository;
         this.assembler = assembler;
         this.projectInfoRepository = projectInfoRepository;
         this.methodRepository = methodRepository;
         this.sourceComponentService = sourceComponentService;
         this.methodIdMapService = methodIdMapService;
+        this.executor = executor;
+        submittedTasks = ConcurrentHashMap.newKeySet();
     }
 
     /**
@@ -112,7 +130,7 @@ public class SourceController {
     public EntityModel<Source> findByProjectId(
             @Parameter(description = PROJECT_ID_DESC) @PathVariable("projectInfoId") Long projectInfoId) {
         var projectInfo = projectInfoRepository.findById(projectInfoId)
-                .orElseThrow(() -> new ProjectInfoNotFoundException("The information about file you were looking " +
+                .orElseThrow(() -> new ProjectInfoNotFoundException("The information about file you are looking " +
                         "for is not present. please consider, uploading the given file again."));
         return assembler.toModel(getSource(projectInfo));
     }
@@ -125,12 +143,45 @@ public class SourceController {
      * @param projectInfo for which {@link Source} is needed.
      * @return {@link Source}
      */
-    private Source getSource(ProjectInfo projectInfo) {
+    protected Source getSource(ProjectInfo projectInfo) {
         //Extract source if not present.
         if (projectInfo.getSource() == null) {
-            extractSource(projectInfo);
+            submitTask(projectInfo);
         }
         return projectInfo.getSource();
+    }
+
+    /**
+     * Submits tasks to {@link ExecutorWrapper} if the task is already not in the queue.
+     *
+     * @param projectInfo {@link ProjectInfo} for which {@link Source} needs to be generated.
+     */
+    protected void submitTask(ProjectInfo projectInfo) {
+        if (submittedTasks.contains(projectInfo.getId())) {
+            throw new ResponseStatusException(HttpStatus.ACCEPTED, "Please wait, your request is being processed.");
+        }
+
+
+        submittedTasks.add(projectInfo.getId());
+        var future = executor.submit(() -> extractSource(projectInfo));
+
+        try {
+            future.get(TIME_OUT, TIME_UNIT);
+        } catch (ExecutionException e) {
+            logger.warn("One of threads in executor service threw exception with message: {}", e.getMessage());
+            submittedTasks.remove(projectInfo.getId());
+            if (e.getCause() instanceof ResponseStatusException) {
+                throw (ResponseStatusException) e.getCause();
+            }
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error occurred", e);
+        } catch (InterruptedException e) {
+            submittedTasks.remove(projectInfo.getId());
+            logger.info("Thread interrupted in between.");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Task Interrupted in between.");
+        } catch (TimeoutException e) {
+            logger.info("Timed Out, proceeding with task at hand");
+            throw new ResponseStatusException(HttpStatus.ACCEPTED, "Please wait, your request is being processed.");
+        }
     }
 
     /**
@@ -142,24 +193,29 @@ public class SourceController {
      * @param projectInfo in which {@link Source} will be set.
      * @throws CannotGenerateSourceException if source cannot be generated for some reason.
      */
-    private void extractSource(ProjectInfo projectInfo) {
-        SourceComponent sourceComponent = getSourceComponent(projectInfo);
-        var extractor = new LightWeightExtractorWithMethodSignatureCache(methodRepository);
-        projectInfo.setSource(
-                sourceRepository.save(
-                        sourceComponent.accept(extractor)
-                                .asSource()
-                                .orElseThrow(
-                                        () -> new CannotGenerateSourceException(
-                                                "Unable to fetch source," + " Please try again later."
-                                        )
-                                )
-                )
-        );
-        var source = projectInfo.getSource();
-        source.setProjectInfo(projectInfo);
-        projectInfoRepository.save(projectInfo);
-        methodIdMapService.save(source.getId(), extractor.getSignatureToIdMap());
+    protected void extractSource(ProjectInfo projectInfo) {
+        try {
+            SourceComponent sourceComponent = getSourceComponent(projectInfo);
+            var extractor = new LightWeightExtractorWithMethodSignatureCache(methodRepository);
+            projectInfo.setSource(
+                    sourceRepository.save(
+                            sourceComponent.accept(extractor)
+                                    .asSource()
+                                    .orElseThrow(
+                                            () -> new CannotGenerateSourceException(
+                                                    "Unable to fetch source," + " Please try again later."
+                                            )
+                                    )
+                    )
+            );
+
+            var source = projectInfo.getSource();
+            source.setProjectInfo(projectInfo);
+            projectInfoRepository.save(projectInfo);
+            methodIdMapService.save(projectInfo.getId(), extractor.getSignatureToIdMap());
+        } finally {
+            submittedTasks.remove(projectInfo.getId());
+        }
     }
 
     /**
@@ -168,8 +224,8 @@ public class SourceController {
      * @throws ParsedComponentNotFoundException if {@link SourceComponent} is not found.
      */
     private SourceComponent getSourceComponent(ProjectInfo projectInfo) {
-        return sourceComponentService.get(projectInfo.getSourceComponentId())
-                .orElseThrow(() -> new ParsedComponentNotFoundException("Unable to fetch source component," +
-                        " uploading files again should fix this."));
+        return sourceComponentService.get(projectInfo.getId())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.ACCEPTED, "Files are still being parsed, please check back in a few seconds."));
     }
 }

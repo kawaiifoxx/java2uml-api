@@ -5,6 +5,9 @@ import org.java2uml.java2umlapi.lightWeight.Source;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Vector;
+
+import static javax.persistence.CascadeType.*;
 
 /**
  * <p>
@@ -21,35 +24,30 @@ public class ProjectInfo {
     private Long id;
     private String projectName;
     @JsonIgnore
-    private String unzippedFileName;
-    @JsonIgnore
-    private Integer sourceComponentId;
-    @JsonIgnore
-    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+    @OneToOne(fetch = FetchType.EAGER, cascade = {DETACH, MERGE, REFRESH, REMOVE})
     private Source source;
     private Long size;
     private String fileType;
     @ElementCollection
-    private List<String> suggestions;
+    private List<String> messages;
+    volatile private boolean isBadRequest;
+    volatile private boolean isParsed;
 
     protected ProjectInfo() {
     }
 
-    public ProjectInfo(
-            String unzippedFileName,
-            String projectName,
-            Long size, String fileType,
-            Integer sourceComponentId
-    ) {
-        this.unzippedFileName = unzippedFileName;
+    public ProjectInfo(String projectName, Long size, String fileType) {
         this.projectName = projectName;
         this.size = size;
         this.fileType = fileType;
-        this.sourceComponentId = sourceComponentId;
+        this.messages = new Vector<>();
+        this.isBadRequest = false;
+        this.isParsed = false;
     }
 
     /**
      * Setter for project info id.
+     *
      * @param id id of the project info.
      */
     public void setId(Long id) {
@@ -72,6 +70,7 @@ public class ProjectInfo {
 
     /**
      * Setter for name of the project.
+     *
      * @param projectName name of the project.
      */
     public void setProjectName(String projectName) {
@@ -79,32 +78,18 @@ public class ProjectInfo {
     }
 
     /**
-     * @return source component id.
-     */
-    public Integer getSourceComponentId() {
-        return sourceComponentId;
-    }
-
-    /**
-     * setter for source component id.
-     * @param sourceComponentId source component id.
-     */
-    public void setSourceComponentId(Integer sourceComponentId) {
-        this.sourceComponentId = sourceComponentId;
-    }
-
-    /**
      * @return source if present else null is returned.
      */
-    public Source getSource() {
+    synchronized public Source getSource() {
         return source;
     }
 
     /**
      * Setter for source
+     *
      * @param source source
      */
-    public void setSource(Source source) {
+    synchronized public void setSource(Source source) {
         this.source = source;
     }
 
@@ -117,6 +102,7 @@ public class ProjectInfo {
 
     /**
      * Setter for file size.
+     *
      * @param size file size.
      */
     public void setSize(Long size) {
@@ -132,6 +118,7 @@ public class ProjectInfo {
 
     /**
      * setter for file type
+     *
      * @param fileType type of file.
      */
     public void setFileType(String fileType) {
@@ -139,30 +126,45 @@ public class ProjectInfo {
     }
 
     /**
-     * @return unzipped file name which has unique uuid.
+     * Getter for messages.
+     *
+     * @return messages
      */
-    public String getUnzippedFileName() {
-        return unzippedFileName;
+    public List<String> getMessages() {
+        return messages;
     }
 
     /**
-     * @param unzippedFileName setter for unzipped file name.
+     * Setter for messages.
+     *
+     * @param messages List of messages.
      */
-    public void setUnzippedFileName(String unzippedFileName) {
-        this.unzippedFileName = unzippedFileName;
+    public void setMessages(List<String> messages) {
+        this.messages = messages;
     }
 
     /**
-     * @return suggestions if any or null otherwise.
+     * Add message to this {@link ProjectInfo} instance.
+     *
+     * @param message message to be added.
      */
-    public List<String> getSuggestions() {
-        return suggestions;
+    public void addMessage(String message) {
+        messages.add(message);
     }
 
-    /**
-     * @param suggestions setter for suggestions
-     */
-    public void setSuggestions(List<String> suggestions) {
-        this.suggestions = suggestions;
+    public boolean isBadRequest() {
+        return isBadRequest;
+    }
+
+    public void setBadRequest(boolean badRequest) {
+        isBadRequest = badRequest;
+    }
+
+    public boolean isParsed() {
+        return isParsed;
+    }
+
+    public void setParsed(boolean parsed) {
+        isParsed = parsed;
     }
 }

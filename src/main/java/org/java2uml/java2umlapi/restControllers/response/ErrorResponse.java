@@ -1,4 +1,4 @@
-package org.java2uml.java2umlapi.restControllers.error;
+package org.java2uml.java2umlapi.restControllers.response;
 
 import org.springframework.http.HttpStatus;
 

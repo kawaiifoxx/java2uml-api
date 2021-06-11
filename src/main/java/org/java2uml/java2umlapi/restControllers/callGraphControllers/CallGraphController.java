@@ -20,10 +20,10 @@ import org.java2uml.java2umlapi.parsedComponent.ParsedMethodComponent;
 import org.java2uml.java2umlapi.parsedComponent.SourceComponent;
 import org.java2uml.java2umlapi.parsedComponent.service.SourceComponentService;
 import org.java2uml.java2umlapi.restControllers.LWControllers.MethodController;
-import org.java2uml.java2umlapi.restControllers.error.ErrorResponse;
 import org.java2uml.java2umlapi.restControllers.exceptions.LightWeightNotFoundException;
 import org.java2uml.java2umlapi.restControllers.exceptions.MethodNameToMethodIdNotFoundException;
 import org.java2uml.java2umlapi.restControllers.exceptions.ParsedComponentNotFoundException;
+import org.java2uml.java2umlapi.restControllers.response.ErrorResponse;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.*;
@@ -121,7 +121,7 @@ public class CallGraphController {
      * @throws MethodNameToMethodIdNotFoundException if methodNameToMethodIdMap has not been found.
      */
     private Map<String, Long> getMethodNameToMethodIdMap(Long methodId, Source source) {
-        return methodIdMapService.findById(source.getId())
+        return methodIdMapService.findById(source.getProjectInfo().getId())
                 .orElseThrow(
                         () -> new MethodNameToMethodIdNotFoundException(
                                 "Unable to fetch map for method with id:" + methodId
@@ -156,7 +156,7 @@ public class CallGraphController {
      */
     private SourceComponent getSourceComponent(Long methodId, Source source) {
         var projectInfo = source.getProjectInfo();
-        return sourceComponentService.get(projectInfo.getSourceComponentId())
+        return sourceComponentService.get(projectInfo.getId())
                 .orElseThrow(() -> new ParsedComponentNotFoundException(
                         "Unable to fetch source component for method id: " + methodId));
     }

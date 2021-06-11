@@ -1,8 +1,6 @@
 package org.java2uml.java2umlapi.restControllers.callGraphControllers;
 
-import com.github.javaparser.symbolsolver.resolution.typesolvers.JarTypeSolver;
 import com.jayway.jsonpath.JsonPath;
-import org.apache.commons.io.FileDeleteStrategy;
 import org.java2uml.java2umlapi.fileStorage.entity.ProjectInfo;
 import org.java2uml.java2umlapi.fileStorage.repository.ProjectInfoRepository;
 import org.java2uml.java2umlapi.lightWeight.Method;
@@ -63,6 +61,7 @@ class CallGraphControllerTest {
     void setUp() throws Exception {
         var parsedJson = parseJson(getMultipartResponse(doMultipartRequest(mvc, TEST_FILE_4)));
         String sourceUri = JsonPath.read(parsedJson, "$._links.projectModel.href");
+        waitTillResourceGetsGenerated(mvc, sourceUri);
         //Generate Source.
         mvc.perform(get(sourceUri))
                 .andDo(print())
@@ -86,15 +85,16 @@ class CallGraphControllerTest {
     @Test
     @DisplayName("when method name to method id map is not present then should get 500 internal server error")
     void whenMethodNameToMethodIdIsNotPresent_thenReturn500InternalServerError() throws Exception {
-        methodIdMapService.delete(source.getId());
+        methodIdMapService.delete(source.getProjectInfo().getId());
         Exception e = getException(status().isInternalServerError());
         assertThat(e).isInstanceOf(MethodNameToMethodIdNotFoundException.class);
     }
 
     @Test
     @DisplayName("when source component is not present then should get 500 internal server error")
+    @DirtiesContext
     void whenSourceComponentIsNotPresent_thenReturn500InternalServerError() throws Exception {
-        sourceComponentService.delete(projectInfo.getSourceComponentId());
+        sourceComponentService.delete(projectInfo.getId());
         Exception e = getException(status().isInternalServerError());
         assertThat(e).isInstanceOf(ParsedComponentNotFoundException.class);
     }
@@ -135,10 +135,7 @@ class CallGraphControllerTest {
     }
 
     @AfterAll
-    public static void tearDown() throws IOException {
-        //Release all resources first.
-        JarTypeSolver.ResourceRegistry.getRegistry().cleanUp();
-        //Then delete directory.
-        FileDeleteStrategy.FORCE.delete(TMP_DIR.toFile());
+    public static void tearDown() throws IOException, InterruptedException {
+        cleanUp();
     }
 }
