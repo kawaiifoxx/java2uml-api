@@ -60,6 +60,7 @@ import static org.java2uml.java2umlapi.restControllers.SwaggerDescription.*;
 @RestController
 @RequestMapping("/api/uml")
 public class UMLController {
+    private static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;
     private final UMLBodyAssembler umlBodyAssembler;
     private final ProjectInfoRepository projectInfoRepository;
     private final SourceComponentService sourceComponentService;
@@ -182,7 +183,7 @@ public class UMLController {
      */
     private String getFromFuture(Future<String> future) {
         try {
-            return future.get(TIME_OUT, TimeUnit.SECONDS);
+            return future.get(TIME_OUT, TIME_UNIT);
         } catch (ExecutionException e) {
             logger.warn("Exception caused due to {}", e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
