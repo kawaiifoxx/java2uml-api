@@ -7,6 +7,9 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static javax.persistence.CascadeType.*;
+
 /**
  * <p>
  * An Entity Class representing an enum in source files.
@@ -24,27 +27,27 @@ public class EnumLW extends LightWeight {
     private String packageName;
 
     @JsonIgnore
-    @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = ALL)
     private List<EnumConstant> enumConstants;
 
     @JsonIgnore
-    @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = ALL)
     private List<Constructor> enumConstructors;
 
     @JsonIgnore
-    @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = {DETACH, MERGE, REFRESH, REMOVE})
     private List<Method> enumMethods;
 
     @JsonIgnore
-    @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = ALL)
     private List<Field> enumFields;
 
     @JsonIgnore
-    @OneToOne(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(orphanRemoval = true, fetch = FetchType.LAZY, cascade = ALL)
     private Body body;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {PERSIST})
     private LightWeight parent;
 
     public EnumLW(String name) {
