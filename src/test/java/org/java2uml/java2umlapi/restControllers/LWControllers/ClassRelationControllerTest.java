@@ -62,8 +62,10 @@ class ClassRelationControllerTest {
     void setUp() throws Exception {
         var parsedProjectInfoJson = parseJson(getMultipartResponse(doMultipartRequest(mvc, TEST_FILE_4)));
         projectInfo = getEntityFromJson(parsedProjectInfoJson, projectInfoRepository);
+        var sourceURI = (String) JsonPath.read(parsedProjectInfoJson, "$._links.projectModel.href");
+        waitTillResourceGetsGenerated(mvc, sourceURI);
         var parsedSourceJson = parseJson(
-                mvc.perform(get("" + JsonPath.read(parsedProjectInfoJson, "$._links.projectModel.href")))
+                mvc.perform(get(sourceURI))
                         .andDo(print())
                         .andExpect(status().isOk())
                         .andReturn().getResponse().getContentAsString()
