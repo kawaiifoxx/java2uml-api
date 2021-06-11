@@ -124,10 +124,12 @@ class MethodControllerTest {
      *
      * @param method to be removed.
      */
-    private void removeMethodFromClassOrInterface(Method method) {
+    protected void removeMethodFromClassOrInterface(Method method) {
         classOrInterface.setClassOrInterfaceMethods(classMethodList);
         classOrInterface.getClassOrInterfaceMethods().remove(method);
         classOrInterfaceRepository.save(classOrInterface);
+        method.setParent(null);
+        methodRepository.delete(method);
     }
 
     @Test
