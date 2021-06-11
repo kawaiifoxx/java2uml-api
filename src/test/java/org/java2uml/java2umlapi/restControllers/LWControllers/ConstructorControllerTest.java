@@ -124,8 +124,6 @@ class ConstructorControllerTest {
             "should result in a 404 and a LightWeightNotFoundException.")
     @Transactional
     void whenParentOfConstructorCannotBeFound_allByParentShouldReturn404NotFound() throws Exception {
-        classRelationRepository.deleteAllByFrom(classOrInterface);
-        classRelationRepository.deleteAllByTo(classOrInterface);
         classOrInterfaceRepository.delete(classOrInterface);
 
         assertThatOnPerformingGetProvidedExceptionIsThrown(
