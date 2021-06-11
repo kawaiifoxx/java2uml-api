@@ -78,7 +78,11 @@ class FileControllerTest {
     @Test
     @DisplayName("when zip does not contain .java files, upload should return http status 400 bad request.")
     void uploadWithZipWithoutJavaFile() throws Exception {
-        var parsedJson = parseJson(getMultipartResponse(doMultipartRequest(mvc, TEST_FILE_2)));
+        var resultAction = doMultipartRequest(mvc, TEST_FILE_2);
+
+        if (resultAction.andReturn().getResponse().getStatus() == 400) return;
+
+        var parsedJson = parseJson(getMultipartResponse(resultAction));
         var projectInfo =
                 getEntityFromJson(parsedJson, projectInfoRepository);
         while (true) {
