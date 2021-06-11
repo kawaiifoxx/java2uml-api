@@ -46,12 +46,13 @@ import static org.java2uml.java2umlapi.restControllers.SwaggerDescription.INTERN
 @RequestMapping("/api/files")
 public class FileController {
     private final FileStorageService fileStorageService;
+    private static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;
     private final ProjectInfoAssembler assembler;
     private final ProjectInfoRepository projectInfoRepository;
     private final UnzippedFileStorageService unzippedFileStorageService;
     private final SourceComponentService sourceComponentService;
     private final ExecutorWrapper executor;
-    private static final Long TIME_OUT = 5L;
+    private static final Long TIME_OUT = 4L;
     private final Logger logger = LoggerFactory.getLogger(FileController.class);
 
     public FileController(FileStorageService fileStorageService,
@@ -113,11 +114,25 @@ public class FileController {
         var future = executor.submit(() -> {
             var unzippedFile = unzippedFileStorageService.unzipAndStore(projectInfo.getId(), fileName);
             fileStorageService.delete(fileName);
-            sourceComponentService.save(projectInfo.getId(), unzippedFile.toPath());
+            try {
+                sourceComponentService.save(projectInfo.getId(), unzippedFile.toPath());
+                sourceComponentService.get(projectInfo.getId()).ifPresent(sourceComponent -> {
+                    if (!sourceComponent.isExternalDependenciesIncluded())
+                        projectInfo.addMessage(
+                                "Please add all the project dependencies in zip file for better parsing results.");
+                });
+            } catch (BadRequest e) {
+                projectInfo.setBadRequest(true);
+                projectInfoRepository.save(projectInfo);
+                throw e;
+            }
+
+            projectInfo.setParsed(true);
+            projectInfoRepository.save(projectInfo);
         });
 
         try {
-            future.get(TIME_OUT, TimeUnit.SECONDS);
+            future.get(TIME_OUT, TIME_UNIT);
         } catch (InterruptedException e) {
             logger.warn("ExecutorWrapper's thread was interrupted while parsing project.");
             throw e;
