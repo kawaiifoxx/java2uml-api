@@ -1,7 +1,7 @@
 package org.java2uml.java2umlapi.restControllers;
 
-import com.github.javaparser.symbolsolver.resolution.typesolvers.JarTypeSolver;
-import org.apache.commons.io.FileDeleteStrategy;
+import com.jayway.jsonpath.JsonPath;
+import org.java2uml.java2umlapi.fileStorage.repository.ProjectInfoRepository;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -15,11 +15,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
+import static org.java2uml.java2umlapi.restControllers.ControllerTestUtils.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -31,20 +32,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("When using FileController,")
 @DirtiesContext
 class FileControllerTest {
-    private static final Path TMP_DIR = Paths.get("tmp");
     private static final String URI = "/api/files";
-    private static final Path TEST_FILE_1 = Path.of("src/test/testSources/WebApiTest/FileControllerTest/test1.zip");
-    private static final Path TEST_FILE_2 = Path.of("src/test/testSources/WebApiTest/FileControllerTest/" +
-            "non_java_file_zip_test.zip");
-    private static final Path TEST_FILE_3 = Path.of(
-            "src/test/testSources/WebApiTest/FileControllerTest/java_code_with_syntax_errors.zip");
-    private static final Path TEST_FILE_4 = Path.of(
-            "src/test/testSources/WebApiTest/FileControllerTest/code_without_included_dependencies.zip"
-    );
-    private static final String CONTENT_TYPE = "application/zip";
 
     @Autowired
     MockMvc mvc;
+    @Autowired
+    ProjectInfoRepository projectInfoRepository;
 
     @Test
     @DisplayName("given that request is valid, upload should return http status 201 and entity model of project info")
@@ -81,14 +74,23 @@ class FileControllerTest {
         ).andExpect(status().isUnsupportedMediaType());
     }
 
+    @SuppressWarnings({"OptionalGetWithoutIsPresent", "BusyWait"})
     @Test
     @DisplayName("when zip does not contain .java files, upload should return http status 400 bad request.")
     void uploadWithZipWithoutJavaFile() throws Exception {
-        var multipart = new MockMultipartFile("file", "non_java_file_zip_test.zip", CONTENT_TYPE,
-                new FileInputStream(TEST_FILE_2.toFile()));
-
-        mvc.perform(multipart(URI).file(multipart))
-                .andExpect(status().isBadRequest());
+        var parsedJson = parseJson(getMultipartResponse(doMultipartRequest(mvc, TEST_FILE_2)));
+        var projectInfo =
+                getEntityFromJson(parsedJson, projectInfoRepository);
+        while (true) {
+            var jsonObject = parseJson(getMultipartResponse(
+                    mvc.perform(get((String) JsonPath.read(parsedJson, "$._links.self.href")))));
+            boolean shouldBreak = (Boolean) JsonPath.read(jsonObject, "$.parsed") ||
+                    (Boolean) JsonPath.read(jsonObject, "$.badRequest");
+            if (shouldBreak) break;
+            Thread.sleep(500);
+        }
+        projectInfo = projectInfoRepository.findById(projectInfo.getId()).get();
+        assertThat(projectInfo.isBadRequest()).isTrue();
     }
 
     @Test
@@ -113,11 +115,9 @@ class FileControllerTest {
                 .andExpect(status().isCreated());
     }
 
+
     @AfterAll
-    public static void tearDown() throws IOException {
-        //Release all resources first.
-        JarTypeSolver.ResourceRegistry.getRegistry().cleanUp();
-        //Then delete directory.
-        FileDeleteStrategy.FORCE.delete(TMP_DIR.toFile());
+    public static void tearDown() throws IOException, InterruptedException {
+        cleanUp();
     }
 }
