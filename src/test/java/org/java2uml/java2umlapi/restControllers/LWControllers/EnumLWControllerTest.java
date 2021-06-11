@@ -1,8 +1,6 @@
 package org.java2uml.java2umlapi.restControllers.LWControllers;
 
-import com.github.javaparser.symbolsolver.resolution.typesolvers.JarTypeSolver;
 import com.jayway.jsonpath.JsonPath;
-import org.apache.commons.io.FileDeleteStrategy;
 import org.java2uml.java2umlapi.fileStorage.entity.ProjectInfo;
 import org.java2uml.java2umlapi.fileStorage.repository.ProjectInfoRepository;
 import org.java2uml.java2umlapi.lightWeight.EnumLW;
@@ -60,6 +58,7 @@ class EnumLWControllerTest {
         var parsedProjectInfoJson = parseJson(
                 getMultipartResponse(doMultipartRequest(mvc, ENUM_LW_CONTROLLER_TEST_FILE)));
         projectInfo = getEntityFromJson(parsedProjectInfoJson, projectInfoRepository);
+        waitTillResourceGetsGenerated(mvc, JsonPath.read(parsedProjectInfoJson, "$._links.projectModel.href"));
         var parsedSourceJson = parseJson(mvc.perform(
                 get(JsonPath.read(parsedProjectInfoJson, "$._links.projectModel.href") + ""))
                 .andDo(print())
@@ -134,6 +133,7 @@ class EnumLWControllerTest {
     @Test
     @DisplayName("given that Source is not present on performing" +
             " get on /api/enum/by-source/{sourceID} should get 404 not found.")
+    @DirtiesContext
     void whenSourceIsNotPresentOnPerformingGetRequest_ShouldGet404NotFound() throws Exception {
         projectInfoRepository.delete(projectInfo);
 
@@ -154,10 +154,7 @@ class EnumLWControllerTest {
     }
 
     @AfterAll
-    public static void tearDown() throws IOException {
-        //Release all resources first.
-        JarTypeSolver.ResourceRegistry.getRegistry().cleanUp();
-        //Then delete directory.
-        FileDeleteStrategy.FORCE.delete(TMP_DIR.toFile());
+    public static void tearDown() throws IOException, InterruptedException {
+       cleanUp();
     }
 }
