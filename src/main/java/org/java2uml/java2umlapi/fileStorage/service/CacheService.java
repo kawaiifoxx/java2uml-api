@@ -10,8 +10,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * This class can be implemented by any CacheService to get few general methods for free.
  * <p>
  * Classes implementing this class will have a special behaviour,
- * if you delete a key and that key has not been added to this class yet
- * if after doing delete, with that key if you try to do a save,  then that
+ * if you delete a key and that key has not been added to this class yet,
+ * after doing delete, with that key if you try to do a save,  then that
  * key value pair will not be saved.
  *
  * @author kawaiifox
