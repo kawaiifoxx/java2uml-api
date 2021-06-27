@@ -6,6 +6,9 @@ languages:
       exclude:
         - .*/restControllers/.*\.java
         - .*/lightWeight/.*\.java
+        - .*/parser/.*\.java
+        - .*/util/.*\.java
+        - .*/parsedComponent/.*\.java
     test:
       include:
         - .*/test/.*\.java
