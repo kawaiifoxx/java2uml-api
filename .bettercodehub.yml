@@ -1,4 +1,4 @@
-component_depth: 3
+component_depth: 7
 default_excludes: true
 languages:
   - name: java
