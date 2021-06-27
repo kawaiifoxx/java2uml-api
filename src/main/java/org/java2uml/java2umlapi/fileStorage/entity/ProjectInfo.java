@@ -20,7 +20,6 @@ import static javax.persistence.CascadeType.*;
 public class ProjectInfo {
     @Id
     @GeneratedValue
-    @JsonIgnore
     private Long id;
     private String projectName;
     @JsonIgnore
