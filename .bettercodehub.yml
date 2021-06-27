@@ -5,6 +5,7 @@ languages:
     production:
       exclude:
         - .*/restControllers/.*\.java
+        - .*/lightWeight/.*\.java
     test:
       include:
         - .*/test/.*\.java
