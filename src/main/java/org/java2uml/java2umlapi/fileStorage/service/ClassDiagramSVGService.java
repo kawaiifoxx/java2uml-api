@@ -1,6 +1,6 @@
 package org.java2uml.java2umlapi.fileStorage.service;
 
-import org.java2uml.java2umlapi.util.cache.CacheService;
+import org.java2uml.java2umlapi.util.cache.AddOnceCacheService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -9,5 +9,5 @@ import org.springframework.stereotype.Service;
  * @author shrey
  */
 @Service
-public class ClassDiagramSVGService extends CacheService<Long, String> {
+public class ClassDiagramSVGService extends AddOnceCacheService<Long, String> {
 }
