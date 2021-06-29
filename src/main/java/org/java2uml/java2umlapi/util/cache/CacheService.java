@@ -1,4 +1,4 @@
-package org.java2uml.java2umlapi.fileStorage.service;
+package org.java2uml.java2umlapi.util.cache;
 
 import java.util.Map;
 import java.util.Set;
