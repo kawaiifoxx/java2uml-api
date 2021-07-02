@@ -22,6 +22,7 @@ import org.java2uml.java2umlapi.restControllers.exceptions.LightWeightNotFoundEx
 import org.java2uml.java2umlapi.restControllers.exceptions.ParsedComponentNotFoundException;
 import org.java2uml.java2umlapi.restControllers.exceptions.ProjectInfoNotFoundException;
 import org.java2uml.java2umlapi.restControllers.response.ErrorResponse;
+import org.java2uml.java2umlapi.restControllers.services.SSEEmitterCache;
 import org.java2uml.java2umlapi.visitors.lightWeightExtractor.specialized.LightWeightExtractorWithMethodSignatureCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -40,6 +43,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import static org.java2uml.java2umlapi.restControllers.SwaggerDescription.*;
+import static org.java2uml.java2umlapi.restControllers.services.SSEEmitterCache.SSEventType.SOURCE_GENERATION;
 
 /**
  * <p>
@@ -52,6 +56,8 @@ import static org.java2uml.java2umlapi.restControllers.SwaggerDescription.*;
 @RestController
 @RequestMapping("/api/source")
 public class SourceController {
+    private enum Result {SUCCEEDED}
+
     private static final Long TIME_OUT = 4L;
     private static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;
     private final Logger logger = LoggerFactory.getLogger(SourceController.class);
@@ -61,6 +67,7 @@ public class SourceController {
     private final MethodRepository methodRepository;
     private final SourceComponentService sourceComponentService;
     private final MethodSignatureToMethodIdMapService methodIdMapService;
+    private final SSEEmitterCache emitterCache;
     private final Set<Long> submittedTasks;
     private final ExecutorWrapper executor;
 
@@ -71,6 +78,7 @@ public class SourceController {
             MethodRepository methodRepository,
             SourceComponentService sourceComponentService,
             MethodSignatureToMethodIdMapService methodIdMapService,
+            SSEEmitterCache emitterCache,
             ExecutorWrapper executor) {
         this.sourceRepository = sourceRepository;
         this.assembler = assembler;
@@ -78,6 +86,7 @@ public class SourceController {
         this.methodRepository = methodRepository;
         this.sourceComponentService = sourceComponentService;
         this.methodIdMapService = methodIdMapService;
+        this.emitterCache = emitterCache;
         this.executor = executor;
         submittedTasks = ConcurrentHashMap.newKeySet();
     }
@@ -213,6 +222,7 @@ public class SourceController {
             source.setProjectInfo(projectInfo);
             projectInfoRepository.save(projectInfo);
             methodIdMapService.save(projectInfo.getId(), extractor.getSignatureToIdMap());
+            notifyAboutSourceGeneration(projectInfo.getId());
         } finally {
             submittedTasks.remove(projectInfo.getId());
         }
@@ -227,5 +237,24 @@ public class SourceController {
         return sourceComponentService.get(projectInfo.getId())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.ACCEPTED, "Files are still being parsed, please check back in a few seconds."));
+    }
+
+
+    /**
+     * Notifies to any subscriber about the event if available.
+     *
+     * @param id {@link ProjectInfo} id.
+     */
+    private void notifyAboutSourceGeneration(Long id) {
+        if (!emitterCache.contains(id, SOURCE_GENERATION)) return;
+        var emitter = emitterCache.get(id, SOURCE_GENERATION);
+
+        try {
+            emitter.send(SseEmitter.event().name("SourceGeneration").data(Result.SUCCEEDED));
+        } catch (IOException e) {
+            logger.info("Unable to send event.", e);
+        } finally {
+            emitter.complete();
+        }
     }
 }
