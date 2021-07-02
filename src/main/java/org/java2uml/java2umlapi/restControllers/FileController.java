@@ -15,6 +15,7 @@ import org.java2uml.java2umlapi.modelAssemblers.ProjectInfoAssembler;
 import org.java2uml.java2umlapi.parsedComponent.service.SourceComponentService;
 import org.java2uml.java2umlapi.restControllers.exceptions.BadRequest;
 import org.java2uml.java2umlapi.restControllers.response.ErrorResponse;
+import org.java2uml.java2umlapi.restControllers.services.SSEEmitterCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.EntityModel;
@@ -24,14 +25,19 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import static org.java2uml.java2umlapi.restControllers.SwaggerDescription.ERR_RESPONSE_MEDIA_TYPE;
 import static org.java2uml.java2umlapi.restControllers.SwaggerDescription.INTERNAL_SERVER_ERROR_DESC;
+import static org.java2uml.java2umlapi.restControllers.services.SSEEmitterCache.SSEventType.PARSE;
 
 /**
  * <p>
@@ -45,12 +51,15 @@ import static org.java2uml.java2umlapi.restControllers.SwaggerDescription.INTERN
 @RestController
 @RequestMapping("/api/files")
 public class FileController {
+    private enum ParseState {PARSE_SUCCEEDED, PARSE_FAILED}
+
     private final FileStorageService fileStorageService;
     private static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;
     private final ProjectInfoAssembler assembler;
     private final ProjectInfoRepository projectInfoRepository;
     private final UnzippedFileStorageService unzippedFileStorageService;
     private final SourceComponentService sourceComponentService;
+    private final SSEEmitterCache emitterCache;
     private final ExecutorWrapper executor;
     private static final Long TIME_OUT = 4L;
     private final Logger logger = LoggerFactory.getLogger(FileController.class);
@@ -60,12 +69,14 @@ public class FileController {
                           ProjectInfoRepository projectInfoRepository,
                           UnzippedFileStorageService unzippedFileStorageService,
                           SourceComponentService sourceComponentService,
+                          SSEEmitterCache emitterCache,
                           ExecutorWrapper executor) {
         this.fileStorageService = fileStorageService;
         this.assembler = assembler;
         this.projectInfoRepository = projectInfoRepository;
         this.unzippedFileStorageService = unzippedFileStorageService;
         this.sourceComponentService = sourceComponentService;
+        this.emitterCache = emitterCache;
         this.executor = executor;
     }
 
@@ -124,9 +135,11 @@ public class FileController {
             } catch (BadRequest e) {
                 projectInfo.setBadRequest(true);
                 projectInfoRepository.save(projectInfo);
+                notifyAboutParse(ParseState.PARSE_FAILED, projectInfo.getId());
                 throw e;
             }
 
+            notifyAboutParse(ParseState.PARSE_SUCCEEDED, projectInfo.getId());
             projectInfo.setParsed(true);
             projectInfoRepository.save(projectInfo);
         });
@@ -147,5 +160,32 @@ public class FileController {
         }
 
         return assembler.toModel(projectInfo);
+    }
+
+
+    private void notifyAboutParse(ParseState state, Long id) {
+        var emitter = emitterCache.get(id, PARSE);
+        if (emitter == null) return;
+
+        try {
+            emitter.send(buildParseEvent(state));
+        } catch (IOException e) {
+            logger.info("Unable to send parse event.", e);
+        } finally {
+            emitter.complete();
+        }
+    }
+
+    /**
+     * Builds parse result event.
+     *
+     * @param state Current Parsing state.
+     * @return An Event containing the State of parsing.
+     */
+    private Set<ResponseBodyEmitter.DataWithMediaType> buildParseEvent(ParseState state) {
+        return SseEmitter.event()
+                .data(state)
+                .name("ParseResult")
+                .build();
     }
 }
