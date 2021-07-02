@@ -70,7 +70,7 @@ Here's a link to generated [svg file](./docs/assets/GettingStarted_SS/java2uml-a
 Java2uml can also perform many other tasks besides generating class diagrams.
 Also if you dont have a java source code lying around, or you are just to0 lazy, to zip your source code, you can upload this [sample](https://github.com/kawaiifoxx/java2uml-api/blob/main/src/test/testSources/ParserTest/test.zip) as well.
  
- ## Contributors
+ ## Maintainer
  - Shreyansh Gupta [@kawaiifoxx](https://github.com/kawaiifoxx)
  
  ## License & Copyright
