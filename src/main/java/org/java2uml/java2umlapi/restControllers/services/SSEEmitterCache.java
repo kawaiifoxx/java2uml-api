@@ -28,7 +28,7 @@ public class SSEEmitterCache {
      *
      * @author kawaiifoxx
      */
-    private class Key {
+    private static class Key {
         Long id;
         SSEventType type;
 
@@ -57,9 +57,9 @@ public class SSEEmitterCache {
     private final Map<Key, SseEmitter> cache = new ConcurrentHashMap<>();
 
     /**
-     * Is there {@link SseEmitter} with corresponding id?
+     * Is there a {@link SseEmitter} with corresponding id and {@link SSEventType}?
      *
-     * @param id for which we need to check presence of {@link SseEmitter}
+     * @param id        for which we need to check presence of {@link SseEmitter}
      * @param eventType {@link SSEventType} for which we need to check presence of {@link SseEmitter}
      * @return true if present, false otherwise.
      */
@@ -70,9 +70,9 @@ public class SSEEmitterCache {
     /**
      * Saves the {@link SseEmitter} with given id
      *
-     * @param id      id of {@link SseEmitter}
-     * @param eventType the {@link SSEventType} for which for which {@link SseEmitter} is required.
-     * @param emitter {@link SseEmitter} you want to save
+     * @param id        id of {@link SseEmitter}
+     * @param eventType the {@link SSEventType} for which {@link SseEmitter} will be saved.
+     * @param emitter   {@link SseEmitter} you want to save
      * @return true if no other value was saved earlier with the same id
      */
     public boolean save(Long id, SSEventType eventType, SseEmitter emitter) {
@@ -80,11 +80,22 @@ public class SSEEmitterCache {
     }
 
     /**
-     * @param id for which we want {@link SseEmitter}
+     * @param id        for which we want {@link SseEmitter}
      * @param eventType {@link SSEventType} for which emitter is required.
      * @return {@link SseEmitter} withe given id, null otherwise.
      */
     public SseEmitter get(Long id, SSEventType eventType) {
         return cache.get(new Key(id, eventType));
+    }
+
+    /**
+     * Removes {@link SseEmitter} with give id and {@link SSEventType} from cache.
+     *
+     * @param id        for which {@link SseEmitter} should be removed.
+     * @param eventType {@link SSEventType} for which {@link SseEmitter} should be removed.
+     * @return removed {@link SseEmitter} or null otherwise.
+     */
+    public SseEmitter delete(Long id, SSEventType eventType) {
+        return cache.remove(new Key(id, eventType));
     }
 }
