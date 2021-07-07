@@ -25,12 +25,10 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -180,12 +178,11 @@ public class FileController {
      * Builds parse result event.
      *
      * @param state Current Parsing state.
-     * @return An Event containing the State of parsing.
+     * @return An Event Builder containing the State of parsing.
      */
-    private Set<ResponseBodyEmitter.DataWithMediaType> buildParseEvent(ParseState state) {
+    private SseEmitter.SseEventBuilder buildParseEvent(ParseState state) {
         return SseEmitter.event()
                 .data(state)
-                .name("ParseResult")
-                .build();
+                .name("ParseResult");
     }
 }
