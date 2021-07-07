@@ -1,5 +1,6 @@
 package org.java2uml.java2umlapi.fileStorage.service;
 
+import org.java2uml.java2umlapi.util.cache.AddOnceCacheService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -8,5 +9,5 @@ import org.springframework.stereotype.Service;
  * @author kawaiifox
  */
 @Service
-public class UMLCodeCacheService extends CacheService<Long, String> {
+public class UMLCodeCacheService extends AddOnceCacheService<Long, String> {
 }

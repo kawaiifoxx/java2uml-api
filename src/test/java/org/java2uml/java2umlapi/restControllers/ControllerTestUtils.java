@@ -49,6 +49,9 @@ public abstract class ControllerTestUtils {
     public static final Path TEST_FILE_4 = Path.of(
             "src/test/testSources/WebApiTest/FileControllerTest/code_without_included_dependencies.zip"
     );
+    public static final Path JAVA2UML_API_SOURCE = Path.of(
+            "src/test/testSources/WebApiTest/java2uml-api-no-dep.zip"
+    );
     public static final Path ENUM_LW_CONTROLLER_TEST_FILE = Path.of(
             "src/test/testSources/WebApiTest/EnumLWControllerTest/ForEnumControllerTest.zip"
     );

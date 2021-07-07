@@ -24,6 +24,7 @@ import org.java2uml.java2umlapi.restControllers.exceptions.ParsedComponentNotFou
 import org.java2uml.java2umlapi.restControllers.exceptions.ProjectInfoNotFoundException;
 import org.java2uml.java2umlapi.restControllers.response.ErrorResponse;
 import org.java2uml.java2umlapi.restControllers.response.TryAgainResponse;
+import org.java2uml.java2umlapi.restControllers.services.SSEEmitterCache;
 import org.java2uml.java2umlapi.visitors.umlExtractor.UMLExtractor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +38,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -46,6 +48,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import static org.java2uml.java2umlapi.restControllers.SwaggerDescription.*;
+import static org.java2uml.java2umlapi.restControllers.services.SSEEmitterCache.SSEventType.UML_CODE_GENERATION;
+import static org.java2uml.java2umlapi.restControllers.services.SSEEmitterCache.SSEventType.UML_SVG_GENERATION;
 
 /**
  * <p>
@@ -60,12 +64,15 @@ import static org.java2uml.java2umlapi.restControllers.SwaggerDescription.*;
 @RestController
 @RequestMapping("/api/uml")
 public class UMLController {
+    enum Result {SUCCEEDED}
+
     private static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;
     private final UMLBodyAssembler umlBodyAssembler;
     private final ProjectInfoRepository projectInfoRepository;
     private final SourceComponentService sourceComponentService;
     private final ClassDiagramSVGService classDiagramSVGService;
     private final UMLCodeCacheService umlCodeCacheService;
+    private final SSEEmitterCache emitterCache;
     private final ExecutorWrapper executor;
     private final Logger logger = LoggerFactory.getLogger(UMLController.class);
     private static final Long TIME_OUT = 2L;
@@ -76,6 +83,7 @@ public class UMLController {
             SourceComponentService sourceComponentService,
             ClassDiagramSVGService classDiagramSVGService,
             UMLCodeCacheService umlCodeCacheService,
+            SSEEmitterCache emitterCache,
             ExecutorWrapper executor
     ) {
         this.umlBodyAssembler = umlBodyAssembler;
@@ -83,6 +91,7 @@ public class UMLController {
         this.sourceComponentService = sourceComponentService;
         this.classDiagramSVGService = classDiagramSVGService;
         this.umlCodeCacheService = umlCodeCacheService;
+        this.emitterCache = emitterCache;
         this.executor = executor;
     }
 
@@ -118,8 +127,11 @@ public class UMLController {
         var projectInfo = getProjectInfo(projectInfoId);
         SourceComponent sourceComponent = getSourceComponent(projectInfo);
 
-        var pUMLCode = getFromFuture(executor.submit(() ->
-                umlCodeCacheService.save(projectInfo.getId(), sourceComponent.accept(new UMLExtractor()))));
+        var pUMLCode = getFromFuture(executor.submit(() -> {
+            var code = umlCodeCacheService.save(projectInfo.getId(), sourceComponent.accept(new UMLExtractor()));
+            notifyAboutPUMLCodeGeneration(projectInfo.getId());
+            return code;
+        }));
         return umlBodyAssembler.toModel(new UMLBody(pUMLCode, projectInfo.getId()));
     }
 
@@ -224,6 +236,7 @@ public class UMLController {
             );
         }
 
+        notifyAboutSVGGeneration(projectInfoId);
         return classDiagramSVGService.save(projectInfoId, os.toString());
     }
 
@@ -265,4 +278,51 @@ public class UMLController {
         return fileName;
     }
 
+
+    /**
+     * @param id {@link ProjectInfo} id
+     */
+    private void notifyAboutSVGGeneration(Long id) {
+        if (!emitterCache.contains(id, UML_SVG_GENERATION)) return;
+
+        SseEmitter emitter = emitterCache.get(id, UML_SVG_GENERATION);
+        sendEvent(
+                emitter,
+                SseEmitter.event()
+                        .name("UmlSvgGeneration")
+                        .data(Result.SUCCEEDED)
+        );
+    }
+
+
+    /**
+     * @param id {@link ProjectInfo} id
+     */
+    private void notifyAboutPUMLCodeGeneration(Long id) {
+        if (!emitterCache.contains(id, UML_CODE_GENERATION)) return;
+
+        SseEmitter emitter = emitterCache.get(id, UML_CODE_GENERATION);
+        sendEvent(
+                emitter,
+                SseEmitter.event()
+                        .name("UmlCodeGeneration")
+                        .data(Result.SUCCEEDED)
+        );
+    }
+
+    /**
+     * Tries to send provided event using the provided {@link SseEmitter}
+     *
+     * @param emitter Through which {@link SseEmitter.SseEventBuilder} event will be sent.
+     * @param event   {@link SseEmitter.SseEventBuilder} event which will be sent.
+     */
+    private void sendEvent(SseEmitter emitter, SseEmitter.SseEventBuilder event) {
+        try {
+            emitter.send(event);
+        } catch (IOException e) {
+            logger.info("Unable to send event: {}", event, e);
+        } finally {
+            emitter.complete();
+        }
+    }
 }

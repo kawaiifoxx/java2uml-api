@@ -1,4 +1,4 @@
-package org.java2uml.java2umlapi.fileStorage.service;
+package org.java2uml.java2umlapi.util.cache;
 
 import java.util.Map;
 import java.util.Set;
@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * An abstract class, which defines all the methods for a simple cache.
  * <p>
- * This class can be implemented by any CacheService to get few general methods for free.
+ * This class can be implemented by any AddOnceCacheService to get few general methods for free.
  * <p>
  * Classes implementing this class will have a special behaviour,
  * if you delete a key and that key has not been added to this class yet,
@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author kawaiifox
  */
-public abstract class CacheService<K, V> {
+public abstract class AddOnceCacheService<K, V> {
     private final Map<K, V> cache = new ConcurrentHashMap<>();
     /**
      * Contains id of values that need to be deleted.
