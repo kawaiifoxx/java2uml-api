@@ -246,9 +246,8 @@ public class UMLController {
      */
     private SourceComponent getSourceComponent(ProjectInfo projectInfo) {
         return sourceComponentService.get(projectInfo.getId()).
-                orElseThrow(
-                        () -> new ParsedComponentNotFoundException("Please, upload your file again.")
-                );
+                orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.ACCEPTED, "Please, wait, files have not been parsed yet."));
     }
 
     /**

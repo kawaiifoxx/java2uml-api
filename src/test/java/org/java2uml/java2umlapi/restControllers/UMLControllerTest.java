@@ -6,7 +6,6 @@ import org.java2uml.java2umlapi.fileStorage.repository.ProjectInfoRepository;
 import org.java2uml.java2umlapi.fileStorage.service.UnzippedFileStorageService;
 import org.java2uml.java2umlapi.parsedComponent.SourceComponent;
 import org.java2uml.java2umlapi.parsedComponent.service.SourceComponentService;
-import org.java2uml.java2umlapi.restControllers.exceptions.ParsedComponentNotFoundException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -17,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 
@@ -78,10 +78,10 @@ class UMLControllerTest {
     }
 
     @Test
-    @DisplayName("given that SourceComponent is not present, " +
-            "sending request to \"/api/plant-uml-code/{projectInfoId}\" should give 500 internal server error.")
+    @DisplayName("given that SourceComponent is yet to be generated " +
+            "sending request to \"/api/plant-uml-code/{projectInfoId}\" should give 202 internal server error.")
     @DirtiesContext
-    void whenSourceComponentIsNotPresent_thenShouldGet500_From_getPUMLCode() throws Exception {
+    void whenSourceComponentIsNotPresent_thenShouldGet202_From_getPUMLCode() throws Exception {
         assertThatSourceComponentIsNotPresentOn("$._links.umlText.href");
     }
 
@@ -113,10 +113,10 @@ class UMLControllerTest {
     }
 
     @Test
-    @DisplayName("given that SourceComponent is not present, sending request to " +
-            " \"/api/svg/{projectInfoId}\" should give 500.")
+    @DisplayName("given that SourceComponent is yet to be generated, sending request to " +
+            " \"/api/svg/{projectInfoId}\" should give 202.")
     @DirtiesContext
-    void whenSourceComponentIsNotPresent_thenShouldGet500_From_getSvg() throws Exception {
+    void whenSourceComponentIsNotPresent_thenShouldGet202_From_getSvg() throws Exception {
         assertThatSourceComponentIsNotPresentOn("$._links.umlSvg.href");
     }
 
@@ -134,12 +134,10 @@ class UMLControllerTest {
 
         var e = mvc.perform(get(requestURI))
                 .andDo(print())
-                .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.errors[0]",
-                        containsString("Unable to find requested ParsedComponent.")))
+                .andExpect(status().is(202))
                 .andReturn().getResolvedException();
 
-        assertThat(e).isNotNull().isInstanceOf(ParsedComponentNotFoundException.class);
+        assertThat(e).isNotNull().isInstanceOf(ResponseStatusException.class);
     }
 
     @AfterAll
