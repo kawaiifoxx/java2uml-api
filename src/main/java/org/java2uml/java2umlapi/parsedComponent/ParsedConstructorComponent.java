@@ -8,26 +8,34 @@ import java.util.Optional;
 
 /**
  * <p>
- *     A leaf component, representing a constructor, this is used in this composite tree to generate uml for constructors.
+ * A leaf component, representing a constructor, this is used in this composite tree to generate uml for constructors.
  * </p>
  *
  * @author kawaiifox
  */
-public class ParsedConstructorComponent implements ParsedComponent {
+public class ParsedConstructorComponent implements ParsedComponent, ParsedMethodLikeComponent {
     private final ResolvedConstructorDeclaration resolvedDeclaration;
     private final ParsedComponent parent;
     private final String name;
 
     /**
      * Initializes ParsedConstructorComponent.
-     * @param parent Parent of this component.
+     *
+     * @param parent              Parent of this component.
      * @param resolvedDeclaration resolvedConstructorDeclaration is type solved constructor declaration
      *                            retrieved from resolvedReferenceTypeDeclaration.
      */
     public ParsedConstructorComponent(ParsedComponent parent, ResolvedConstructorDeclaration resolvedDeclaration) {
         this.resolvedDeclaration = resolvedDeclaration;
         this.parent = parent;
-        this.name = resolvedDeclaration.getQualifiedSignature();
+        this.name = getQualifiedSignature(resolvedDeclaration);
+    }
+
+    /**
+     * @return Signature of the method
+     */
+    public String getSignature() {
+        return getSignature(resolvedDeclaration);
     }
 
     @Override
