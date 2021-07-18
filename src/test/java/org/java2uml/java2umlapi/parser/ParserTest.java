@@ -55,7 +55,7 @@ class ParserTest {
     }
 
     @AfterEach
-    private void tearDown() throws IOException {
+    void tearDown() throws IOException {
         JarTypeSolver.ResourceRegistry.getRegistry().cleanUp();
         FileDeleteStrategy.FORCE.delete(Path.of(DST).toFile());
     }
