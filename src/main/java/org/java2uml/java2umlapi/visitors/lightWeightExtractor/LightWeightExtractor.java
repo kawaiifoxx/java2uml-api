@@ -204,7 +204,7 @@ public class LightWeightExtractor implements Visitor<LightWeight> {
 
         var constructor = new Constructor(
                 parsedConstructorComponent.getName(),
-                resolvedDeclaration.getSignature(),
+                parsedConstructorComponent.getSignature(),
                 resolvedDeclaration.accessSpecifier().asString(),
                 resolvedDeclaration.toAst().isEmpty()
         );

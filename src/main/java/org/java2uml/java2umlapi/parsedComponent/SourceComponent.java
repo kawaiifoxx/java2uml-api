@@ -270,8 +270,7 @@ public class SourceComponent implements ParsedCompositeComponent {
 
         //noinspection OptionalGetWithoutIsPresent
         var resolvedTypeDeclaration = from.getResolvedDeclaration().get().asType();
-
-        var ancestors = resolvedTypeDeclaration.asReferenceType().getAncestors();
+        var ancestors = resolvedTypeDeclaration.asReferenceType().getAncestors(true);
 
         ancestors.forEach(ancestor -> {
 

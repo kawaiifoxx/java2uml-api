@@ -53,7 +53,6 @@ public class UMLExtractor implements Visitor<String> {
     }
 
 
-
     /**
      * Visits passed component and performs some operation on it.
      *
@@ -120,7 +119,7 @@ public class UMLExtractor implements Visitor<String> {
                 .getResolvedConstructorDeclaration();
 
         return VisibilityModifierSymbol.of(resolvedDeclaration.accessSpecifier().asString()) + " "
-                + UMLModifier.METHOD + " [Constructor] " + resolvedDeclaration.getSignature();
+                + UMLModifier.METHOD + " [Constructor] " + parsedConstructorComponent.getSignature();
     }
 
     /**
