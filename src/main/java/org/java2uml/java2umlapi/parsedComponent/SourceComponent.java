@@ -25,7 +25,7 @@ public class SourceComponent implements ParsedCompositeComponent {
     private final Map<String, ParsedComponent> children;
     private final Map<String, ParsedComponent> externalComponents;
     private final List<ResolvedDeclaration> allParsedTypes;
-    private final Set<TypeRelation> allRelations;
+    private final List<TypeRelation> allRelations;
     private boolean isExternalDependenciesIncluded = true;
 
     /**
@@ -36,7 +36,7 @@ public class SourceComponent implements ParsedCompositeComponent {
     public SourceComponent(List<ResolvedDeclaration> allParsedTypes) {
         this.allParsedTypes = allParsedTypes;
         this.children = new HashMap<>();
-        this.allRelations = new HashSet<>();
+        this.allRelations = new ArrayList<>();
         this.externalComponents = new HashMap<>();
 
         for (var resolvedDeclaration : allParsedTypes) {
@@ -350,6 +350,10 @@ public class SourceComponent implements ParsedCompositeComponent {
     }
 
     public Set<TypeRelation> getAllRelations() {
+        return new HashSet<>(allRelations);
+    }
+
+    public List<TypeRelation> getRelationsList() {
         return allRelations;
     }
 
