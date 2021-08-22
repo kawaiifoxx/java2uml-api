@@ -112,4 +112,10 @@ internal class DefaultPackageTreeTest {
     internal fun `should return false when querying values, which are not present in PackageTree`() {
         assertThat(defaultPackageTree.contains("org.notPresent.in.this.PackageTree")).isFalse
     }
+
+    @Test
+    @DisplayName("returned map should contain all the components present in the PackageTree")
+    internal fun `returned map should contain all the components present in the tree`() {
+        assertThat(defaultPackageTree.componentToIndexMap.keys.toSet()).isEqualTo(classNameList.toSet())
+    }
 }

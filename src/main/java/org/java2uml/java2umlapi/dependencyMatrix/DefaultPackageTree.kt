@@ -1,5 +1,7 @@
 package org.java2uml.java2umlapi.dependencyMatrix
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import org.java2uml.java2umlapi.parsedComponent.ParsedCompositeComponent
 
 /**
@@ -8,6 +10,7 @@ import org.java2uml.java2umlapi.parsedComponent.ParsedCompositeComponent
  * @author kawaiifoxx
  * @since 1.2.0
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 class DefaultPackageTree(compositeComponents: List<ParsedCompositeComponent>) : PackageTree {
     /**
      * Entity representing a tree node.
@@ -27,12 +30,24 @@ class DefaultPackageTree(compositeComponents: List<ParsedCompositeComponent>) : 
 
     private val root: Node = addAll(compositeComponents)
 
+    @JsonIgnore
+    private var _componentToIndexMap: MutableMap<String, Int>? = null
+
+    override val componentToIndexMap: Map<String, Int>
+        @JsonIgnore
+        get() {
+            if (_componentToIndexMap != null) return _componentToIndexMap!!
+            _componentToIndexMap = mutableMapOf()
+            addAllComponents()
+            return _componentToIndexMap!!
+        }
+
     override fun getRange(packageOrCompositeComponentName: String) =
         traverse(packageOrCompositeComponentName.split('.')).range
 
-
     override fun getSize(packageOrCompositeComponentName: String) =
         traverse(packageOrCompositeComponentName.split('.')).size
+
 
     override fun contains(packageOrCompositeComponentName: String) =
         try {
@@ -106,5 +121,18 @@ class DefaultPackageTree(compositeComponents: List<ParsedCompositeComponent>) : 
         }
 
         return itr
+    }
+
+    /**
+     * Traverses the Package tree and adds mapping for leaves to indices.
+     */
+    private fun addAllComponents(currNode: Node = root, path: StringBuilder = StringBuilder()) {
+        path.append(currNode.name)
+
+        if (currNode.children.isEmpty())
+            _componentToIndexMap!![path.toString().trim('.')] = currNode.range.first
+
+        for (child in currNode.children.values)
+            addAllComponents(child, StringBuilder(path).append('.'))
     }
 }

@@ -8,6 +8,8 @@ package org.java2uml.java2umlapi.dependencyMatrix
  * @since 1.2.0
  */
 interface PackageTree {
+    val componentToIndexMap: Map<String, Int>
+
     /**
      * @return indices Range for given package
      */
