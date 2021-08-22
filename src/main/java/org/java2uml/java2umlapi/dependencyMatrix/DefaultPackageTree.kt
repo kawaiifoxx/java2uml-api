@@ -20,6 +20,7 @@ class DefaultPackageTree(compositeComponents: List<ParsedCompositeComponent>) : 
         val name: String = "",
         var range: IntRange = 0..0,
         var size: Int = 0,
+        var isCompositeComponent: Boolean = false,
         val children: MutableMap<String, Node> = HashMap()
     ) {
         operator fun get(i: String) = children[i]
@@ -78,7 +79,7 @@ class DefaultPackageTree(compositeComponents: List<ParsedCompositeComponent>) : 
 
                 temp = temp[edge]!!
             }
-
+            temp.isCompositeComponent = true
             temp.size = 1
         }
 
@@ -96,7 +97,7 @@ class DefaultPackageTree(compositeComponents: List<ParsedCompositeComponent>) : 
     }
 
     private fun updateRanges(root: Node) {
-        var start = root.range.first
+        var start = if (root.isCompositeComponent) root.range.first + 1 else root.range.first
 
         for (child in root.children.values) {
             child.range = start until start + child.size
@@ -129,7 +130,7 @@ class DefaultPackageTree(compositeComponents: List<ParsedCompositeComponent>) : 
     private fun addAllComponents(currNode: Node = root, path: StringBuilder = StringBuilder()) {
         path.append(currNode.name)
 
-        if (currNode.children.isEmpty())
+        if (currNode.isCompositeComponent)
             _componentToIndexMap!![path.toString().trim('.')] = currNode.range.first
 
         for (child in currNode.children.values)

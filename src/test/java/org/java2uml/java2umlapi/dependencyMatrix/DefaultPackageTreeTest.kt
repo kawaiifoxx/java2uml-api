@@ -58,7 +58,8 @@ internal class DefaultPackageTreeTest {
         "org.java2uml.java2umlapi.modelAssemblers.FieldAssembler",
         "org.java2uml.java2umlapi.modelAssemblers.MethodAssembler",
         "org.java2uml.java2umlapi.modelAssemblers.ProjectInfoAssembler",
-        "org.java2uml.java2umlapi.modelAssemblers.SourceAssembler"
+        "org.java2uml.java2umlapi.modelAssemblers.SourceAssembler",
+        "org.java2uml.java2umlapi.modelAssemblers.SourceAssembler.AdvancedAssembler"
     )
 
     @BeforeEach
@@ -117,5 +118,15 @@ internal class DefaultPackageTreeTest {
     @DisplayName("returned map should contain all the components present in the PackageTree")
     internal fun `returned map should contain all the components present in the tree`() {
         assertThat(defaultPackageTree.componentToIndexMap.keys.toSet()).isEqualTo(classNameList.toSet())
+    }
+
+    @Test
+    @DisplayName("range intersection of direct child component and parent component.")
+    internal fun `range intersection of direct child component and parent component`() {
+        val range1 = defaultPackageTree.getRange("org.java2uml.java2umlapi.modelAssemblers.SourceAssembler")
+        val range2 =
+            defaultPackageTree.getRange("org.java2uml.java2umlapi.modelAssemblers.SourceAssembler.AdvancedAssembler")
+        assertThat(range1.intersect(range2)).isNotEmpty
+        assertThat(range1.first).isLessThan(range2.first)
     }
 }
