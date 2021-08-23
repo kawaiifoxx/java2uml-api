@@ -100,6 +100,11 @@ public class EventSubscriptionController {
         return produceEmitter(id, SOURCE_GENERATION);
     }
 
+    @GetMapping("/dependency-matrix/{projectInfoId}")
+    public SseEmitter subscribeToDependencyMatrixGeneration(@PathVariable("projectInfoId")Long id) {
+        return produceEmitter(id, DEPENDENCY_MATRIX_GENERATION);
+    }
+
     /**
      * Produces {@link SseEmitter} with given configurations.
      * Performs all the necessary housekeeping.

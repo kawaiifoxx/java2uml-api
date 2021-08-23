@@ -21,7 +21,7 @@ public class SSEEmitterCache {
      *
      * @author kawaiifoxx
      */
-    public enum SSEventType {PARSE, SOURCE_GENERATION, UML_CODE_GENERATION, UML_SVG_GENERATION}
+    public enum SSEventType {PARSE, SOURCE_GENERATION, UML_CODE_GENERATION, UML_SVG_GENERATION, DEPENDENCY_MATRIX_GENERATION}
 
     /**
      * A class for modeling a unique key for retrieving {@link SseEmitter} from cache.

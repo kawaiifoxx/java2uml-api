@@ -1,5 +1,6 @@
 package org.java2uml.java2umlapi.dependencyMatrix
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import org.java2uml.java2umlapi.dependencyMatrix.DependencyMatrix.DependencyArray
 import org.java2uml.java2umlapi.parsedComponent.ParsedCompositeComponent
 import org.java2uml.java2umlapi.parsedComponent.TypeRelation
@@ -10,6 +11,8 @@ import org.java2uml.java2umlapi.parsedComponent.TypeRelation
  * @author kawaiifoxx
  * @since 1.2.0
  */
+@Suppress("MemberVisibilityCanBePrivate")
+@JsonIgnoreProperties(ignoreUnknown = true)
 class DefaultDependencyMatrix(compositeComponents: List<ParsedCompositeComponent>, relations: List<TypeRelation>) :
     DependencyMatrix {
 
@@ -19,13 +22,14 @@ class DefaultDependencyMatrix(compositeComponents: List<ParsedCompositeComponent
      * @author kawaiifoxx
      * @since 1.2.0
      */
-    private class DefaultDependencyArray(private val componentToIndexMap: Map<String, Int>) :
+    @Suppress("MemberVisibilityCanBePrivate")
+    class DefaultDependencyArray(private val componentToIndexMap: Map<String, Int>) :
         DependencyArray {
 
         /**
          * Which classes use this class as dependency.
          */
-        private val usedBy = IntArray(componentToIndexMap.size)
+        val usedBy = IntArray(componentToIndexMap.size)
 
 
         override operator fun get(i: String): Int {
@@ -44,8 +48,8 @@ class DefaultDependencyMatrix(compositeComponents: List<ParsedCompositeComponent
     }
 
     private val packageTree: PackageTree = DefaultPackageTree(compositeComponents)
-    private val componentToIndexMap = packageTree.componentToIndexMap
-    private val dependencyMatrix = Array(compositeComponents.size) { DefaultDependencyArray(componentToIndexMap) }
+    val componentToIndexMap = packageTree.componentToIndexMap
+    val dependencyMatrix = Array(compositeComponents.size) { DefaultDependencyArray(componentToIndexMap) }
 
     init {
         for (relation in relations) {

@@ -4,6 +4,7 @@ import org.java2uml.java2umlapi.fileStorage.entity.ProjectInfo;
 import org.java2uml.java2umlapi.restControllers.LWControllers.SourceController;
 import org.java2uml.java2umlapi.restControllers.ProjectInfoController;
 import org.java2uml.java2umlapi.restControllers.UMLController;
+import org.java2uml.java2umlapi.restControllers.dependencyMatrix.DependencyMatrixController;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
@@ -31,6 +32,7 @@ public class ProjectInfoAssembler implements RepresentationModelAssembler<Projec
                 linkTo(methodOn(ProjectInfoController.class).delete(entity.getId())).withRel("delete"),
                 linkTo(methodOn(UMLController.class).getPUMLCode(entity.getId())).withRel("umlText"),
                 linkTo(methodOn(UMLController.class).getSvg(entity.getId())).withRel("umlSvg"),
+                linkTo(methodOn(DependencyMatrixController.class).get(entity.getId())).withRel("dependencyMatrix"),
                 linkTo(methodOn(SourceController.class).findByProjectId(entity.getId())).withRel("projectModel")
         );
     }
