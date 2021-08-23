@@ -35,11 +35,11 @@ public class ProjectInfoAssembler implements RepresentationModelAssembler<Projec
                 linkTo(methodOn(UMLController.class).getSvg(entity.getId())).withRel("umlSvg"),
                 linkTo(methodOn(DependencyMatrixController.class).get(entity.getId())).withRel("dependencyMatrix"),
                 linkTo(methodOn(SourceController.class).findByProjectId(entity.getId())).withRel("projectModel"),
-                linkTo(methodOn(EventSubscriptionController.class).subscribeToParseEvent(entity.getId())).withRel("Subscribe to parse event"),
-                linkTo(methodOn(EventSubscriptionController.class).subscribeToSourceGeneration(entity.getId())).withRel("Subscribe to source generation"),
-                linkTo(methodOn(EventSubscriptionController.class).subscribeToUMLSVGGenerationEvent(entity.getId())).withRel("Subscribe to uml svg generation event"),
-                linkTo(methodOn(EventSubscriptionController.class).subscribeToUMLCodeGenerationEvent(entity.getId())).withRel("Subscribe to uml code generation event"),
-                linkTo(methodOn(EventSubscriptionController.class).subscribeToDependencyMatrixGeneration(entity.getId())).withRel("Subscribe to dependency matrix generation")
+                linkTo(methodOn(EventSubscriptionController.class).subscribeToParseEvent(entity.getId())).withRel("subscribeToParseEvent"),
+                linkTo(methodOn(EventSubscriptionController.class).subscribeToSourceGeneration(entity.getId())).withRel("subscribeToSourceGeneration"),
+                linkTo(methodOn(EventSubscriptionController.class).subscribeToUMLSVGGenerationEvent(entity.getId())).withRel("subscribeToUmlSvgGenerationEvent"),
+                linkTo(methodOn(EventSubscriptionController.class).subscribeToUMLCodeGenerationEvent(entity.getId())).withRel("subscribeToUmlCodeGenerationEvent"),
+                linkTo(methodOn(EventSubscriptionController.class).subscribeToDependencyMatrixGeneration(entity.getId())).withRel("subscribeToDependencyMatrixGeneration")
         );
     }
 }
