@@ -105,7 +105,7 @@ class EventSubscriptionControllerTest {
     void subscribeToDependencyMatrixGeneration() throws Exception {
         waitTillSourceComponentGetsGenerated(sourceComponentService, projectInfo.getId());
         MvcResult result = getMvcResult("/dependency-matrix/");
-        mvc.perform(get("/api/dependency-matrix/" + projectInfo.getId())).andDo(print());
+        mvc.perform(get("/api/dependency-matrix/" + projectInfo.getId()));
 
         assertThatGeneratedEventContains(result, "SUCCEEDED");
     }

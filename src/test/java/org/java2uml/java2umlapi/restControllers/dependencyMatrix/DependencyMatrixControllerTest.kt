@@ -13,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
@@ -46,7 +45,6 @@ internal class DependencyMatrixControllerTest {
     internal fun getDependencyMatrix() {
         waitTillResourceGetsGenerated(mvc, "$URI${projectInfo.id}")
         val result = mvc?.perform(get("$URI${projectInfo.id}"))
-            ?.andDo(print())
             ?.andExpect(status().isOk)
             ?.andExpect(jsonPath("$._links.self.href", containsString("$URI${projectInfo.id}")))
             ?.andExpect(jsonPath("$._links.projectInfo.href", containsString("/project-info/")))
