@@ -115,7 +115,7 @@ public class UMLController {
             @ApiResponse(responseCode = "404", description = SOURCE_CODE_NOT_FOUND_DESC,
                     content = @Content(mediaType = ERR_RESPONSE_MEDIA_TYPE,
                             schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "202", description = SwaggerDescription.ACCEPTED_DESC,
+            @ApiResponse(responseCode = "202", description = SwaggerDescription.ACCEPTED_DESC_202,
                     content = @Content(mediaType = ERR_RESPONSE_MEDIA_TYPE,
                             schema = @Schema(implementation = TryAgainResponse.class)))
     })
@@ -155,7 +155,7 @@ public class UMLController {
             @ApiResponse(responseCode = "404", description = SOURCE_CODE_NOT_FOUND_DESC,
                     content = @Content(mediaType = ERR_RESPONSE_MEDIA_TYPE,
                             schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "202", description = SwaggerDescription.ACCEPTED_DESC,
+            @ApiResponse(responseCode = "202", description = SwaggerDescription.ACCEPTED_DESC_202,
                     content = @Content(mediaType = ERR_RESPONSE_MEDIA_TYPE,
                             schema = @Schema(implementation = TryAgainResponse.class)))
     })

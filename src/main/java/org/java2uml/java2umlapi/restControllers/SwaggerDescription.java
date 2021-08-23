@@ -23,5 +23,5 @@ abstract public class SwaggerDescription {
     public static final String ENUM_CONST_ID_DESC = "id of enum constant.";
     public static final String ENUM_ID_DESC = "id of enum.";
     public static final String FIELD_ID_DESC = "id of field.";
-    public static final String ACCEPTED_DESC = "Your request is currently being processed please wait.";
+    public static final String ACCEPTED_DESC_202 = "Your request is currently being processed please wait.";
 }

@@ -100,6 +100,16 @@ class EventSubscriptionControllerTest {
         assertThatGeneratedEventContains(result, "SUCCEEDED");
     }
 
+    @Test
+    @DisplayName("when subscribing to dependency matrix generation event, should get notifications for all dependency matrix generation events.")
+    void subscribeToDependencyMatrixGeneration() throws Exception {
+        waitTillSourceComponentGetsGenerated(sourceComponentService, projectInfo.getId());
+        MvcResult result = getMvcResult("/dependency-matrix/");
+        mvc.perform(get("/api/dependency-matrix/" + projectInfo.getId()));
+
+        assertThatGeneratedEventContains(result, "SUCCEEDED");
+    }
+
     /**
      * Generates project info.
      *
@@ -107,8 +117,8 @@ class EventSubscriptionControllerTest {
      */
     private void generateProjectInfo(Path file) throws Exception {
         projectInfo = getEntityFromJson(parseJson(
-                getMultipartResponse(
-                        doMultipartRequest(mvc, file))),
+                        getMultipartResponse(
+                                doMultipartRequest(mvc, file))),
                 projectInfoRepository);
     }
 
