@@ -5,7 +5,7 @@ import org.java2uml.java2umlapi.parsedComponent.ParsedCompositeComponent
 import org.java2uml.java2umlapi.parsedComponent.TypeRelation
 
 /**
- * This is the default implementation for {@link DependencyMatrix}
+ * This is the default implementation for [DependencyMatrix]
  *
  * @author kawaiifoxx
  * @since 1.2.0
@@ -14,7 +14,7 @@ class DefaultDependencyMatrix(compositeComponents: List<ParsedCompositeComponent
     DependencyMatrix {
 
     /**
-     * Default Implementation for {@link DependencyArray}
+     * Default Implementation for [DependencyArray]
      *
      * @author kawaiifoxx
      * @since 1.2.0

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import org.java2uml.java2umlapi.parsedComponent.ParsedCompositeComponent
 
 /**
- * Default Implementation for {@link PackageTree} class
+ * Default Implementation for [PackageTree] class
  *
  * @author kawaiifoxx
  * @since 1.2.0
@@ -60,7 +60,7 @@ class DefaultPackageTree(compositeComponents: List<ParsedCompositeComponent>) : 
     /**
      * Used for initialising root node and generating the whole tree.
      *
-     * @param compositeComponents  is a list of ParsedCompositeComponent
+     * @param compositeComponents  is a list of [ParsedCompositeComponent]
      * @return Root of the tree.
      */
     private fun addAll(compositeComponents: List<ParsedCompositeComponent>): Node {
@@ -109,7 +109,7 @@ class DefaultPackageTree(compositeComponents: List<ParsedCompositeComponent>) : 
     /**
      * Traverses the root node to find the node with given path.
      * @param path to be traversed
-     * @return Node with given path
+     * @return [Node] with given path
      */
     private fun traverse(path: List<String>): Node {
         var itr = root
@@ -125,7 +125,7 @@ class DefaultPackageTree(compositeComponents: List<ParsedCompositeComponent>) : 
     }
 
     /**
-     * Traverses the Package tree and adds mapping for leaves to indices.
+     * Traverses the [PackageTree] and adds mapping for leaves to indices.
      */
     private fun addAllComponents(currNode: Node = root, path: StringBuilder = StringBuilder()) {
         path.append(currNode.name)
