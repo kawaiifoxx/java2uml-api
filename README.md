@@ -5,7 +5,6 @@
 [![Docker Image CI](https://github.com/kawaiifoxx/java2uml-api/actions/workflows/docker-image.yml/badge.svg)](https://github.com/kawaiifoxx/java2uml-api/actions/workflows/docker-image.yml)
 ![GitHub deployments](https://img.shields.io/github/deployments/kawaiifoxx/java2uml-api/java2uml-api?label=Deployment)
 [![codecov](https://codecov.io/gh/kawaiifoxx/java2uml-api/branch/main/graph/badge.svg?token=J4Q5EY03AD)](https://codecov.io/gh/kawaiifoxx/java2uml-api)
-[![GitHub issues](https://img.shields.io/github/issues/kawaiifoxx/java2uml-api)](https://github.com/kawaiifoxx/java2uml-api/issues)
 ![GitHub Release Date](https://img.shields.io/github/release-date/kawaiifoxx/java2uml-api)
 [![GitHub license](https://img.shields.io/github/license/kawaiifoxx/java2uml-api?color=purple)](https://github.com/kawaiifoxx/java2uml-api/blob/main/LICENSE)
 <br>
