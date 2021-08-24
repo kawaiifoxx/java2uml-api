@@ -17,8 +17,10 @@ Yet another tool for generating and viewing UML diagrams.
 
 ✅ Generate plant uml code from maven/gradle project.
 <br>✅ Generate plant uml diagram from maven/gradle project.
-<br>✅ Comprehensive web api for exploring projects.
+<br>✅ Comprehensive HAL Based web api for exploring projects.
 <br>✅ View call graphs for method calls.
+<br>✅ Generate Dependency Matrix.
+<br>✅ Event Subscription Endpoints.
 <br>✅ more features coming soon. 😉
 
 ## How to Compile from source?
