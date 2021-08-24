@@ -3,9 +3,9 @@
 [![BCH compliance](https://bettercodehub.com/edge/badge/kawaiifoxx/java2uml-api?branch=main)](https://bettercodehub.com/)
 [![build](https://github.com/kawaiifoxx/java2uml-api/actions/workflows/maven.yml/badge.svg)](https://github.com/kawaiifoxx/java2uml-api/actions/workflows/maven.yml)
 [![Docker Image CI](https://github.com/kawaiifoxx/java2uml-api/actions/workflows/docker-image.yml/badge.svg)](https://github.com/kawaiifoxx/java2uml-api/actions/workflows/docker-image.yml)
-![GitHub deployments](https://img.shields.io/github/deployments/kawaiifoxx/java2uml-api/java2uml-api?label=Deployment)
+[![GitHub deployments](https://img.shields.io/github/deployments/kawaiifoxx/java2uml-api/java2uml-api?label=deployment)](http://java2uml-api.herokuapp.com/swagger-ui.html)
 [![codecov](https://codecov.io/gh/kawaiifoxx/java2uml-api/branch/main/graph/badge.svg?token=J4Q5EY03AD)](https://codecov.io/gh/kawaiifoxx/java2uml-api)
-![GitHub Release Date](https://img.shields.io/github/release-date/kawaiifoxx/java2uml-api)
+![GitHub Release Date](https://img.shields.io/github/release-date/kawaiifoxx/java2uml-api?label=released)
 [![GitHub license](https://img.shields.io/github/license/kawaiifoxx/java2uml-api?color=purple)](https://github.com/kawaiifoxx/java2uml-api/blob/main/LICENSE)
 <br>
 
