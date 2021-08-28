@@ -1,5 +1,6 @@
 package org.java2uml.java2umlapi.parsedComponent;
 
+import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.resolution.UnsolvedSymbolException;
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedMethodDeclaration;
@@ -24,17 +25,20 @@ public class SourceComponent implements ParsedCompositeComponent {
 
     private final Map<String, ParsedComponent> children;
     private final Map<String, ParsedComponent> externalComponents;
+    private final List<CompilationUnit> compilationUnits;
     private final List<ResolvedDeclaration> allParsedTypes;
     private final List<TypeRelation> allRelations;
     private boolean isExternalDependenciesIncluded = true;
 
     /**
-     * Initializes sourceComponent and generates tree and all the type relations.
+     * Initializes {@link SourceComponent} and generates tree and all the {@link TypeRelation}s.
      *
-     * @param allParsedTypes List of resolvedDeclarations
+     * @param allParsedTypes   List of {@link ResolvedDeclaration}s
+     * @param compilationUnits List of {@link CompilationUnit}s
      */
-    public SourceComponent(List<ResolvedDeclaration> allParsedTypes) {
+    public SourceComponent(List<ResolvedDeclaration> allParsedTypes, List<CompilationUnit> compilationUnits) {
         this.allParsedTypes = allParsedTypes;
+        this.compilationUnits = compilationUnits;
         this.children = new HashMap<>();
         this.allRelations = new ArrayList<>();
         this.externalComponents = new HashMap<>();
@@ -87,6 +91,13 @@ public class SourceComponent implements ParsedCompositeComponent {
      */
     public List<ResolvedDeclaration> getAllParsedTypes() {
         return allParsedTypes;
+    }
+
+    /**
+     * @return Returns all the {@link CompilationUnit}s contained in the sourceComponent.
+     */
+    public List<CompilationUnit> getCompilationUnits() {
+        return compilationUnits;
     }
 
     @Override
@@ -312,7 +323,7 @@ public class SourceComponent implements ParsedCompositeComponent {
                 //noinspection unchecked
                 return (Optional<T>) result.asParsedExternalComponent();
 
-            return  Optional.empty();
+            return Optional.empty();
         }
 
         if (clazz.equals(ParsedClassOrInterfaceComponent.class) ||

@@ -4,6 +4,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
+import com.github.javaparser.resolution.SymbolResolver;
 import com.github.javaparser.resolution.declarations.ResolvedDeclaration;
 import com.github.javaparser.symbolsolver.utils.SymbolSolverCollectionStrategy;
 import com.github.javaparser.utils.ProjectRoot;
@@ -16,6 +17,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -23,8 +25,8 @@ import java.util.List;
  * </p>
  *
  * <p>
- *     Parser will not parse files in hidden directory or any files in folders starting with <code>'.'</code>
- *     For eg <code>.hidden</code>
+ * Parser will not parse files in hidden directory or any files in folders starting with <code>'.'</code>
+ * For eg <code>.hidden</code>
  * </p>
  *
  * @author kawaiifox.
@@ -50,33 +52,33 @@ public abstract class Parser {
             );
         }
 
-        List<ResolvedDeclaration> resolvedDeclarations = getResolvedDeclarations(sourceRoots);
-
-        return new SourceComponent(resolvedDeclarations);
-    }
-
-    /**
-     * @param sourceRoots List of SourceRoot.
-     * @return return a List<ResolvedDeclaration>.
-     * @throws RuntimeException if passed sourceRoots is empty.
-     */
-    private static List<ResolvedDeclaration> getResolvedDeclarations(List<SourceRoot> sourceRoots) {
         var compilationUnits = getAllCompilationUnits(sourceRoots);
-        var classOrInterfaceDeclarations = getClassOrInterfaceDeclarations(compilationUnits);
-        var enumDecl = getEnumDeclaration(compilationUnits);
         var symbolResolver = sourceRoots.get(0).getParserConfiguration().getSymbolResolver()
                 .orElseThrow(() -> new RuntimeException("[Parser] Unable to get symbolResolver."));
 
-        List<ResolvedDeclaration> resolvedDeclarations = new ArrayList<>();
-        classOrInterfaceDeclarations
-                .forEach(classOrInterfaceDeclaration -> resolvedDeclarations
-                        .add(symbolResolver
-                                .resolveDeclaration(classOrInterfaceDeclaration, ResolvedDeclaration.class)));
+        List<ResolvedDeclaration> resolvedDeclarations = getResolvedDeclarations(compilationUnits, symbolResolver);
+        return new SourceComponent(resolvedDeclarations, compilationUnits);
+    }
 
-        enumDecl
-                .forEach(enumDeclaration -> resolvedDeclarations
-                        .add(symbolResolver
-                                .resolveDeclaration(enumDeclaration, ResolvedDeclaration.class)));
+    /**
+     * @param compilationUnits List of {@link CompilationUnit}.
+     * @param symbolResolver   a {@link SymbolResolver}
+     * @return return a List<ResolvedDeclaration>.
+     * @throws RuntimeException if passed sourceRoots is empty.
+     */
+    private static List<ResolvedDeclaration> getResolvedDeclarations(
+            List<CompilationUnit> compilationUnits, SymbolResolver symbolResolver
+    ) {
+        var resolvedDeclarations = getClassOrInterfaceDeclarations(compilationUnits).stream()
+                .map(classOrInterfaceDeclaration ->
+                        symbolResolver.resolveDeclaration(classOrInterfaceDeclaration, ResolvedDeclaration.class))
+                .collect(Collectors.toList());
+
+        var resolvedEnumDecls = getEnumDeclaration(compilationUnits).stream()
+                .map(it -> symbolResolver.resolveDeclaration(it, ResolvedDeclaration.class))
+                .collect(Collectors.toList());
+
+        resolvedDeclarations.addAll(resolvedEnumDecls);
         return resolvedDeclarations;
     }
 
@@ -137,8 +139,8 @@ public abstract class Parser {
             var parseResults = sourceRoot.tryToParseParallelized();
             parseResults.forEach(parseResult -> {
                 if (parseResult.isSuccessful() &&
-                                parseResult.getResult().get().getStorage().isPresent() &&
-                                shouldAddCU(parseResult.getResult().get().getStorage().get().getDirectory())) {
+                        parseResult.getResult().get().getStorage().isPresent() &&
+                        shouldAddCU(parseResult.getResult().get().getStorage().get().getDirectory())) {
                     compilationUnits.add(parseResult.getResult().get());
                 }
             });
@@ -149,6 +151,7 @@ public abstract class Parser {
 
     /**
      * Checks whether the {@link CompilationUnit} should be added to the list of {@link CompilationUnit}
+     *
      * @param path directory where file is located.
      * @return true if all checks have passed.
      */
@@ -167,6 +170,4 @@ public abstract class Parser {
         if (File.separator.equals("\\")) return "\\\\";
         return File.separator;
     }
-
-
 }
