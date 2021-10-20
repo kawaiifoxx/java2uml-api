@@ -19,7 +19,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-qodana-${{ github.ref }}
             ${{ runner.os }}-qodana-
-      - uses: docker://jetbrains/qodana-latest
+      - uses: docker://jetbrains/qodana
         with:
           args: --cache-dir=/github/home/cache --results-dir=/github/workspace/qodana --save-report --report-dir=/github/workspace/qodana/report
       - uses: actions/upload-artifact@v2
