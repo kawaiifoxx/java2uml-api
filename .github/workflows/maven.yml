@@ -45,7 +45,3 @@ jobs:
           path: target
       - name: Qodana - Code Inspection
         uses: JetBrains/qodana-action@v2.2-eap
-        with:
-          project-dir: ${{ github.workspace }}
-          results-dir: ${{ github.workspace }}/qodana
-          cache-dir: /home/runner/work/_temp/_github_home/qodana-cache
