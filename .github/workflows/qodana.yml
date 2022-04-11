@@ -22,6 +22,6 @@ jobs:
       - uses: docker://jetbrains/qodana
         with:
           args: --cache-dir=/github/home/cache --results-dir=/github/workspace/qodana --save-report --report-dir=/github/workspace/qodana/report
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           path: qodana
