@@ -40,7 +40,7 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-hateoas</artifactId>
-            <version>1.6.3</version>
+            <version>1.6.10</version>
         </dependency>
 
         <!-- Add Sentry support. -->
